@@ -8,6 +8,11 @@ namespace Compiler_Lab1
         private string currentFileName = "Без имени.txt";
         private bool isTextChanged = false;
 
+
+        private Stack<string> undoStack = new Stack<string>();
+        private Stack<string> redoStack = new Stack<string>();
+        private bool isUndoRedoOperation = false;
+
         public textEditor()
         {
             InitializeComponent();
@@ -16,6 +21,12 @@ namespace Compiler_Lab1
             {
                 isTextChanged = true;
                 UpdateTitle();
+
+                if (!isUndoRedoOperation)
+                {
+                    undoStack.Push(mainText.Text);
+                    redoStack.Clear();
+                }
             };
         }
 
@@ -184,6 +195,46 @@ MessageBoxIcon.Question
             }
 
             Application.Exit();
+        }
+
+        private void btnBack_Click(object sender, EventArgs e)
+        {
+            if (undoStack.Count > 0)
+            {
+                isUndoRedoOperation = true;
+
+                redoStack.Push(mainText.Text);
+
+                string previousText = undoStack.Pop();
+                mainText.Text = previousText;
+
+                isUndoRedoOperation = false;
+                isTextChanged = true;
+                UpdateTitle();
+            }
+        }
+
+        private void btnForward_Click(object sender, EventArgs e)
+        {
+            if (redoStack.Count > 0)
+            {
+                isUndoRedoOperation = true;
+
+                undoStack.Push(mainText.Text);
+
+                string nextText = redoStack.Pop();
+                mainText.Text = nextText;
+
+                isUndoRedoOperation = false;
+                isTextChanged = true;
+                UpdateTitle();
+            }
+
+        }
+
+        private void btnCut_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
