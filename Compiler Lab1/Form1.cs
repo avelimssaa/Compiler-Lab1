@@ -36,7 +36,7 @@ namespace Compiler_Lab1
             this.Text = $"Текстовый редактор - {currentFileName}{mark}";
         }
 
-        private void createFile_Click(object sender, EventArgs e)
+        private void CreateFile()
         {
             if (!FileSaveConfirm("Создать файл"))
             {
@@ -48,8 +48,11 @@ namespace Compiler_Lab1
             currentFileName = "Без имени.txt";
             isTextChanged = false;
             UpdateTitle();
+        }
 
-            MessageBox.Show($"[{DateTime.Now:HH:mm:ss}] Создан новый документ\r\n");
+        private void createFile_Click(object sender, EventArgs e)
+        {
+            CreateFile();
         }
 
         private void saveFile_Click(object sender, EventArgs e)
@@ -149,9 +152,8 @@ MessageBoxIcon.Question
             return true;
         }
 
-        private void OpenFile_Click(object sender, EventArgs e)
+        private void OpenFile()
         {
-
             if (!FileSaveConfirm("Открыть файл"))
             {
                 return;
@@ -175,8 +177,6 @@ MessageBoxIcon.Question
                         currentFileName = Path.GetFileName(currentFilePath);
                         isTextChanged = false;
                         UpdateTitle();
-
-                        MessageBox.Show($"[{DateTime.Now:HH:mm:ss}] Открыт файл: {currentFileName}\r\n");
                     }
                     catch (Exception ex)
                     {
@@ -187,7 +187,12 @@ MessageBoxIcon.Question
             }
         }
 
-        private void exitBtn_Click(object sender, EventArgs e)
+        private void OpenFile_Click(object sender, EventArgs e)
+        {
+            OpenFile();
+        }
+
+        private void Exit()
         {
             if (!FileSaveConfirm("Выйти"))
             {
@@ -197,7 +202,12 @@ MessageBoxIcon.Question
             Application.Exit();
         }
 
-        private void btnBack_Click(object sender, EventArgs e)
+        private void exitBtn_Click(object sender, EventArgs e)
+        {
+            Exit();
+        }
+
+        private void Undo()
         {
             if (undoStack.Count > 0)
             {
@@ -214,7 +224,12 @@ MessageBoxIcon.Question
             }
         }
 
-        private void btnForward_Click(object sender, EventArgs e)
+        private void btnBack_Click(object sender, EventArgs e)
+        {
+            Undo();
+        }
+
+        private void Redo()
         {
             if (redoStack.Count > 0)
             {
@@ -229,12 +244,134 @@ MessageBoxIcon.Question
                 isTextChanged = true;
                 UpdateTitle();
             }
+        }
 
+        private void btnForward_Click(object sender, EventArgs e)
+        {
+            Redo();
+        }
+
+        private void Cut()
+        {
+            if (!string.IsNullOrEmpty(mainText.SelectedText))
+            {
+                mainText.Cut();
+            }
         }
 
         private void btnCut_Click(object sender, EventArgs e)
         {
+            Cut();
+        }
 
+        private void Copy()
+        {
+            if (!string.IsNullOrEmpty(mainText.SelectedText))
+            {
+                mainText.Copy();
+            }
+        }
+
+        private void btnCopy_Click(object sender, EventArgs e)
+        {
+            Copy();
+        }
+
+        private void Paste()
+        {
+            try
+            {
+                if (Clipboard.ContainsText())
+                {
+                    int selectionStart = mainText.SelectionStart;
+                    mainText.Text = mainText.Text.Insert(selectionStart, Clipboard.GetText());
+                    mainText.SelectionStart = selectionStart + Clipboard.GetText().Length;
+
+                    isTextChanged = true;
+                    UpdateTitle();
+
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при вставке: {ex.Message}", "Ошибка",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void btnPaste_Click(object sender, EventArgs e)
+        {
+            Paste();
+        }
+
+        private void Delete()
+        {
+            try
+            {
+                if (mainText.SelectionLength > 0)
+                {
+                    int selectionStart = mainText.SelectionStart;
+                    mainText.Cut();
+                    mainText.SelectionStart = selectionStart;
+                    isTextChanged = true;
+                    UpdateTitle();
+                }
+                else
+                {
+                    if (mainText.SelectionStart > 0)
+                    {
+                        int cursorPos = mainText.SelectionStart;
+                        mainText.Text = mainText.Text.Remove(cursorPos - 1, 1);
+                        mainText.SelectionStart = cursorPos - 1;
+
+                        isTextChanged = true;
+                        UpdateTitle();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при удалении: {ex.Message}", "Ошибка",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void btnDelete_Click(object sender, EventArgs e)
+        {
+            Delete();
+        }
+
+        private void SelectAll()
+        {
+            if (!string.IsNullOrEmpty(mainText.Text))
+            {
+                mainText.SelectAll();
+            }
+        }
+
+        private void btnSelectAll_Click(object sender, EventArgs e)
+        {
+            SelectAll();
+        }
+
+        private void CallHelp()
+        {
+
+        }
+
+        private void btnHelp_Click(object sender, EventArgs e)
+        {
+            CallHelp();
+        }
+
+        private void CallAbout()
+        {
+
+        }
+
+        private void btnAbout_Click(object sender, EventArgs e)
+        {
+            CallAbout();
         }
     }
 }
