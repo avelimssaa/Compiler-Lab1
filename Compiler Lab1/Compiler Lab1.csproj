@@ -41,6 +41,7 @@
 
   <ItemGroup>
     <Folder Include="Resources\images\" />
+    <Folder Include="Resources\html\" />
     <Folder Include="Resources\Новая папка\" />
   </ItemGroup>
 
