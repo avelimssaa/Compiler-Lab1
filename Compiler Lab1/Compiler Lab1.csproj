@@ -7,7 +7,22 @@
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
+    <Title>Текстовый редактор</Title>
+    <Description>Описание
+Текстовый редактор, сделанный в ходе первой лабораторной работы по дисциплине
+"Теория формальных языков и компиляторов". Создатель продукта - студент 
+Зенцов Вадим, группа АВТ-313.
+</Description>
+    <Copyright>Зенцов Вадим, АВТ-313</Copyright>
+    <Authors></Authors>
+    <Company>НГТУ НЭТИ</Company>
+    <Product>Текстовый редактор</Product>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Help.html" />
+    <None Remove="Screen.jpg" />
+  </ItemGroup>
 
   <ItemGroup>
     <Compile Update="Properties\Resources.Designer.cs">
@@ -26,6 +41,15 @@
 
   <ItemGroup>
     <Folder Include="Resources\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Help.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Screen.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>

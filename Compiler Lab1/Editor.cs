@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Text;
 
 namespace Compiler_Lab1
@@ -356,7 +357,28 @@ MessageBoxIcon.Question
 
         private void CallHelp()
         {
+            try
+            {
+                string helpPath = Path.Combine(Application.StartupPath, "Help.html");
 
+                if (File.Exists(helpPath))
+                {
+                    Process.Start(new ProcessStartInfo
+                    {
+                        FileName = helpPath,
+                        UseShellExecute = true
+                    });
+                }
+                else
+                {
+                    MessageBox.Show("Файл справки не найден.");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка открытия справки: {ex.Message}", "Ошибка",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void btnHelp_Click(object sender, EventArgs e)
@@ -366,7 +388,12 @@ MessageBoxIcon.Question
 
         private void CallAbout()
         {
-
+            About about1 = new About();
+            about1.ShowDialog();
+            //using (About about = new About())
+            //{
+            //    about.Show();
+            //}
         }
 
         private void btnAbout_Click(object sender, EventArgs e)
