@@ -121,8 +121,8 @@
   <data name="icons8-влево-2-50" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons\icons8-влево-2-50.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="icons8-копировать-24" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\icons\icons8-копировать-24.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="icons8-старт-48" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons\icons8-старт-48.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="icons8-файл-50" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons\icons8-файл-50.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -130,8 +130,11 @@
   <data name="icons8-вправо-2-50" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons\icons8-вправо-2-50.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="icons8-старт-48" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\icons\icons8-старт-48.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="icons8-восклицательный-знак-48" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons\icons8-восклицательный-знак-48.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icons8-копировать-24" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons\icons8-копировать-24.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="icons8-вырезать-50" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons\icons8-вырезать-50.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -139,16 +142,16 @@
   <data name="icons8-сохранить-48" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons\icons8-сохранить-48.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="icons8-вопрос-50" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\icons\icons8-вопрос-50.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="icons8-файл-26" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons\icons8-файл-26.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icons8-вопрос-50" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons\icons8-вопрос-50.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="icons8-вставить-48" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons\icons8-вставить-48.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="icons8-восклицательный-знак-48" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\icons\icons8-восклицательный-знак-48.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="About" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\images\About.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

@@ -203,6 +203,15 @@ MessageBoxIcon.Question
             Application.Exit();
         }
 
+        private void textEditor_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (!FileSaveConfirm("Выйти"))
+            {
+                e.Cancel = true;
+                return;
+            }
+        }
+
         private void exitBtn_Click(object sender, EventArgs e)
         {
             Exit();
@@ -390,10 +399,6 @@ MessageBoxIcon.Question
         {
             About about1 = new About();
             about1.ShowDialog();
-            //using (About about = new About())
-            //{
-            //    about.Show();
-            //}
         }
 
         private void btnAbout_Click(object sender, EventArgs e)

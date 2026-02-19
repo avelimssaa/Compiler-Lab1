@@ -98,35 +98,35 @@
             // createFile
             // 
             createFile.Name = "createFile";
-            createFile.Size = new Size(224, 26);
+            createFile.Size = new Size(192, 26);
             createFile.Text = "Создать";
             createFile.Click += createFile_Click;
             // 
             // btnOpenFile
             // 
             btnOpenFile.Name = "btnOpenFile";
-            btnOpenFile.Size = new Size(224, 26);
+            btnOpenFile.Size = new Size(192, 26);
             btnOpenFile.Text = "Открыть";
             btnOpenFile.Click += OpenFile_Click;
             // 
             // saveFile
             // 
             saveFile.Name = "saveFile";
-            saveFile.Size = new Size(224, 26);
+            saveFile.Size = new Size(192, 26);
             saveFile.Text = "Сохранить";
             saveFile.Click += saveFile_Click;
             // 
             // saveFileLike
             // 
             saveFileLike.Name = "saveFileLike";
-            saveFileLike.Size = new Size(224, 26);
+            saveFileLike.Size = new Size(192, 26);
             saveFileLike.Text = "Сохранить как";
             saveFileLike.Click += saveFileLike_Click;
             // 
             // exitBtn
             // 
             exitBtn.Name = "exitBtn";
-            exitBtn.Size = new Size(224, 26);
+            exitBtn.Size = new Size(192, 26);
             exitBtn.Text = "Выход";
             exitBtn.Click += exitBtn_Click;
             // 
@@ -427,6 +427,7 @@
             MinimumSize = new Size(800, 600);
             Name = "textEditor";
             Text = "Текстовый редактор";
+            FormClosing += textEditor_FormClosing;
             toolStrip1.ResumeLayout(false);
             toolStrip1.PerformLayout();
             toolStrip2.ResumeLayout(false);
