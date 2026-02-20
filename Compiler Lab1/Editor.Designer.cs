@@ -56,6 +56,9 @@
             toolStripDropDownButton4 = new ToolStripDropDownButton();
             btnHelp = new ToolStripMenuItem();
             btnAbout = new ToolStripMenuItem();
+            viewDropDownBtn = new ToolStripDropDownButton();
+            toolStripTextBox1 = new ToolStripTextBox();
+            FontSizeCmb = new ToolStripComboBox();
             toolStrip2 = new ToolStrip();
             createFileQuick = new ToolStripButton();
             openFileQuick = new ToolStripButton();
@@ -68,17 +71,26 @@
             toolStripButton14 = new ToolStripButton();
             btnHelpQuick = new ToolStripButton();
             btnAboutQuick = new ToolStripButton();
-            mainText = new RichTextBox();
-            dataGridView1 = new DataGridView();
+            splitContainer1 = new SplitContainer();
+            tabControlEditor = new TabControl();
+            outputResults = new DataGridView();
+            FilePath = new DataGridViewTextBoxColumn();
+            Line = new DataGridViewTextBoxColumn();
+            Column = new DataGridViewTextBoxColumn();
+            Message = new DataGridViewTextBoxColumn();
             toolStrip1.SuspendLayout();
             toolStrip2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
+            splitContainer1.Panel1.SuspendLayout();
+            splitContainer1.Panel2.SuspendLayout();
+            splitContainer1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)outputResults).BeginInit();
             SuspendLayout();
             // 
             // toolStrip1
             // 
             toolStrip1.ImageScalingSize = new Size(20, 20);
-            toolStrip1.Items.AddRange(new ToolStripItem[] { toolStripDropDownButton1, toolStripDropDownButton2, toolStripDropDownButton3, toolStripButton1, toolStripDropDownButton4 });
+            toolStrip1.Items.AddRange(new ToolStripItem[] { toolStripDropDownButton1, toolStripDropDownButton2, toolStripDropDownButton3, toolStripButton1, toolStripDropDownButton4, viewDropDownBtn });
             toolStrip1.Location = new Point(0, 0);
             toolStrip1.Name = "toolStrip1";
             toolStrip1.Size = new Size(782, 27);
@@ -274,6 +286,33 @@
             btnAbout.Text = "О программе";
             btnAbout.Click += btnAbout_Click;
             // 
+            // viewDropDownBtn
+            // 
+            viewDropDownBtn.DisplayStyle = ToolStripItemDisplayStyle.Text;
+            viewDropDownBtn.DropDownItems.AddRange(new ToolStripItem[] { toolStripTextBox1, FontSizeCmb });
+            viewDropDownBtn.Image = (Image)resources.GetObject("viewDropDownBtn.Image");
+            viewDropDownBtn.ImageTransparentColor = Color.Magenta;
+            viewDropDownBtn.Name = "viewDropDownBtn";
+            viewDropDownBtn.Size = new Size(49, 24);
+            viewDropDownBtn.Text = "Вид";
+            // 
+            // toolStripTextBox1
+            // 
+            toolStripTextBox1.Name = "toolStripTextBox1";
+            toolStripTextBox1.ReadOnly = true;
+            toolStripTextBox1.Size = new Size(200, 27);
+            toolStripTextBox1.Text = "Выберите размер шрифта";
+            // 
+            // FontSizeCmb
+            // 
+            FontSizeCmb.BackColor = SystemColors.Window;
+            FontSizeCmb.DropDownStyle = ComboBoxStyle.Simple;
+            FontSizeCmb.Items.AddRange(new object[] { "8", "9", "10", "11", "12", "14", "16", "18", "20", "22", "24", "26", "28", "36", "48", "72" });
+            FontSizeCmb.Name = "FontSizeCmb";
+            FontSizeCmb.Size = new Size(150, 150);
+            FontSizeCmb.Text = "Размер шрифта";
+            FontSizeCmb.SelectedIndexChanged += FontSizeCmb_SelectedIndexChanged;
+            // 
             // toolStrip2
             // 
             toolStrip2.ImageScalingSize = new Size(30, 30);
@@ -393,25 +432,78 @@
             btnAboutQuick.Text = "О программе";
             btnAboutQuick.Click += btnAbout_Click;
             // 
-            // mainText
+            // splitContainer1
             // 
-            mainText.Dock = DockStyle.Fill;
-            mainText.Location = new Point(0, 64);
-            mainText.Name = "mainText";
-            mainText.Size = new Size(782, 489);
-            mainText.TabIndex = 2;
-            mainText.Text = "";
+            splitContainer1.Dock = DockStyle.Fill;
+            splitContainer1.Location = new Point(0, 64);
+            splitContainer1.Name = "splitContainer1";
+            splitContainer1.Orientation = Orientation.Horizontal;
             // 
-            // dataGridView1
+            // splitContainer1.Panel1
             // 
-            dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridView1.Dock = DockStyle.Bottom;
-            dataGridView1.Location = new Point(0, 325);
-            dataGridView1.Name = "dataGridView1";
-            dataGridView1.ReadOnly = true;
-            dataGridView1.RowHeadersWidth = 51;
-            dataGridView1.Size = new Size(782, 228);
-            dataGridView1.TabIndex = 3;
+            splitContainer1.Panel1.Controls.Add(tabControlEditor);
+            // 
+            // splitContainer1.Panel2
+            // 
+            splitContainer1.Panel2.Controls.Add(outputResults);
+            splitContainer1.Size = new Size(782, 489);
+            splitContainer1.SplitterDistance = 308;
+            splitContainer1.TabIndex = 4;
+            // 
+            // tabControlEditor
+            // 
+            tabControlEditor.Dock = DockStyle.Fill;
+            tabControlEditor.Location = new Point(0, 0);
+            tabControlEditor.Name = "tabControlEditor";
+            tabControlEditor.SelectedIndex = 0;
+            tabControlEditor.Size = new Size(782, 308);
+            tabControlEditor.TabIndex = 0;
+            // 
+            // outputResults
+            // 
+            outputResults.AllowUserToAddRows = false;
+            outputResults.AllowUserToDeleteRows = false;
+            outputResults.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            outputResults.Columns.AddRange(new DataGridViewColumn[] { FilePath, Line, Column, Message });
+            outputResults.Dock = DockStyle.Fill;
+            outputResults.Location = new Point(0, 0);
+            outputResults.Name = "outputResults";
+            outputResults.ReadOnly = true;
+            outputResults.RowHeadersWidth = 51;
+            outputResults.Size = new Size(782, 177);
+            outputResults.TabIndex = 0;
+            // 
+            // FilePath
+            // 
+            FilePath.HeaderText = "FilePath";
+            FilePath.MinimumWidth = 6;
+            FilePath.Name = "FilePath";
+            FilePath.ReadOnly = true;
+            FilePath.Width = 125;
+            // 
+            // Line
+            // 
+            Line.HeaderText = "Line";
+            Line.MinimumWidth = 6;
+            Line.Name = "Line";
+            Line.ReadOnly = true;
+            Line.Width = 125;
+            // 
+            // Column
+            // 
+            Column.HeaderText = "Column";
+            Column.MinimumWidth = 6;
+            Column.Name = "Column";
+            Column.ReadOnly = true;
+            Column.Width = 125;
+            // 
+            // Message
+            // 
+            Message.HeaderText = "Message";
+            Message.MinimumWidth = 6;
+            Message.Name = "Message";
+            Message.ReadOnly = true;
+            Message.Width = 125;
             // 
             // textEditor
             // 
@@ -419,8 +511,7 @@
             AutoScaleMode = AutoScaleMode.Font;
             AutoScroll = true;
             ClientSize = new Size(782, 553);
-            Controls.Add(dataGridView1);
-            Controls.Add(mainText);
+            Controls.Add(splitContainer1);
             Controls.Add(toolStrip2);
             Controls.Add(toolStrip1);
             MaximumSize = new Size(1920, 1080);
@@ -432,7 +523,11 @@
             toolStrip1.PerformLayout();
             toolStrip2.ResumeLayout(false);
             toolStrip2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
+            splitContainer1.Panel1.ResumeLayout(false);
+            splitContainer1.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();
+            splitContainer1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)outputResults).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -441,7 +536,6 @@
 
         private ToolStrip toolStrip1;
         private ToolStrip toolStrip2;
-        private RichTextBox mainText;
         private ToolStripButton createFileQuick;
         private ToolStripButton openFileQuick;
         private ToolStripButton saveFileQuick;
@@ -479,6 +573,15 @@
         private ToolStripDropDownButton toolStripDropDownButton4;
         private ToolStripMenuItem btnHelp;
         private ToolStripMenuItem btnAbout;
-        private DataGridView dataGridView1;
+        private SplitContainer splitContainer1;
+        private ToolStripDropDownButton viewDropDownBtn;
+        private ToolStripComboBox FontSizeCmb;
+        private ToolStripTextBox toolStripTextBox1;
+        private TabControl tabControlEditor;
+        private DataGridView outputResults;
+        private DataGridViewTextBoxColumn FilePath;
+        private DataGridViewTextBoxColumn Line;
+        private DataGridViewTextBoxColumn Column;
+        private DataGridViewTextBoxColumn Message;
     }
 }
