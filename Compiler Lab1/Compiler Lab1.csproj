@@ -20,6 +20,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Resources\Новая папка\**" />
+    <EmbeddedResource Remove="Resources\Новая папка\**" />
+    <None Remove="Resources\Новая папка\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="Help.html" />
     <None Remove="Screen.jpg" />
   </ItemGroup>
@@ -42,7 +48,6 @@
   <ItemGroup>
     <Folder Include="Resources\images\" />
     <Folder Include="Resources\html\" />
-    <Folder Include="Resources\Новая папка\" />
   </ItemGroup>
 
   <ItemGroup>

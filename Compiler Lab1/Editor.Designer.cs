@@ -71,20 +71,23 @@
             toolStripButton14 = new ToolStripButton();
             btnHelpQuick = new ToolStripButton();
             btnAboutQuick = new ToolStripButton();
+            tabControl1 = new TabControl();
+            tabPage1 = new TabPage();
+            tabPage2 = new TabPage();
             splitContainer1 = new SplitContainer();
-            tabControlEditor = new TabControl();
-            outputResults = new DataGridView();
+            dataGridView1 = new DataGridView();
             FilePath = new DataGridViewTextBoxColumn();
             Line = new DataGridViewTextBoxColumn();
             Column = new DataGridViewTextBoxColumn();
             Message = new DataGridViewTextBoxColumn();
             toolStrip1.SuspendLayout();
             toolStrip2.SuspendLayout();
+            tabControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
             splitContainer1.Panel2.SuspendLayout();
             splitContainer1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)outputResults).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             SuspendLayout();
             // 
             // toolStrip1
@@ -432,6 +435,37 @@
             btnAboutQuick.Text = "О программе";
             btnAboutQuick.Click += btnAbout_Click;
             // 
+            // tabControl1
+            // 
+            tabControl1.Controls.Add(tabPage1);
+            tabControl1.Controls.Add(tabPage2);
+            tabControl1.Dock = DockStyle.Fill;
+            tabControl1.Location = new Point(0, 0);
+            tabControl1.Name = "tabControl1";
+            tabControl1.SelectedIndex = 0;
+            tabControl1.Size = new Size(782, 242);
+            tabControl1.TabIndex = 2;
+            // 
+            // tabPage1
+            // 
+            tabPage1.Location = new Point(4, 29);
+            tabPage1.Name = "tabPage1";
+            tabPage1.Padding = new Padding(3);
+            tabPage1.Size = new Size(774, 209);
+            tabPage1.TabIndex = 0;
+            tabPage1.Text = "tabPage1";
+            tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // tabPage2
+            // 
+            tabPage2.Location = new Point(4, 29);
+            tabPage2.Name = "tabPage2";
+            tabPage2.Padding = new Padding(3);
+            tabPage2.Size = new Size(242, 92);
+            tabPage2.TabIndex = 1;
+            tabPage2.Text = "tabPage2";
+            tabPage2.UseVisualStyleBackColor = true;
+            // 
             // splitContainer1
             // 
             splitContainer1.Dock = DockStyle.Fill;
@@ -441,37 +475,28 @@
             // 
             // splitContainer1.Panel1
             // 
-            splitContainer1.Panel1.Controls.Add(tabControlEditor);
+            splitContainer1.Panel1.Controls.Add(tabControl1);
             // 
             // splitContainer1.Panel2
             // 
-            splitContainer1.Panel2.Controls.Add(outputResults);
+            splitContainer1.Panel2.Controls.Add(dataGridView1);
             splitContainer1.Size = new Size(782, 489);
-            splitContainer1.SplitterDistance = 308;
-            splitContainer1.TabIndex = 4;
+            splitContainer1.SplitterDistance = 242;
+            splitContainer1.TabIndex = 3;
             // 
-            // tabControlEditor
+            // dataGridView1
             // 
-            tabControlEditor.Dock = DockStyle.Fill;
-            tabControlEditor.Location = new Point(0, 0);
-            tabControlEditor.Name = "tabControlEditor";
-            tabControlEditor.SelectedIndex = 0;
-            tabControlEditor.Size = new Size(782, 308);
-            tabControlEditor.TabIndex = 0;
-            // 
-            // outputResults
-            // 
-            outputResults.AllowUserToAddRows = false;
-            outputResults.AllowUserToDeleteRows = false;
-            outputResults.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            outputResults.Columns.AddRange(new DataGridViewColumn[] { FilePath, Line, Column, Message });
-            outputResults.Dock = DockStyle.Fill;
-            outputResults.Location = new Point(0, 0);
-            outputResults.Name = "outputResults";
-            outputResults.ReadOnly = true;
-            outputResults.RowHeadersWidth = 51;
-            outputResults.Size = new Size(782, 177);
-            outputResults.TabIndex = 0;
+            dataGridView1.AllowUserToAddRows = false;
+            dataGridView1.AllowUserToDeleteRows = false;
+            dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridView1.Columns.AddRange(new DataGridViewColumn[] { FilePath, Line, Column, Message });
+            dataGridView1.Dock = DockStyle.Fill;
+            dataGridView1.Location = new Point(0, 0);
+            dataGridView1.Name = "dataGridView1";
+            dataGridView1.ReadOnly = true;
+            dataGridView1.RowHeadersWidth = 51;
+            dataGridView1.Size = new Size(782, 243);
+            dataGridView1.TabIndex = 0;
             // 
             // FilePath
             // 
@@ -523,11 +548,12 @@
             toolStrip1.PerformLayout();
             toolStrip2.ResumeLayout(false);
             toolStrip2.PerformLayout();
+            tabControl1.ResumeLayout(false);
             splitContainer1.Panel1.ResumeLayout(false);
             splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();
             splitContainer1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)outputResults).EndInit();
+            ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -573,12 +599,14 @@
         private ToolStripDropDownButton toolStripDropDownButton4;
         private ToolStripMenuItem btnHelp;
         private ToolStripMenuItem btnAbout;
-        private SplitContainer splitContainer1;
         private ToolStripDropDownButton viewDropDownBtn;
         private ToolStripComboBox FontSizeCmb;
         private ToolStripTextBox toolStripTextBox1;
-        private TabControl tabControlEditor;
-        private DataGridView outputResults;
+        private TabControl tabControl1;
+        private TabPage tabPage1;
+        private TabPage tabPage2;
+        private SplitContainer splitContainer1;
+        private DataGridView dataGridView1;
         private DataGridViewTextBoxColumn FilePath;
         private DataGridViewTextBoxColumn Line;
         private DataGridViewTextBoxColumn Column;
