@@ -5,9 +5,9 @@ namespace Compiler_Lab1
 {
     public partial class textEditor : Form
     {
-        private string currentFilePath = null;
-        private string currentFileName = "Без имени.txt";
-        private bool isTextChanged = false;
+        //  private string currentFilePath = null;
+        // private string currentFileName = "Без имени.txt";
+        //  private bool isTextChanged = false;
 
 
         private Stack<string> undoStack = new Stack<string>();
@@ -16,23 +16,14 @@ namespace Compiler_Lab1
 
         private Dictionary<TabPage, TabFileInfo> tabFileInfo = new Dictionary<TabPage, TabFileInfo>();
 
-        private class TabFileInfo
-        {
-            public string FilePath {  get; set; }
-            public string FileName { get; set; }
-            public bool IsChanged { get; set; }
-            public RichTextBox MainText { get; set; }
-
-            public Stack<string> undoStack = new Stack<string>();
-            public Stack<string> redoStack = new Stack<string>();
-            public bool isUndoRedoOperation = false;
-        }
+        private int pagesCount;
 
         public textEditor()
         {
 
             InitializeComponent();
-
+            pagesCount = 0;
+            CreateFile();
             //mainText.TextChanged += (s, e) =>
             //{
             //    isTextChanged = true;
@@ -48,34 +39,67 @@ namespace Compiler_Lab1
 
         private void UpdateTitle()
         {
-            string mark = isTextChanged ? "*" : "";
-            this.Text = $"Текстовый редактор - {currentFileName}{mark}";
+            //string mark = isTextChanged ? "*" : "";
+            //this.Text = $"Текстовый редактор - {currentFileName}{mark}";
         }
 
         private void CreateFile()
         {
+            pagesCount++;
+
             TabPage newTab = new TabPage();
 
             RichTextBox textBox = new RichTextBox();
-            textBox.Multiline = true;
-            textBox.Dock = DockStyle.Fill;
-            textBox.ScrollBars = RichTextBoxScrollBars.Both;
-            textBox.AcceptsTab = true;
-            textBox.Font = new Font("Consolas", 10);
-            textBox.TextChanged += TextBox_TextChanged;
 
             newTab.Controls.Add(textBox);
+            newTab.Location = new Point(4, 29);
+            newTab.Name = "Без имени" + $"{pagesCount}.txt";
+            newTab.Padding = new Padding(3);
+            newTab.Size = new Size(774, 209);
+            newTab.TabIndex = pagesCount - 1;
+            newTab.Text = newTab.Name;
+            newTab.UseVisualStyleBackColor = true;
+
+
+            textBox.Dock = DockStyle.Fill;
+            textBox.Location = new Point(3, 3);
+            textBox.TextChanged += TextBox_TextChanged;
+            textBox.Name = $"textbox{pagesCount}";
+            textBox.Size = new Size(768, 203);
+            textBox.TabIndex = newTab.TabIndex;
+            textBox.Text = "";
 
             TabFileInfo fileInfo = new TabFileInfo();
 
             fileInfo.FilePath = null;
-            fileInfo.FileName = "Без имени.txt";
+            fileInfo.FileName = newTab.Name;
             fileInfo.IsChanged = false;
 
             tabControlEditor.TabPages.Add(newTab);
             tabControlEditor.SelectedTab = newTab;
 
             tabFileInfo[newTab] = fileInfo;
+
+            // 
+            // tabPage1
+            // 
+            //tabPage1.Controls.Add(richTextBox1);
+            // tabPage1.Location = new Point(4, 29);
+            //tabPage1.Name = "tabPage1";
+            //tabPage1.Padding = new Padding(3);
+            //tabPage1.Size = new Size(774, 209);
+            //tabPage1.TabIndex = 0;
+            //tabPage1.Text = "tabPage1";
+            //tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // richTextBox1
+            // 
+            //richTextBox1.Dock = DockStyle.Fill;
+            // richTextBox1.Location = new Point(3, 3);
+            //richTextBox1.Name = "richTextBox1";
+            //richTextBox1.Size = new Size(768, 203);
+            //richTextBox1.TabIndex = 0;
+            //richTextBox1.Text = "";
 
             //UpdateTitle();
 
@@ -93,7 +117,7 @@ namespace Compiler_Lab1
 
         private void TextBox_TextChanged(object sender, EventArgs e)
         {
-            TextBox textBox = sender as TextBox;
+            RichTextBox textBox = sender as RichTextBox;
             if (textBox == null) return;
 
             TabPage parentTab = textBox.Parent as TabPage;
@@ -105,8 +129,6 @@ namespace Compiler_Lab1
                 {
                     parentTab.Text = parentTab.Text + "*";
                 }
-
-                UpdateTitle();
             }
         }
 
@@ -127,37 +149,72 @@ namespace Compiler_Lab1
 
         private void SaveAs()
         {
+            //using (SaveFileDialog saveFileDialog = new SaveFileDialog())
+            //{
+            //    saveFileDialog.Filter = "Текстовые файлы (*.txt)|*.txt";
+            //    saveFileDialog.FilterIndex = 1;
+            //    saveFileDialog.DefaultExt = "txt";
+            //    saveFileDialog.AddExtension = true;
+
+            //    saveFileDialog.FileName = currentFileName;
+
+            //    saveFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+
+            //    if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            //    {
+            //        SaveFileToPath(saveFileDialog.FileName);
+
+            //        currentFilePath = saveFileDialog.FileName;
+            //        currentFileName = Path.GetFileName(currentFilePath);
+            //        UpdateTitle();
+            //    }
+            //}
+
+            TabPage currentTab = tabControlEditor.SelectedTab;
+            if (currentTab == null) return;
+
+            TabFileInfo fileInfo = tabFileInfo[currentTab];
+
             using (SaveFileDialog saveFileDialog = new SaveFileDialog())
             {
-                saveFileDialog.Filter = "Текстовые файлы (*.txt)|*.txt";
+                saveFileDialog.Filter = "Текстовые файлы (*.txt)|*.txt|Все файлы (*.*)|*.*";
                 saveFileDialog.FilterIndex = 1;
                 saveFileDialog.DefaultExt = "txt";
                 saveFileDialog.AddExtension = true;
-
-                saveFileDialog.FileName = currentFileName;
-
+                saveFileDialog.FileName = fileInfo.FileName ?? "Без имени.txt";
                 saveFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
                 if (saveFileDialog.ShowDialog() == DialogResult.OK)
                 {
                     SaveFileToPath(saveFileDialog.FileName);
-
-                    currentFilePath = saveFileDialog.FileName;
-                    currentFileName = Path.GetFileName(currentFilePath);
-                    UpdateTitle();
                 }
             }
         }
 
         private void Save()
         {
-            if (string.IsNullOrEmpty(currentFilePath))
+            //string filePath = tabFileInfo[tabControlEditor.SelectedTab].FilePath;
+            //if (string.IsNullOrEmpty(filePath))
+            //{
+            //    SaveAs();
+            //}
+            //else
+            //{
+            //    SaveFileToPath(filePath);
+            //}
+
+            TabPage currentTab = tabControlEditor.SelectedTab;
+            if (currentTab == null) return;
+
+            string filePath = tabFileInfo[currentTab].FilePath;
+
+            if (string.IsNullOrEmpty(filePath) || !File.Exists(filePath))
             {
                 SaveAs();
             }
             else
             {
-                SaveFileToPath(currentFilePath);
+                SaveFileToPath(filePath);
             }
         }
 
@@ -183,34 +240,64 @@ namespace Compiler_Lab1
             //        MessageBoxIcon.Error
             //    );
             //}
+
+            TabPage currentTab = tabControlEditor.SelectedTab;
+            if (currentTab == null) return;
+
+            RichTextBox textBox = currentTab.Controls.OfType<RichTextBox>().FirstOrDefault();
+            if (textBox == null) return;
+
+            try
+            {
+                string textToSave = textBox.Text;
+                File.WriteAllText(filePath, textToSave, Encoding.UTF8);
+
+                if (tabFileInfo.ContainsKey(currentTab))
+                {
+                    tabFileInfo[currentTab].FilePath = filePath;
+                    tabFileInfo[currentTab].FileName = Path.GetFileName(filePath);
+                    tabFileInfo[currentTab].IsChanged = false;
+                }
+                currentTab.Text = Path.GetFileName(filePath);
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    $"Неожиданная ошибка при сохранении:\n{ex.Message}",
+                    "Ошибка",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
+            }
         }
 
-        private bool FileSaveConfirm(string action)
-        {
-            DialogResult actionConfirm = MessageBox.Show(
-$"Вы уверены, что хотите выполнить следующее действие: {action}?",
-action,
-MessageBoxButtons.YesNo,
-MessageBoxIcon.Question
-);
-            if (actionConfirm == DialogResult.No)
-            {
-                return false;
-            }
+//        private bool FileSaveConfirm(string action)
+//        {
+//            DialogResult actionConfirm = MessageBox.Show(
+//$"Вы уверены, что хотите выполнить следующее действие: {action}?",
+//action,
+//MessageBoxButtons.YesNo,
+//MessageBoxIcon.Question
+//);
+//            if (actionConfirm == DialogResult.No)
+//            {
+//                return false;
+//            }
 
-            DialogResult result = MessageBox.Show(
-            "Сохранить изменения в текущем файле?",
-            action,
-            MessageBoxButtons.YesNo,
-            MessageBoxIcon.Question
-        );
+//            DialogResult result = MessageBox.Show(
+//            "Сохранить изменения в текущем файле?",
+//            action,
+//            MessageBoxButtons.YesNo,
+//            MessageBoxIcon.Question
+//        );
 
-            if (result == DialogResult.Yes)
-            {
-                Save();
-            }
-            return true;
-        }
+//            if (result == DialogResult.Yes)
+//            {
+//                Save();
+//            }
+//            return true;
+//        }
 
         private void OpenFile()
         {
@@ -219,32 +306,65 @@ MessageBoxIcon.Question
             //    return;
             //}
 
-            //using (OpenFileDialog openFileDialog = new OpenFileDialog())
-            //{
-            //    openFileDialog.Filter = "Текстовые файлы (*.txt)|*.txt";
-            //    openFileDialog.FilterIndex = 1;
-            //    openFileDialog.DefaultExt = "txt";
-            //    openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            string fileContent = "", currentFilePath = null, currentFileName = "Без имени.txt";
+            bool isTextChanged;
 
-            //    if (openFileDialog.ShowDialog() == DialogResult.OK)
-            //    {
-            //        try
-            //        {
-            //            string fileContent = File.ReadAllText(openFileDialog.FileName, Encoding.UTF8);
-            //            mainText.Text = fileContent;
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                openFileDialog.Filter = "Текстовые файлы (*.txt)|*.txt";
+                openFileDialog.FilterIndex = 1;
+                openFileDialog.DefaultExt = "txt";
+                openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
-            //            currentFilePath = openFileDialog.FileName;
-            //            currentFileName = Path.GetFileName(currentFilePath);
-            //            isTextChanged = false;
-            //            UpdateTitle();
-            //        }
-            //        catch (Exception ex)
-            //        {
-            //            MessageBox.Show($"Ошибка при открытии файла: {ex.Message}", "Ошибка",
-            //                MessageBoxButtons.OK, MessageBoxIcon.Error);
-            //        }
-            //    }
-            //}
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    try
+                    {
+                        fileContent = File.ReadAllText(openFileDialog.FileName, Encoding.UTF8);
+                        currentFilePath = openFileDialog.FileName;
+                        currentFileName = Path.GetFileName(currentFilePath);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Ошибка при открытии файла: {ex.Message}", "Ошибка",
+                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
+            pagesCount++;
+
+            TabPage newTab = new TabPage();
+
+            RichTextBox textBox = new RichTextBox();
+
+            newTab.Controls.Add(textBox);
+            newTab.Location = new Point(4, 29);
+            newTab.Name = currentFileName;
+            newTab.Padding = new Padding(3);
+            newTab.Size = new Size(774, 209);
+            newTab.TabIndex = pagesCount - 1;
+            newTab.Text = newTab.Name;
+            newTab.UseVisualStyleBackColor = true;
+
+
+            textBox.Dock = DockStyle.Fill;
+            textBox.Location = new Point(3, 3);
+            textBox.TextChanged += TextBox_TextChanged;
+            textBox.Name = $"textbox{pagesCount}";
+            textBox.Size = new Size(768, 203);
+            textBox.TabIndex = newTab.TabIndex;
+            textBox.Text = fileContent;
+
+            TabFileInfo fileInfo = new TabFileInfo();
+
+            fileInfo.FilePath = currentFilePath;
+            fileInfo.FileName = newTab.Name;
+            fileInfo.IsChanged = false;
+
+            tabControlEditor.TabPages.Add(newTab);
+            tabControlEditor.SelectedTab = newTab;
+
+            tabFileInfo[newTab] = fileInfo;
         }
 
         private void OpenFile_Click(object sender, EventArgs e)
@@ -259,10 +379,29 @@ MessageBoxIcon.Question
 
         private void textEditor_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (!FileSaveConfirm("Выйти"))
+            foreach (TabPage tab in tabControlEditor.TabPages)
             {
-                e.Cancel = true;
-                return;
+                if (tabFileInfo[tab].IsChanged)
+                {
+                    tabControlEditor.SelectedTab = tab;
+
+                    DialogResult result = MessageBox.Show(
+                        $"Сохранить изменения в файле \"{tabFileInfo[tab].FileName}\"?",
+                        "Выход из программы",
+                        MessageBoxButtons.YesNoCancel,
+                        MessageBoxIcon.Question
+                    );
+
+                    if (result == DialogResult.Yes)
+                    {
+                        Save();
+                    }
+                    else if (result == DialogResult.Cancel)
+                    {
+                        e.Cancel = true;
+                        return;
+                    }
+                }
             }
         }
 
@@ -481,6 +620,47 @@ MessageBoxIcon.Question
             //{
             //    outputText.Font = new Font(outputText.Font.FontFamily, size);
             //}
+        }
+
+        private void CloseTab()
+        {
+            if (tabControlEditor.SelectedTab != null)
+            {
+                TabPage currentTab = tabControlEditor.SelectedTab;
+
+                if (tabFileInfo[currentTab].IsChanged)
+                {
+                    DialogResult result = MessageBox.Show(
+                        $"Сохранить изменения в файле \"{tabFileInfo[currentTab].FileName}\"?",
+                        "Закрытие вкладки",
+                        MessageBoxButtons.YesNoCancel,
+                        MessageBoxIcon.Question
+                    );
+
+                    if (result == DialogResult.Yes)
+                        Save();
+                    else if (result == DialogResult.Cancel)
+                        return;
+                }
+
+                tabControlEditor.TabPages.Remove(currentTab);
+                tabFileInfo.Remove(currentTab);
+
+                pagesCount--;
+
+                if (tabControlEditor.TabPages.Count == 0)
+                    CreateFile();
+            }
+        }
+
+        private void btnCloseTabQuick_Click(object sender, EventArgs e)
+        {
+            CloseTab();
+        }
+
+        private void btnCloseTab_Click(object sender, EventArgs e)
+        {
+            CloseTab();
         }
     }
 }

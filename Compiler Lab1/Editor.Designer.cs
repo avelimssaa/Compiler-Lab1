@@ -35,6 +35,7 @@
             btnOpenFile = new ToolStripMenuItem();
             saveFile = new ToolStripMenuItem();
             saveFileLike = new ToolStripMenuItem();
+            btnCloseTab = new ToolStripMenuItem();
             exitBtn = new ToolStripMenuItem();
             toolStripDropDownButton2 = new ToolStripDropDownButton();
             btnBack = new ToolStripMenuItem();
@@ -63,6 +64,7 @@
             createFileQuick = new ToolStripButton();
             openFileQuick = new ToolStripButton();
             saveFileQuick = new ToolStripButton();
+            btnCloseTabQuick = new ToolStripButton();
             btnBackQuick = new ToolStripButton();
             btnForwardQuick = new ToolStripButton();
             btnCopyQuick = new ToolStripButton();
@@ -71,23 +73,20 @@
             toolStripButton14 = new ToolStripButton();
             btnHelpQuick = new ToolStripButton();
             btnAboutQuick = new ToolStripButton();
-            tabControl1 = new TabControl();
-            tabPage1 = new TabPage();
-            tabPage2 = new TabPage();
+            tabControlEditor = new TabControl();
             splitContainer1 = new SplitContainer();
-            dataGridView1 = new DataGridView();
+            dgvOutput = new DataGridView();
             FilePath = new DataGridViewTextBoxColumn();
             Line = new DataGridViewTextBoxColumn();
             Column = new DataGridViewTextBoxColumn();
             Message = new DataGridViewTextBoxColumn();
             toolStrip1.SuspendLayout();
             toolStrip2.SuspendLayout();
-            tabControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
             splitContainer1.Panel2.SuspendLayout();
             splitContainer1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)dgvOutput).BeginInit();
             SuspendLayout();
             // 
             // toolStrip1
@@ -103,7 +102,7 @@
             // toolStripDropDownButton1
             // 
             toolStripDropDownButton1.DisplayStyle = ToolStripItemDisplayStyle.Text;
-            toolStripDropDownButton1.DropDownItems.AddRange(new ToolStripItem[] { createFile, btnOpenFile, saveFile, saveFileLike, exitBtn });
+            toolStripDropDownButton1.DropDownItems.AddRange(new ToolStripItem[] { createFile, btnOpenFile, saveFile, saveFileLike, btnCloseTab, exitBtn });
             toolStripDropDownButton1.Image = (Image)resources.GetObject("toolStripDropDownButton1.Image");
             toolStripDropDownButton1.ImageTransparentColor = Color.Magenta;
             toolStripDropDownButton1.Name = "toolStripDropDownButton1";
@@ -113,35 +112,42 @@
             // createFile
             // 
             createFile.Name = "createFile";
-            createFile.Size = new Size(192, 26);
+            createFile.Size = new Size(206, 26);
             createFile.Text = "Создать";
             createFile.Click += createFile_Click;
             // 
             // btnOpenFile
             // 
             btnOpenFile.Name = "btnOpenFile";
-            btnOpenFile.Size = new Size(192, 26);
+            btnOpenFile.Size = new Size(206, 26);
             btnOpenFile.Text = "Открыть";
             btnOpenFile.Click += OpenFile_Click;
             // 
             // saveFile
             // 
             saveFile.Name = "saveFile";
-            saveFile.Size = new Size(192, 26);
+            saveFile.Size = new Size(206, 26);
             saveFile.Text = "Сохранить";
             saveFile.Click += saveFile_Click;
             // 
             // saveFileLike
             // 
             saveFileLike.Name = "saveFileLike";
-            saveFileLike.Size = new Size(192, 26);
+            saveFileLike.Size = new Size(206, 26);
             saveFileLike.Text = "Сохранить как";
             saveFileLike.Click += saveFileLike_Click;
+            // 
+            // btnCloseTab
+            // 
+            btnCloseTab.Name = "btnCloseTab";
+            btnCloseTab.Size = new Size(206, 26);
+            btnCloseTab.Text = "Закрыть вкладку";
+            btnCloseTab.Click += btnCloseTab_Click;
             // 
             // exitBtn
             // 
             exitBtn.Name = "exitBtn";
-            exitBtn.Size = new Size(192, 26);
+            exitBtn.Size = new Size(206, 26);
             exitBtn.Text = "Выход";
             exitBtn.Click += exitBtn_Click;
             // 
@@ -319,7 +325,7 @@
             // toolStrip2
             // 
             toolStrip2.ImageScalingSize = new Size(30, 30);
-            toolStrip2.Items.AddRange(new ToolStripItem[] { createFileQuick, openFileQuick, saveFileQuick, btnBackQuick, btnForwardQuick, btnCopyQuick, btnCutQuick, btnPasteQuick, toolStripButton14, btnHelpQuick, btnAboutQuick });
+            toolStrip2.Items.AddRange(new ToolStripItem[] { createFileQuick, openFileQuick, saveFileQuick, btnCloseTabQuick, btnBackQuick, btnForwardQuick, btnCopyQuick, btnCutQuick, btnPasteQuick, toolStripButton14, btnHelpQuick, btnAboutQuick });
             toolStrip2.Location = new Point(0, 27);
             toolStrip2.Name = "toolStrip2";
             toolStrip2.Size = new Size(782, 37);
@@ -355,6 +361,16 @@
             saveFileQuick.Size = new Size(34, 34);
             saveFileQuick.Text = "Сохранить";
             saveFileQuick.Click += saveFile_Click;
+            // 
+            // btnCloseTabQuick
+            // 
+            btnCloseTabQuick.DisplayStyle = ToolStripItemDisplayStyle.Image;
+            btnCloseTabQuick.Image = Properties.Resources.free_icon_close_3926643;
+            btnCloseTabQuick.ImageTransparentColor = Color.Magenta;
+            btnCloseTabQuick.Name = "btnCloseTabQuick";
+            btnCloseTabQuick.Size = new Size(34, 34);
+            btnCloseTabQuick.Text = "toolStripButton2";
+            btnCloseTabQuick.Click += btnCloseTabQuick_Click;
             // 
             // btnBackQuick
             // 
@@ -435,36 +451,14 @@
             btnAboutQuick.Text = "О программе";
             btnAboutQuick.Click += btnAbout_Click;
             // 
-            // tabControl1
+            // tabControlEditor
             // 
-            tabControl1.Controls.Add(tabPage1);
-            tabControl1.Controls.Add(tabPage2);
-            tabControl1.Dock = DockStyle.Fill;
-            tabControl1.Location = new Point(0, 0);
-            tabControl1.Name = "tabControl1";
-            tabControl1.SelectedIndex = 0;
-            tabControl1.Size = new Size(782, 242);
-            tabControl1.TabIndex = 2;
-            // 
-            // tabPage1
-            // 
-            tabPage1.Location = new Point(4, 29);
-            tabPage1.Name = "tabPage1";
-            tabPage1.Padding = new Padding(3);
-            tabPage1.Size = new Size(774, 209);
-            tabPage1.TabIndex = 0;
-            tabPage1.Text = "tabPage1";
-            tabPage1.UseVisualStyleBackColor = true;
-            // 
-            // tabPage2
-            // 
-            tabPage2.Location = new Point(4, 29);
-            tabPage2.Name = "tabPage2";
-            tabPage2.Padding = new Padding(3);
-            tabPage2.Size = new Size(242, 92);
-            tabPage2.TabIndex = 1;
-            tabPage2.Text = "tabPage2";
-            tabPage2.UseVisualStyleBackColor = true;
+            tabControlEditor.Dock = DockStyle.Fill;
+            tabControlEditor.Location = new Point(0, 0);
+            tabControlEditor.Name = "tabControlEditor";
+            tabControlEditor.SelectedIndex = 0;
+            tabControlEditor.Size = new Size(782, 242);
+            tabControlEditor.TabIndex = 2;
             // 
             // splitContainer1
             // 
@@ -475,28 +469,29 @@
             // 
             // splitContainer1.Panel1
             // 
-            splitContainer1.Panel1.Controls.Add(tabControl1);
+            splitContainer1.Panel1.Controls.Add(tabControlEditor);
             // 
             // splitContainer1.Panel2
             // 
-            splitContainer1.Panel2.Controls.Add(dataGridView1);
+            splitContainer1.Panel2.Controls.Add(dgvOutput);
             splitContainer1.Size = new Size(782, 489);
             splitContainer1.SplitterDistance = 242;
             splitContainer1.TabIndex = 3;
             // 
-            // dataGridView1
+            // dgvOutput
             // 
-            dataGridView1.AllowUserToAddRows = false;
-            dataGridView1.AllowUserToDeleteRows = false;
-            dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridView1.Columns.AddRange(new DataGridViewColumn[] { FilePath, Line, Column, Message });
-            dataGridView1.Dock = DockStyle.Fill;
-            dataGridView1.Location = new Point(0, 0);
-            dataGridView1.Name = "dataGridView1";
-            dataGridView1.ReadOnly = true;
-            dataGridView1.RowHeadersWidth = 51;
-            dataGridView1.Size = new Size(782, 243);
-            dataGridView1.TabIndex = 0;
+            dgvOutput.AllowUserToAddRows = false;
+            dgvOutput.AllowUserToDeleteRows = false;
+            dgvOutput.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dgvOutput.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvOutput.Columns.AddRange(new DataGridViewColumn[] { FilePath, Line, Column, Message });
+            dgvOutput.Dock = DockStyle.Fill;
+            dgvOutput.Location = new Point(0, 0);
+            dgvOutput.Name = "dgvOutput";
+            dgvOutput.ReadOnly = true;
+            dgvOutput.RowHeadersWidth = 51;
+            dgvOutput.Size = new Size(782, 243);
+            dgvOutput.TabIndex = 0;
             // 
             // FilePath
             // 
@@ -504,7 +499,6 @@
             FilePath.MinimumWidth = 6;
             FilePath.Name = "FilePath";
             FilePath.ReadOnly = true;
-            FilePath.Width = 125;
             // 
             // Line
             // 
@@ -512,7 +506,6 @@
             Line.MinimumWidth = 6;
             Line.Name = "Line";
             Line.ReadOnly = true;
-            Line.Width = 125;
             // 
             // Column
             // 
@@ -520,7 +513,6 @@
             Column.MinimumWidth = 6;
             Column.Name = "Column";
             Column.ReadOnly = true;
-            Column.Width = 125;
             // 
             // Message
             // 
@@ -528,7 +520,6 @@
             Message.MinimumWidth = 6;
             Message.Name = "Message";
             Message.ReadOnly = true;
-            Message.Width = 125;
             // 
             // textEditor
             // 
@@ -548,12 +539,11 @@
             toolStrip1.PerformLayout();
             toolStrip2.ResumeLayout(false);
             toolStrip2.PerformLayout();
-            tabControl1.ResumeLayout(false);
             splitContainer1.Panel1.ResumeLayout(false);
             splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();
             splitContainer1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
+            ((System.ComponentModel.ISupportInitialize)dgvOutput).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -602,14 +592,14 @@
         private ToolStripDropDownButton viewDropDownBtn;
         private ToolStripComboBox FontSizeCmb;
         private ToolStripTextBox toolStripTextBox1;
-        private TabControl tabControl1;
-        private TabPage tabPage1;
-        private TabPage tabPage2;
+        private TabControl tabControlEditor;
         private SplitContainer splitContainer1;
-        private DataGridView dataGridView1;
+        private DataGridView dgvOutput;
         private DataGridViewTextBoxColumn FilePath;
         private DataGridViewTextBoxColumn Line;
         private DataGridViewTextBoxColumn Column;
         private DataGridViewTextBoxColumn Message;
+        private ToolStripButton btnCloseTabQuick;
+        private ToolStripMenuItem btnCloseTab;
     }
 }

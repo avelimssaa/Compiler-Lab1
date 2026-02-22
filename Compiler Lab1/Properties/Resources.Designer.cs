@@ -73,6 +73,36 @@ namespace Compiler_Lab1.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap free_icon_close_3926643 {
+            get {
+                object obj = ResourceManager.GetObject("free-icon-close-3926643", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap free_icon_close_463577 {
+            get {
+                object obj = ResourceManager.GetObject("free-icon-close-463577", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap free_icon_multiply_399274 {
+            get {
+                object obj = ResourceManager.GetObject("free-icon-multiply-399274", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap icons8_влево_2_50 {
             get {
                 object obj = ResourceManager.GetObject("icons8-влево-2-50", resourceCulture);
