@@ -14,12 +14,6 @@ namespace Compiler_Lab1
 
         private Stack<string> _undoStack = new Stack<string>();
         private Stack<string> _redoStack = new Stack<string>();
-        private bool _isUndoRedoOperation = false;
-
-        public Stack<string> GetUndoStack()
-        {
-            return _undoStack;
-        }
 
         public void PushUndoStack(string element)
         {
@@ -51,7 +45,6 @@ namespace Compiler_Lab1
             return _undoStack.Pop();
         }
 
-        public Stack<string> GetRedoStack() { return _redoStack; }
 
         public void PushRedoStack(string element)
         {
@@ -72,7 +65,5 @@ namespace Compiler_Lab1
         {
             return _redoStack.Pop();
         }
-
-        public bool GetIsUndoRedoOperation() {  return _isUndoRedoOperation; }
     }
 }

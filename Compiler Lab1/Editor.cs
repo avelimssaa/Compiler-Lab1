@@ -5,13 +5,6 @@ namespace Compiler_Lab1
 {
     public partial class textEditor : Form
     {
-        //  private string currentFilePath = null;
-        // private string currentFileName = "Без имени.txt";
-        //  private bool isTextChanged = false;
-
-
-        //private Stack<string> undoStack = new Stack<string>();
-        //private Stack<string> redoStack = new Stack<string>();
         private bool isUndoRedoOperation = false;
 
         private Dictionary<TabPage, TabFileInfo> tabFileInfo = new Dictionary<TabPage, TabFileInfo>();
@@ -24,23 +17,6 @@ namespace Compiler_Lab1
             InitializeComponent();
             pagesCount = 0;
             CreateFile();
-            //mainText.TextChanged += (s, e) =>
-            //{
-            //    isTextChanged = true;
-            //    UpdateTitle();
-
-            //    if (!isUndoRedoOperation)
-            //    {
-            //        undoStack.Push(mainText.Text);
-            //        redoStack.Clear();
-            //    }
-            //};
-        }
-
-        private void UpdateTitle()
-        {
-            //string mark = isTextChanged ? "*" : "";
-            //this.Text = $"Текстовый редактор - {currentFileName}{mark}";
         }
 
         private void CreateFile()
@@ -80,58 +56,10 @@ namespace Compiler_Lab1
             tabControlEditor.SelectedTab = newTab;
 
             tabFileInfo[newTab] = fileInfo;
-
-            // 
-            // tabPage1
-            // 
-            //tabPage1.Controls.Add(richTextBox1);
-            // tabPage1.Location = new Point(4, 29);
-            //tabPage1.Name = "tabPage1";
-            //tabPage1.Padding = new Padding(3);
-            //tabPage1.Size = new Size(774, 209);
-            //tabPage1.TabIndex = 0;
-            //tabPage1.Text = "tabPage1";
-            //tabPage1.UseVisualStyleBackColor = true;
-            // 
-            // richTextBox1
-            // 
-            //richTextBox1.Dock = DockStyle.Fill;
-            // richTextBox1.Location = new Point(3, 3);
-            //richTextBox1.Name = "richTextBox1";
-            //richTextBox1.Size = new Size(768, 203);
-            //richTextBox1.TabIndex = 0;
-            //richTextBox1.Text = "";
-
-            //UpdateTitle();
-
-            //if (!FileSaveConfirm("Создать файл"))
-            //{
-            //    return;
-            //}
-
-            //mainText.Clear();
-            //currentFilePath = null;
-            //currentFileName = "Без имени.txt";
-            //isTextChanged = false;
-            //UpdateTitle();
         }
 
         private void TextBox_TextChanged(object sender, EventArgs e)
         {
-            //RichTextBox textBox = sender as RichTextBox;
-            //if (textBox == null) return;
-
-            //TabPage parentTab = textBox.Parent as TabPage;
-            //if (parentTab != null && tabFileInfo.ContainsKey(parentTab))
-            //{
-            //    tabFileInfo[parentTab].IsChanged = true;
-
-            //    if (!parentTab.Text.EndsWith("*"))
-            //    {
-            //        parentTab.Text = parentTab.Text + "*";
-            //    }
-            //}
-
             RichTextBox textBox = sender as RichTextBox;
             if (textBox == null) return;
 
@@ -173,27 +101,6 @@ namespace Compiler_Lab1
 
         private void SaveAs()
         {
-            //using (SaveFileDialog saveFileDialog = new SaveFileDialog())
-            //{
-            //    saveFileDialog.Filter = "Текстовые файлы (*.txt)|*.txt";
-            //    saveFileDialog.FilterIndex = 1;
-            //    saveFileDialog.DefaultExt = "txt";
-            //    saveFileDialog.AddExtension = true;
-
-            //    saveFileDialog.FileName = currentFileName;
-
-            //    saveFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-
-            //    if (saveFileDialog.ShowDialog() == DialogResult.OK)
-            //    {
-            //        SaveFileToPath(saveFileDialog.FileName);
-
-            //        currentFilePath = saveFileDialog.FileName;
-            //        currentFileName = Path.GetFileName(currentFilePath);
-            //        UpdateTitle();
-            //    }
-            //}
-
             TabPage currentTab = tabControlEditor.SelectedTab;
             if (currentTab == null) return;
 
@@ -217,16 +124,6 @@ namespace Compiler_Lab1
 
         private void Save()
         {
-            //string filePath = tabFileInfo[tabControlEditor.SelectedTab].FilePath;
-            //if (string.IsNullOrEmpty(filePath))
-            //{
-            //    SaveAs();
-            //}
-            //else
-            //{
-            //    SaveFileToPath(filePath);
-            //}
-
             TabPage currentTab = tabControlEditor.SelectedTab;
             if (currentTab == null) return;
 
@@ -244,27 +141,6 @@ namespace Compiler_Lab1
 
         private void SaveFileToPath(string filePath)
         {
-            //try
-            //{
-            //    string textToSave = mainText.Text;
-
-            //    File.WriteAllText(filePath, textToSave, Encoding.UTF8);
-
-            //    isTextChanged = false;
-            //    UpdateTitle();
-
-            //    MessageBox.Show($"[{DateTime.Now:HH:mm:ss}] Файл сохранен: {Path.GetFileName(filePath)}\r\n");
-            //}
-            //catch (Exception ex)
-            //{
-            //    MessageBox.Show(
-            //        $"Неожиданная ошибка при сохранении:\n{ex.Message}",
-            //        "Ошибка",
-            //        MessageBoxButtons.OK,
-            //        MessageBoxIcon.Error
-            //    );
-            //}
-
             TabPage currentTab = tabControlEditor.SelectedTab;
             if (currentTab == null) return;
 
@@ -282,9 +158,9 @@ namespace Compiler_Lab1
                     tabFileInfo[currentTab].FileName = Path.GetFileName(filePath);
                     tabFileInfo[currentTab].IsChanged = false;
 
-                    tabFileInfo[currentTab].UndoStack.Clear();
-                    tabFileInfo[currentTab].RedoStack.Clear();
-                    tabFileInfo[currentTab].UndoStack.Push(textBox.Text); 
+                    tabFileInfo[currentTab].ClearUndoStack();
+                    tabFileInfo[currentTab].ClearRedoStack();
+                    tabFileInfo[currentTab].PushUndoStack(textBox.Text); 
                 }
                 currentTab.Text = Path.GetFileName(filePath);
 
@@ -292,7 +168,7 @@ namespace Compiler_Lab1
             catch (Exception ex)
             {
                 MessageBox.Show(
-                    $"Неожиданная ошибка при сохранении:\n{ex.Message}",
+                    $"Ошибка при сохранении:\n{ex.Message}",
                     "Ошибка",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error
@@ -300,42 +176,9 @@ namespace Compiler_Lab1
             }
         }
 
-//        private bool FileSaveConfirm(string action)
-//        {
-//            DialogResult actionConfirm = MessageBox.Show(
-//$"Вы уверены, что хотите выполнить следующее действие: {action}?",
-//action,
-//MessageBoxButtons.YesNo,
-//MessageBoxIcon.Question
-//);
-//            if (actionConfirm == DialogResult.No)
-//            {
-//                return false;
-//            }
-
-//            DialogResult result = MessageBox.Show(
-//            "Сохранить изменения в текущем файле?",
-//            action,
-//            MessageBoxButtons.YesNo,
-//            MessageBoxIcon.Question
-//        );
-
-//            if (result == DialogResult.Yes)
-//            {
-//                Save();
-//            }
-//            return true;
-//        }
-
         private void OpenFile()
         {
-            //if (!FileSaveConfirm("Открыть файл"))
-            //{
-            //    return;
-            //}
-
             string fileContent = "", currentFilePath = null, currentFileName = "Без имени.txt";
-            bool isTextChanged;
 
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
@@ -441,20 +284,6 @@ namespace Compiler_Lab1
 
         private void Undo()
         {
-            //if (undoStack.Count > 0)
-            //{
-            //    isUndoRedoOperation = true;
-
-            //    redoStack.Push(mainText.Text);
-
-            //    string previousText = undoStack.Pop();
-            //    mainText.Text = previousText;
-
-            //    isUndoRedoOperation = false;
-            //    isTextChanged = true;
-            //    UpdateTitle();
-            //}
-
             TabPage currentTab = tabControlEditor.SelectedTab;
             if (currentTab == null) return;
 
@@ -476,9 +305,6 @@ namespace Compiler_Lab1
                 textBox.SelectionLength = 0;
 
                 isUndoRedoOperation = false;
-
-                //fileInfo.IsChanged = fileInfo.UndoStack.Count > 1;
-                //UpdateTabTitle(currentTab);
             }
         }
 
@@ -489,20 +315,6 @@ namespace Compiler_Lab1
 
         private void Redo()
         {
-            //if (redoStack.Count > 0)
-            //{
-            //    isUndoRedoOperation = true;
-
-            //    undoStack.Push(mainText.Text);
-
-            //    string nextText = redoStack.Pop();
-            //    mainText.Text = nextText;
-
-            //    isUndoRedoOperation = false;
-            //    isTextChanged = true;
-            //    UpdateTitle();
-            //}
-
             TabPage currentTab = tabControlEditor.SelectedTab;
             if (currentTab == null) return;
 
@@ -526,12 +338,6 @@ namespace Compiler_Lab1
                 isUndoRedoOperation = false;
 
                 fileInfo.IsChanged = true;
-                //UpdateTabTitle(currentTab);
-            }
-            else
-            {
-                MessageBox.Show("Нечего возвращать", "Redo",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
@@ -542,10 +348,16 @@ namespace Compiler_Lab1
 
         private void Cut()
         {
-            //if (!string.IsNullOrEmpty(mainText.SelectedText))
-            //{
-            //    mainText.Cut();
-            //}
+            TabPage currentTab = tabControlEditor.SelectedTab;
+            if (currentTab == null) return;
+
+            RichTextBox textBox = currentTab.Controls.OfType<RichTextBox>().FirstOrDefault();
+            if (textBox == null) return;
+
+            if (textBox.SelectionLength > 0)
+            {
+                textBox.Cut();
+            }
         }
 
         private void btnCut_Click(object sender, EventArgs e)
@@ -555,10 +367,16 @@ namespace Compiler_Lab1
 
         private void Copy()
         {
-            //if (!string.IsNullOrEmpty(mainText.SelectedText))
-            //{
-            //    mainText.Copy();
-            //}
+            TabPage currentTab = tabControlEditor.SelectedTab;
+            if (currentTab == null) return;
+
+            RichTextBox textBox = currentTab.Controls.OfType<RichTextBox>().FirstOrDefault();
+            if (textBox == null) return;
+
+            if (textBox.SelectionLength > 0)
+            {
+                textBox.Copy();
+            }
         }
 
         private void btnCopy_Click(object sender, EventArgs e)
@@ -568,24 +386,16 @@ namespace Compiler_Lab1
 
         private void Paste()
         {
-            //try
-            //{
-            //    if (Clipboard.ContainsText())
-            //    {
-            //        int selectionStart = mainText.SelectionStart;
-            //        mainText.Text = mainText.Text.Insert(selectionStart, Clipboard.GetText());
-            //        mainText.SelectionStart = selectionStart + Clipboard.GetText().Length;
+            TabPage currentTab = tabControlEditor.SelectedTab;
+            if (currentTab == null) return;
 
-            //        isTextChanged = true;
-            //        UpdateTitle();
+            RichTextBox textBox = currentTab.Controls.OfType<RichTextBox>().FirstOrDefault();
+            if (textBox == null) return;
 
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    MessageBox.Show($"Ошибка при вставке: {ex.Message}", "Ошибка",
-            //        MessageBoxButtons.OK, MessageBoxIcon.Error);
-            //}
+            if (Clipboard.ContainsText())
+            {
+                textBox.Paste();
+            }
         }
 
         private void btnPaste_Click(object sender, EventArgs e)
@@ -595,34 +405,16 @@ namespace Compiler_Lab1
 
         private void Delete()
         {
-            //try
-            //{
-            //    if (mainText.SelectionLength > 0)
-            //    {
-            //        int selectionStart = mainText.SelectionStart;
-            //        mainText.Cut();
-            //        mainText.SelectionStart = selectionStart;
-            //        isTextChanged = true;
-            //        UpdateTitle();
-            //    }
-            //    else
-            //    {
-            //        if (mainText.SelectionStart > 0)
-            //        {
-            //            int cursorPos = mainText.SelectionStart;
-            //            mainText.Text = mainText.Text.Remove(cursorPos - 1, 1);
-            //            mainText.SelectionStart = cursorPos - 1;
+            TabPage currentTab = tabControlEditor.SelectedTab;
+            if (currentTab == null) return;
 
-            //            isTextChanged = true;
-            //            UpdateTitle();
-            //        }
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    MessageBox.Show($"Ошибка при удалении: {ex.Message}", "Ошибка",
-            //        MessageBoxButtons.OK, MessageBoxIcon.Error);
-            //}
+            RichTextBox textBox = currentTab.Controls.OfType<RichTextBox>().FirstOrDefault();
+            if (textBox == null) return;
+
+            if (textBox.SelectionLength > 0)
+            {
+                textBox.SelectedText = "";
+            }
         }
 
         private void btnDelete_Click(object sender, EventArgs e)
@@ -632,10 +424,15 @@ namespace Compiler_Lab1
 
         private void SelectAll()
         {
-            //if (!string.IsNullOrEmpty(mainText.Text))
-            //{
-            //    mainText.SelectAll();
-            //}
+            TabPage currentTab = tabControlEditor.SelectedTab;
+            if (currentTab == null) return;
+
+            RichTextBox textBox = currentTab.Controls.OfType<RichTextBox>().FirstOrDefault();
+            if (textBox != null)
+            {
+                textBox.SelectAll();
+                textBox.Focus();
+            }
         }
 
         private void btnSelectAll_Click(object sender, EventArgs e)
@@ -690,6 +487,7 @@ namespace Compiler_Lab1
             ToolStripComboBox? cmb = sender as ToolStripComboBox;
             if (cmb != null && cmb.SelectedItem != null)
             {
+
                 float newSize = Convert.ToSingle(cmb.SelectedItem);
                 SetFontSizeForAllWindows(newSize);
             }
@@ -697,15 +495,24 @@ namespace Compiler_Lab1
 
         private void SetFontSizeForAllWindows(float size)
         {
-            //if (mainText != null)
-            //{
-            //    mainText.Font = new Font(mainText.Font.FontFamily, size);
-            //}
+            foreach (TabPage tab in tabControlEditor.TabPages)
+            {
+                RichTextBox textBox = tab.Controls.OfType<RichTextBox>().FirstOrDefault();
+                if (textBox != null)
+                {
+                    FontStyle currentStyle = textBox.Font.Style;
+                    string fontFamily = textBox.Font.FontFamily.Name;
 
-            //if (outputText != null)
-            //{
-            //    outputText.Font = new Font(outputText.Font.FontFamily, size);
-            //}
+                    textBox.Font = new Font(fontFamily, size, currentStyle);
+                }
+            }
+
+            if (dgvOutput != null)
+            {
+                FontStyle outputStyle = dgvOutput.Font.Style;
+                string outputFontFamily = dgvOutput.Font.FontFamily.Name;
+                dgvOutput.Font = new Font(outputFontFamily, size, outputStyle);
+            }
         }
 
         private void CloseTab()
