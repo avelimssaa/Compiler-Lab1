@@ -10,8 +10,8 @@ namespace Compiler_Lab1
         //  private bool isTextChanged = false;
 
 
-        private Stack<string> undoStack = new Stack<string>();
-        private Stack<string> redoStack = new Stack<string>();
+        //private Stack<string> undoStack = new Stack<string>();
+        //private Stack<string> redoStack = new Stack<string>();
         private bool isUndoRedoOperation = false;
 
         private Dictionary<TabPage, TabFileInfo> tabFileInfo = new Dictionary<TabPage, TabFileInfo>();
@@ -74,6 +74,7 @@ namespace Compiler_Lab1
             fileInfo.FilePath = null;
             fileInfo.FileName = newTab.Name;
             fileInfo.IsChanged = false;
+            fileInfo.PushUndoStack("");
 
             tabControlEditor.TabPages.Add(newTab);
             tabControlEditor.SelectedTab = newTab;
@@ -117,13 +118,36 @@ namespace Compiler_Lab1
 
         private void TextBox_TextChanged(object sender, EventArgs e)
         {
+            //RichTextBox textBox = sender as RichTextBox;
+            //if (textBox == null) return;
+
+            //TabPage parentTab = textBox.Parent as TabPage;
+            //if (parentTab != null && tabFileInfo.ContainsKey(parentTab))
+            //{
+            //    tabFileInfo[parentTab].IsChanged = true;
+
+            //    if (!parentTab.Text.EndsWith("*"))
+            //    {
+            //        parentTab.Text = parentTab.Text + "*";
+            //    }
+            //}
+
             RichTextBox textBox = sender as RichTextBox;
             if (textBox == null) return;
 
             TabPage parentTab = textBox.Parent as TabPage;
             if (parentTab != null && tabFileInfo.ContainsKey(parentTab))
             {
-                tabFileInfo[parentTab].IsChanged = true;
+                TabFileInfo fileInfo = tabFileInfo[parentTab];
+
+                if (!isUndoRedoOperation)
+                {
+                    fileInfo.PushUndoStack(textBox.Text);
+                    fileInfo.ClearRedoStack();
+                    fileInfo.UndoStackLimitation();
+                }
+
+                fileInfo.IsChanged = true;
 
                 if (!parentTab.Text.EndsWith("*"))
                 {
@@ -257,6 +281,10 @@ namespace Compiler_Lab1
                     tabFileInfo[currentTab].FilePath = filePath;
                     tabFileInfo[currentTab].FileName = Path.GetFileName(filePath);
                     tabFileInfo[currentTab].IsChanged = false;
+
+                    tabFileInfo[currentTab].UndoStack.Clear();
+                    tabFileInfo[currentTab].RedoStack.Clear();
+                    tabFileInfo[currentTab].UndoStack.Push(textBox.Text); 
                 }
                 currentTab.Text = Path.GetFileName(filePath);
 
@@ -360,6 +388,7 @@ namespace Compiler_Lab1
             fileInfo.FilePath = currentFilePath;
             fileInfo.FileName = newTab.Name;
             fileInfo.IsChanged = false;
+            fileInfo.PushUndoStack(fileContent);
 
             tabControlEditor.TabPages.Add(newTab);
             tabControlEditor.SelectedTab = newTab;
@@ -425,6 +454,32 @@ namespace Compiler_Lab1
             //    isTextChanged = true;
             //    UpdateTitle();
             //}
+
+            TabPage currentTab = tabControlEditor.SelectedTab;
+            if (currentTab == null) return;
+
+            RichTextBox textBox = currentTab.Controls.OfType<RichTextBox>().FirstOrDefault();
+            if (textBox == null) return;
+
+            var fileInfo = tabFileInfo[currentTab];
+
+            if (fileInfo.GetUndoStackCount() > 0)
+            {
+                isUndoRedoOperation = true;
+
+                fileInfo.PushRedoStack(textBox.Text);
+
+                string previousText = fileInfo.PopUndoStack();
+                textBox.Text = previousText;
+
+                textBox.SelectionStart = textBox.Text.Length;
+                textBox.SelectionLength = 0;
+
+                isUndoRedoOperation = false;
+
+                //fileInfo.IsChanged = fileInfo.UndoStack.Count > 1;
+                //UpdateTabTitle(currentTab);
+            }
         }
 
         private void btnBack_Click(object sender, EventArgs e)
@@ -447,6 +502,37 @@ namespace Compiler_Lab1
             //    isTextChanged = true;
             //    UpdateTitle();
             //}
+
+            TabPage currentTab = tabControlEditor.SelectedTab;
+            if (currentTab == null) return;
+
+            RichTextBox textBox = currentTab.Controls.OfType<RichTextBox>().FirstOrDefault();
+            if (textBox == null) return;
+
+            var fileInfo = tabFileInfo[currentTab];
+
+            if (fileInfo.GetRedoStackCount() > 0)
+            {
+                isUndoRedoOperation = true;
+
+                fileInfo.PushUndoStack(textBox.Text);
+
+                string nextText = fileInfo.PopRedoStack();
+                textBox.Text = nextText;
+
+                textBox.SelectionStart = textBox.Text.Length;
+                textBox.SelectionLength = 0;
+
+                isUndoRedoOperation = false;
+
+                fileInfo.IsChanged = true;
+                //UpdateTabTitle(currentTab);
+            }
+            else
+            {
+                MessageBox.Show("Нечего возвращать", "Redo",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
         }
 
         private void btnForward_Click(object sender, EventArgs e)

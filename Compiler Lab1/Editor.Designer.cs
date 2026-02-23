@@ -369,7 +369,7 @@
             btnCloseTabQuick.ImageTransparentColor = Color.Magenta;
             btnCloseTabQuick.Name = "btnCloseTabQuick";
             btnCloseTabQuick.Size = new Size(34, 34);
-            btnCloseTabQuick.Text = "toolStripButton2";
+            btnCloseTabQuick.Text = "Закрыть текущую вкладку";
             btnCloseTabQuick.Click += btnCloseTabQuick_Click;
             // 
             // btnBackQuick
