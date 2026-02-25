@@ -11,10 +11,12 @@ namespace Compiler_Lab1
 
         private int pagesCount;
 
+        private ILocalization _localization;
+
         public textEditor()
         {
-
             InitializeComponent();
+            _localization = new Localization();
             pagesCount = 0;
             CreateFile();
         }
@@ -160,7 +162,7 @@ namespace Compiler_Lab1
 
                     tabFileInfo[currentTab].ClearUndoStack();
                     tabFileInfo[currentTab].ClearRedoStack();
-                    tabFileInfo[currentTab].PushUndoStack(textBox.Text); 
+                    tabFileInfo[currentTab].PushUndoStack(textBox.Text);
                 }
                 currentTab.Text = Path.GetFileName(filePath);
 
@@ -554,6 +556,78 @@ namespace Compiler_Lab1
         private void btnCloseTab_Click(object sender, EventArgs e)
         {
             CloseTab();
+        }
+
+        private void cmbLocalization_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            string newLang = cmbLocalization.SelectedIndex == 0 ? "ru" : "en";
+            ChangeLanguage(newLang);
+        }
+
+        private void ChangeLanguage(string language)
+        {
+            if (_localization.CurrentLanguage == language) return;
+
+            _localization.CurrentLanguage = language;
+            UpdateUILanguage();
+        }
+
+        private void UpdateUILanguage()
+        {
+            Text = _localization.Get("Editor");
+
+            UpdateToolStripDown();
+
+            //UpdateToolbarTexts();
+
+            //UpdateTabTitles();
+        }
+
+        private void UpdateToolStripDown()
+        {
+            ddmFile.Text = _localization.Get("File");
+            createFile.Text = _localization.Get("Create");
+            btnOpenFile.Text = _localization.Get("Open");
+            saveFile.Text = _localization.Get("Save");
+            saveFileLike.Text = _localization.Get("SaveAs");
+            btnCloseTab.Text = _localization.Get("Close Tab");
+            exitBtn.Text = _localization.Get("Exit");
+
+            ddmEdit.Text = _localization.Get("Edit");
+            btnBack.Text = _localization.Get("Undo");
+            btnForward.Text = _localization.Get("Redo");
+            btnCut.Text = _localization.Get("Cut");
+            btnCopy.Text = _localization.Get("Copy");
+            btnPaste.Text = _localization.Get("Paste");
+            btnDelete.Text = _localization.Get("Delete");
+            btnSelectAll.Text = _localization.Get("SelectAll");
+
+            ddmText.Text = _localization.Get("Text");
+            btnMission.Text = _localization.Get("MissionStatement");
+            btnGrammar.Text = _localization.Get("Grammar");
+            btnGrammarClassification.Text = _localization.Get("Grammar classification");
+            btnMethodOfAnalysis.Text = _localization.Get("Method of analysis");
+            btnTestCase.Text = _localization.Get("Test case");
+            btnListOfLiterature.Text = _localization.Get("List of literature");
+            btnSourceCode.Text = _localization.Get("Source code");
+
+            btnStart.Text = _localization.Get("Start");
+
+            ddmCertificate.Text = _localization.Get("Certificate");
+            btnHelp.Text = _localization.Get("Help");
+            btnAbout.Text = _localization.Get("About");
+
+
+        }
+
+        private void UpdateToolbarTexts()
+        {
+
+        }
+
+        private void UpdateTabTitles()
+        {
+
         }
     }
 }

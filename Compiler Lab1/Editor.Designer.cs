@@ -30,14 +30,14 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(textEditor));
             toolStrip1 = new ToolStrip();
-            toolStripDropDownButton1 = new ToolStripDropDownButton();
+            ddmFile = new ToolStripDropDownButton();
             createFile = new ToolStripMenuItem();
             btnOpenFile = new ToolStripMenuItem();
             saveFile = new ToolStripMenuItem();
             saveFileLike = new ToolStripMenuItem();
             btnCloseTab = new ToolStripMenuItem();
             exitBtn = new ToolStripMenuItem();
-            toolStripDropDownButton2 = new ToolStripDropDownButton();
+            ddmEdit = new ToolStripDropDownButton();
             btnBack = new ToolStripMenuItem();
             btnForward = new ToolStripMenuItem();
             btnCut = new ToolStripMenuItem();
@@ -45,21 +45,24 @@
             btnPaste = new ToolStripMenuItem();
             btnDelete = new ToolStripMenuItem();
             btnSelectAll = new ToolStripMenuItem();
-            toolStripDropDownButton3 = new ToolStripDropDownButton();
-            постановкаЗадачиToolStripMenuItem = new ToolStripMenuItem();
-            грамматикаToolStripMenuItem = new ToolStripMenuItem();
-            классификацияГрамматикиToolStripMenuItem = new ToolStripMenuItem();
-            методАнализаToolStripMenuItem = new ToolStripMenuItem();
-            тестовыйПримерToolStripMenuItem = new ToolStripMenuItem();
-            списокЛитературыToolStripMenuItem = new ToolStripMenuItem();
-            исходныйКодПрограммыToolStripMenuItem = new ToolStripMenuItem();
-            toolStripButton1 = new ToolStripButton();
-            toolStripDropDownButton4 = new ToolStripDropDownButton();
+            ddmText = new ToolStripDropDownButton();
+            btnMission = new ToolStripMenuItem();
+            btnGrammar = new ToolStripMenuItem();
+            btnGrammarClassification = new ToolStripMenuItem();
+            btnMethodOfAnalysis = new ToolStripMenuItem();
+            btnTestCase = new ToolStripMenuItem();
+            btnListOfLiterature = new ToolStripMenuItem();
+            btnSourceCode = new ToolStripMenuItem();
+            btnStart = new ToolStripButton();
+            ddmCertificate = new ToolStripDropDownButton();
             btnHelp = new ToolStripMenuItem();
             btnAbout = new ToolStripMenuItem();
             viewDropDownBtn = new ToolStripDropDownButton();
-            toolStripTextBox1 = new ToolStripTextBox();
+            txtHelpFont = new ToolStripTextBox();
             FontSizeCmb = new ToolStripComboBox();
+            toolStripSeparator1 = new ToolStripSeparator();
+            txtHelpLocal = new ToolStripTextBox();
+            cmbLocalization = new ToolStripComboBox();
             toolStrip2 = new ToolStrip();
             createFileQuick = new ToolStripButton();
             openFileQuick = new ToolStripButton();
@@ -92,22 +95,22 @@
             // toolStrip1
             // 
             toolStrip1.ImageScalingSize = new Size(20, 20);
-            toolStrip1.Items.AddRange(new ToolStripItem[] { toolStripDropDownButton1, toolStripDropDownButton2, toolStripDropDownButton3, toolStripButton1, toolStripDropDownButton4, viewDropDownBtn });
+            toolStrip1.Items.AddRange(new ToolStripItem[] { ddmFile, ddmEdit, ddmText, btnStart, ddmCertificate, viewDropDownBtn });
             toolStrip1.Location = new Point(0, 0);
             toolStrip1.Name = "toolStrip1";
             toolStrip1.Size = new Size(782, 27);
             toolStrip1.TabIndex = 0;
             toolStrip1.Text = "toolStrip1";
             // 
-            // toolStripDropDownButton1
+            // ddmFile
             // 
-            toolStripDropDownButton1.DisplayStyle = ToolStripItemDisplayStyle.Text;
-            toolStripDropDownButton1.DropDownItems.AddRange(new ToolStripItem[] { createFile, btnOpenFile, saveFile, saveFileLike, btnCloseTab, exitBtn });
-            toolStripDropDownButton1.Image = (Image)resources.GetObject("toolStripDropDownButton1.Image");
-            toolStripDropDownButton1.ImageTransparentColor = Color.Magenta;
-            toolStripDropDownButton1.Name = "toolStripDropDownButton1";
-            toolStripDropDownButton1.Size = new Size(59, 24);
-            toolStripDropDownButton1.Text = "Файл";
+            ddmFile.DisplayStyle = ToolStripItemDisplayStyle.Text;
+            ddmFile.DropDownItems.AddRange(new ToolStripItem[] { createFile, btnOpenFile, saveFile, saveFileLike, btnCloseTab, exitBtn });
+            ddmFile.Image = (Image)resources.GetObject("ddmFile.Image");
+            ddmFile.ImageTransparentColor = Color.Magenta;
+            ddmFile.Name = "ddmFile";
+            ddmFile.Size = new Size(59, 24);
+            ddmFile.Text = "Файл";
             // 
             // createFile
             // 
@@ -151,15 +154,15 @@
             exitBtn.Text = "Выход";
             exitBtn.Click += exitBtn_Click;
             // 
-            // toolStripDropDownButton2
+            // ddmEdit
             // 
-            toolStripDropDownButton2.DisplayStyle = ToolStripItemDisplayStyle.Text;
-            toolStripDropDownButton2.DropDownItems.AddRange(new ToolStripItem[] { btnBack, btnForward, btnCut, btnCopy, btnPaste, btnDelete, btnSelectAll });
-            toolStripDropDownButton2.Image = (Image)resources.GetObject("toolStripDropDownButton2.Image");
-            toolStripDropDownButton2.ImageTransparentColor = Color.Magenta;
-            toolStripDropDownButton2.Name = "toolStripDropDownButton2";
-            toolStripDropDownButton2.Size = new Size(74, 24);
-            toolStripDropDownButton2.Text = "Правка";
+            ddmEdit.DisplayStyle = ToolStripItemDisplayStyle.Text;
+            ddmEdit.DropDownItems.AddRange(new ToolStripItem[] { btnBack, btnForward, btnCut, btnCopy, btnPaste, btnDelete, btnSelectAll });
+            ddmEdit.Image = (Image)resources.GetObject("ddmEdit.Image");
+            ddmEdit.ImageTransparentColor = Color.Magenta;
+            ddmEdit.Name = "ddmEdit";
+            ddmEdit.Size = new Size(74, 24);
+            ddmEdit.Text = "Правка";
             // 
             // btnBack
             // 
@@ -210,107 +213,107 @@
             btnSelectAll.Text = "Выделить все";
             btnSelectAll.Click += btnSelectAll_Click;
             // 
-            // toolStripDropDownButton3
+            // ddmText
             // 
-            toolStripDropDownButton3.DisplayStyle = ToolStripItemDisplayStyle.Text;
-            toolStripDropDownButton3.DropDownItems.AddRange(new ToolStripItem[] { постановкаЗадачиToolStripMenuItem, грамматикаToolStripMenuItem, классификацияГрамматикиToolStripMenuItem, методАнализаToolStripMenuItem, тестовыйПримерToolStripMenuItem, списокЛитературыToolStripMenuItem, исходныйКодПрограммыToolStripMenuItem });
-            toolStripDropDownButton3.Image = (Image)resources.GetObject("toolStripDropDownButton3.Image");
-            toolStripDropDownButton3.ImageTransparentColor = Color.Magenta;
-            toolStripDropDownButton3.Name = "toolStripDropDownButton3";
-            toolStripDropDownButton3.Size = new Size(59, 24);
-            toolStripDropDownButton3.Text = "Текст";
+            ddmText.DisplayStyle = ToolStripItemDisplayStyle.Text;
+            ddmText.DropDownItems.AddRange(new ToolStripItem[] { btnMission, btnGrammar, btnGrammarClassification, btnMethodOfAnalysis, btnTestCase, btnListOfLiterature, btnSourceCode });
+            ddmText.Image = (Image)resources.GetObject("ddmText.Image");
+            ddmText.ImageTransparentColor = Color.Magenta;
+            ddmText.Name = "ddmText";
+            ddmText.Size = new Size(59, 24);
+            ddmText.Text = "Текст";
             // 
-            // постановкаЗадачиToolStripMenuItem
+            // btnMission
             // 
-            постановкаЗадачиToolStripMenuItem.Name = "постановкаЗадачиToolStripMenuItem";
-            постановкаЗадачиToolStripMenuItem.Size = new Size(288, 26);
-            постановкаЗадачиToolStripMenuItem.Text = "Постановка задачи";
+            btnMission.Name = "btnMission";
+            btnMission.Size = new Size(288, 26);
+            btnMission.Text = "Постановка задачи";
             // 
-            // грамматикаToolStripMenuItem
+            // btnGrammar
             // 
-            грамматикаToolStripMenuItem.Name = "грамматикаToolStripMenuItem";
-            грамматикаToolStripMenuItem.Size = new Size(288, 26);
-            грамматикаToolStripMenuItem.Text = "Грамматика";
+            btnGrammar.Name = "btnGrammar";
+            btnGrammar.Size = new Size(288, 26);
+            btnGrammar.Text = "Грамматика";
             // 
-            // классификацияГрамматикиToolStripMenuItem
+            // btnGrammarClassification
             // 
-            классификацияГрамматикиToolStripMenuItem.Name = "классификацияГрамматикиToolStripMenuItem";
-            классификацияГрамматикиToolStripMenuItem.Size = new Size(288, 26);
-            классификацияГрамматикиToolStripMenuItem.Text = "Классификация грамматики";
+            btnGrammarClassification.Name = "btnGrammarClassification";
+            btnGrammarClassification.Size = new Size(288, 26);
+            btnGrammarClassification.Text = "Классификация грамматики";
             // 
-            // методАнализаToolStripMenuItem
+            // btnMethodOfAnalysis
             // 
-            методАнализаToolStripMenuItem.Name = "методАнализаToolStripMenuItem";
-            методАнализаToolStripMenuItem.Size = new Size(288, 26);
-            методАнализаToolStripMenuItem.Text = "Метод анализа";
+            btnMethodOfAnalysis.Name = "btnMethodOfAnalysis";
+            btnMethodOfAnalysis.Size = new Size(288, 26);
+            btnMethodOfAnalysis.Text = "Метод анализа";
             // 
-            // тестовыйПримерToolStripMenuItem
+            // btnTestCase
             // 
-            тестовыйПримерToolStripMenuItem.Name = "тестовыйПримерToolStripMenuItem";
-            тестовыйПримерToolStripMenuItem.Size = new Size(288, 26);
-            тестовыйПримерToolStripMenuItem.Text = "Тестовый пример";
+            btnTestCase.Name = "btnTestCase";
+            btnTestCase.Size = new Size(288, 26);
+            btnTestCase.Text = "Тестовый пример";
             // 
-            // списокЛитературыToolStripMenuItem
+            // btnListOfLiterature
             // 
-            списокЛитературыToolStripMenuItem.Name = "списокЛитературыToolStripMenuItem";
-            списокЛитературыToolStripMenuItem.Size = new Size(288, 26);
-            списокЛитературыToolStripMenuItem.Text = "Список литературы";
+            btnListOfLiterature.Name = "btnListOfLiterature";
+            btnListOfLiterature.Size = new Size(288, 26);
+            btnListOfLiterature.Text = "Список литературы";
             // 
-            // исходныйКодПрограммыToolStripMenuItem
+            // btnSourceCode
             // 
-            исходныйКодПрограммыToolStripMenuItem.Name = "исходныйКодПрограммыToolStripMenuItem";
-            исходныйКодПрограммыToolStripMenuItem.Size = new Size(288, 26);
-            исходныйКодПрограммыToolStripMenuItem.Text = "Исходный код программы";
+            btnSourceCode.Name = "btnSourceCode";
+            btnSourceCode.Size = new Size(288, 26);
+            btnSourceCode.Text = "Исходный код программы";
             // 
-            // toolStripButton1
+            // btnStart
             // 
-            toolStripButton1.DisplayStyle = ToolStripItemDisplayStyle.Text;
-            toolStripButton1.Image = (Image)resources.GetObject("toolStripButton1.Image");
-            toolStripButton1.ImageTransparentColor = Color.Magenta;
-            toolStripButton1.Name = "toolStripButton1";
-            toolStripButton1.Size = new Size(45, 24);
-            toolStripButton1.Text = "Пуск";
+            btnStart.DisplayStyle = ToolStripItemDisplayStyle.Text;
+            btnStart.Image = (Image)resources.GetObject("btnStart.Image");
+            btnStart.ImageTransparentColor = Color.Magenta;
+            btnStart.Name = "btnStart";
+            btnStart.Size = new Size(45, 24);
+            btnStart.Text = "Пуск";
             // 
-            // toolStripDropDownButton4
+            // ddmCertificate
             // 
-            toolStripDropDownButton4.DisplayStyle = ToolStripItemDisplayStyle.Text;
-            toolStripDropDownButton4.DropDownItems.AddRange(new ToolStripItem[] { btnHelp, btnAbout });
-            toolStripDropDownButton4.Image = (Image)resources.GetObject("toolStripDropDownButton4.Image");
-            toolStripDropDownButton4.ImageTransparentColor = Color.Magenta;
-            toolStripDropDownButton4.Name = "toolStripDropDownButton4";
-            toolStripDropDownButton4.Size = new Size(81, 24);
-            toolStripDropDownButton4.Text = "Справка";
+            ddmCertificate.DisplayStyle = ToolStripItemDisplayStyle.Text;
+            ddmCertificate.DropDownItems.AddRange(new ToolStripItem[] { btnHelp, btnAbout });
+            ddmCertificate.Image = (Image)resources.GetObject("ddmCertificate.Image");
+            ddmCertificate.ImageTransparentColor = Color.Magenta;
+            ddmCertificate.Name = "ddmCertificate";
+            ddmCertificate.Size = new Size(81, 24);
+            ddmCertificate.Text = "Справка";
             // 
             // btnHelp
             // 
             btnHelp.Name = "btnHelp";
-            btnHelp.Size = new Size(197, 26);
-            btnHelp.Text = "Вызов справки";
+            btnHelp.Size = new Size(278, 26);
+            btnHelp.Text = "Руководство пользователя";
             btnHelp.Click += btnHelp_Click;
             // 
             // btnAbout
             // 
             btnAbout.Name = "btnAbout";
-            btnAbout.Size = new Size(197, 26);
+            btnAbout.Size = new Size(278, 26);
             btnAbout.Text = "О программе";
             btnAbout.Click += btnAbout_Click;
             // 
             // viewDropDownBtn
             // 
             viewDropDownBtn.DisplayStyle = ToolStripItemDisplayStyle.Text;
-            viewDropDownBtn.DropDownItems.AddRange(new ToolStripItem[] { toolStripTextBox1, FontSizeCmb });
+            viewDropDownBtn.DropDownItems.AddRange(new ToolStripItem[] { txtHelpFont, FontSizeCmb, toolStripSeparator1, txtHelpLocal, cmbLocalization });
             viewDropDownBtn.Image = (Image)resources.GetObject("viewDropDownBtn.Image");
             viewDropDownBtn.ImageTransparentColor = Color.Magenta;
             viewDropDownBtn.Name = "viewDropDownBtn";
             viewDropDownBtn.Size = new Size(49, 24);
             viewDropDownBtn.Text = "Вид";
             // 
-            // toolStripTextBox1
+            // txtHelpFont
             // 
-            toolStripTextBox1.Name = "toolStripTextBox1";
-            toolStripTextBox1.ReadOnly = true;
-            toolStripTextBox1.Size = new Size(200, 27);
-            toolStripTextBox1.Text = "Выберите размер шрифта";
+            txtHelpFont.Name = "txtHelpFont";
+            txtHelpFont.ReadOnly = true;
+            txtHelpFont.Size = new Size(200, 27);
+            txtHelpFont.Text = "Выберите размер шрифта";
             // 
             // FontSizeCmb
             // 
@@ -321,6 +324,26 @@
             FontSizeCmb.Size = new Size(150, 150);
             FontSizeCmb.Text = "Размер шрифта";
             FontSizeCmb.SelectedIndexChanged += FontSizeCmb_SelectedIndexChanged;
+            // 
+            // toolStripSeparator1
+            // 
+            toolStripSeparator1.Name = "toolStripSeparator1";
+            toolStripSeparator1.Size = new Size(271, 6);
+            // 
+            // txtHelpLocal
+            // 
+            txtHelpLocal.Name = "txtHelpLocal";
+            txtHelpLocal.ReadOnly = true;
+            txtHelpLocal.Size = new Size(200, 27);
+            txtHelpLocal.Text = "Выберите локализацию";
+            // 
+            // cmbLocalization
+            // 
+            cmbLocalization.Items.AddRange(new object[] { "Русский", "English" });
+            cmbLocalization.Name = "cmbLocalization";
+            cmbLocalization.Size = new Size(121, 28);
+            cmbLocalization.Text = "Локализация";
+            cmbLocalization.SelectedIndexChanged += cmbLocalization_SelectedIndexChanged;
             // 
             // toolStrip2
             // 
@@ -563,13 +586,13 @@
         private ToolStripButton toolStripButton14;
         private ToolStripButton btnHelpQuick;
         private ToolStripButton btnAboutQuick;
-        private ToolStripDropDownButton toolStripDropDownButton1;
+        private ToolStripDropDownButton ddmFile;
         private ToolStripMenuItem createFile;
         private ToolStripMenuItem btnOpenFile;
         private ToolStripMenuItem saveFile;
         private ToolStripMenuItem saveFileLike;
         private ToolStripMenuItem exitBtn;
-        private ToolStripDropDownButton toolStripDropDownButton2;
+        private ToolStripDropDownButton ddmEdit;
         private ToolStripMenuItem btnBack;
         private ToolStripMenuItem btnForward;
         private ToolStripMenuItem btnCut;
@@ -577,21 +600,21 @@
         private ToolStripMenuItem btnPaste;
         private ToolStripMenuItem btnDelete;
         private ToolStripMenuItem btnSelectAll;
-        private ToolStripDropDownButton toolStripDropDownButton3;
-        private ToolStripMenuItem постановкаЗадачиToolStripMenuItem;
-        private ToolStripMenuItem грамматикаToolStripMenuItem;
-        private ToolStripMenuItem классификацияГрамматикиToolStripMenuItem;
-        private ToolStripMenuItem методАнализаToolStripMenuItem;
-        private ToolStripMenuItem тестовыйПримерToolStripMenuItem;
-        private ToolStripMenuItem списокЛитературыToolStripMenuItem;
-        private ToolStripMenuItem исходныйКодПрограммыToolStripMenuItem;
-        private ToolStripButton toolStripButton1;
-        private ToolStripDropDownButton toolStripDropDownButton4;
+        private ToolStripDropDownButton ddmText;
+        private ToolStripMenuItem btnMission;
+        private ToolStripMenuItem btnGrammar;
+        private ToolStripMenuItem btnGrammarClassification;
+        private ToolStripMenuItem btnMethodOfAnalysis;
+        private ToolStripMenuItem btnTestCase;
+        private ToolStripMenuItem btnListOfLiterature;
+        private ToolStripMenuItem btnSourceCode;
+        private ToolStripButton btnStart;
+        private ToolStripDropDownButton ddmCertificate;
         private ToolStripMenuItem btnHelp;
         private ToolStripMenuItem btnAbout;
         private ToolStripDropDownButton viewDropDownBtn;
         private ToolStripComboBox FontSizeCmb;
-        private ToolStripTextBox toolStripTextBox1;
+        private ToolStripTextBox txtHelpFont;
         private TabControl tabControlEditor;
         private SplitContainer splitContainer1;
         private DataGridView dgvOutput;
@@ -601,5 +624,8 @@
         private DataGridViewTextBoxColumn Message;
         private ToolStripButton btnCloseTabQuick;
         private ToolStripMenuItem btnCloseTab;
+        private ToolStripSeparator toolStripSeparator1;
+        private ToolStripTextBox txtHelpLocal;
+        private ToolStripComboBox cmbLocalization;
     }
 }
