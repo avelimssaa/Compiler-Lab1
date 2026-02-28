@@ -1,0 +1,209 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Help - Text Editor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: #f0f2f5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+            .header h1 {
+                font-size: 24px;
+                font-weight: 400;
+            }
+
+        .content {
+            padding: 20px;
+        }
+
+        .menu-section {
+            margin-bottom: 30px;
+            border: 1px solid #e1e8ed;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .menu-title {
+            background-color: #f8f9fa;
+            padding: 12px 15px;
+            font-weight: 600;
+            font-size: 18px;
+            color: #2c3e50;
+            border-bottom: 1px solid #e1e8ed;
+        }
+
+        .menu-items {
+            padding: 10px 0;
+        }
+
+        .menu-item {
+            padding: 10px 20px;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            align-items: flex-start;
+        }
+
+            .menu-item:last-child {
+                border-bottom: none;
+            }
+
+        .item-name {
+            min-width: 120px;
+            font-weight: 600;
+            color: #34495e;
+        }
+
+        .item-desc {
+            color: #555;
+            line-height: 1.5;
+        }
+
+        .hotkey {
+            background-color: #e9ecef;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 12px;
+            color: #495057;
+            margin-left: 10px;
+        }
+
+        .info-block {
+            background-color: #e8f4fd;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 20px 0;
+            border-left: 4px solid #3498db;
+        }
+
+        .info-title {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Text Editor - User's Guide</h1>
+        </div>
+
+        <div class="content">
+            <div class="menu-section">
+                <div class="menu-title">The "File" menu</div>
+                <div class="menu-items">
+                    <div class="menu-item">
+                        <span class="item-name">To create</span>
+                        <span class="item-desc">opens a new empty file</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="item-name">Open</span>
+                        <span class="item-desc">opens a file on your computer in the .txt format</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="item-name">Save</span>
+                        <span class="item-desc">if the edited file has a save location on the computer, the edited file is saved with all the changes instead of the old one. If the file is saved for the first time, a dialog box opens, prompting the user to save the file in any location in the .txt format</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="item-name">Save as</span>
+                        <span class="item-desc">opens a dialog box that prompts the user to save the edited file in a convenient location</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="item-name">Exit</span>
+                        <span class="item-desc">exiting the app</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="menu-section">
+                <div class="menu-title">The Edit menu</div>
+                <div class="menu-items">
+                    <div class="menu-item">
+                        <span class="item-name">Undo</span>
+                        <span class="item-desc">the user's last action is canceled</span>
+                        <span class="hotkey">Ctrl+Z</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="item-name">Redo</span>
+                        <span class="item-desc">restoring a previously canceled user action</span>
+                        <span class="hotkey">Ctrl+Y</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="item-name">Cut</span>
+                        <span class="item-desc">saving the selected text to the clipboard and then deleting it</span>
+                        <span class="hotkey">Ctrl+X</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="item-name">Copy</span>
+                        <span class="item-desc">saving the selected text to the clipboard</span>
+                        <span class="hotkey">Ctrl+C</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="item-name">Paste</span>
+                        <span class="item-desc">entering the text saved in the clipboard into the input field</span>
+                        <span class="hotkey">Ctrl+V</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="item-name">Remove</span>
+                        <span class="item-desc">deleting selected text</span>
+                        <span class="hotkey">Del</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="item-name">Select all</span>
+                        <span class="item-desc">highlights all the text in the input field</span>
+                        <span class="hotkey">Ctrl+A</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="menu-section">
+                <div class="menu-title">The Help menu</div>
+                <div class="menu-items">
+                    <div class="menu-item">
+                        <span class="item-name">Calling Help</span>
+                        <span class="item-desc">description of implemented functions (current document)</span>
+                        <span class="hotkey">F1</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="item-name">About the program</span>
+                        <span class="item-desc">Application description and contact information</span>
+                    </div>
+                </div>
+            </div>
+            <div class="menu-section">
+                <div class="menu-title"> Program interface </div>
+                <div class="menu-item">
+                    <div style="border: 2px solid #2c3e50; border-radius: 8px; padding: 5px; display: inline-block; margin-top: 10px;">
+                        <img src="Screen.jpg" alt="Screenshot of the program.">
+                    </div>
+                </div>
+            </div>
+</body>
+</html>

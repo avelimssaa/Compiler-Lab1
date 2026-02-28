@@ -1,0 +1,209 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Справка - Текстовый редактор</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: #f0f2f5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+            .header h1 {
+                font-size: 24px;
+                font-weight: 400;
+            }
+
+        .content {
+            padding: 20px;
+        }
+
+        .menu-section {
+            margin-bottom: 30px;
+            border: 1px solid #e1e8ed;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .menu-title {
+            background-color: #f8f9fa;
+            padding: 12px 15px;
+            font-weight: 600;
+            font-size: 18px;
+            color: #2c3e50;
+            border-bottom: 1px solid #e1e8ed;
+        }
+
+        .menu-items {
+            padding: 10px 0;
+        }
+
+        .menu-item {
+            padding: 10px 20px;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            align-items: flex-start;
+        }
+
+            .menu-item:last-child {
+                border-bottom: none;
+            }
+
+        .item-name {
+            min-width: 120px;
+            font-weight: 600;
+            color: #34495e;
+        }
+
+        .item-desc {
+            color: #555;
+            line-height: 1.5;
+        }
+
+        .hotkey {
+            background-color: #e9ecef;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 12px;
+            color: #495057;
+            margin-left: 10px;
+        }
+
+        .info-block {
+            background-color: #e8f4fd;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 20px 0;
+            border-left: 4px solid #3498db;
+        }
+
+        .info-title {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Текстовый редактор - Руководство пользователя</h1>
+        </div>
+
+        <div class="content">
+            <div class="menu-section">
+                <div class="menu-title">Меню "Файл"</div>
+                <div class="menu-items">
+                    <div class="menu-item">
+                        <span class="item-name">Создать</span>
+                        <span class="item-desc">открывает новый пустой файл</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="item-name">Открыть</span>
+                        <span class="item-desc">открывает имеющийся на компьютере файл в формате .txt</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="item-name">Сохранить</span>
+                        <span class="item-desc">если редактируемый файл имеет место сохранения на компьютере, то редактированный файл сохраняется со всеми изменениями вместо старого. Если файл сохраняется впервые, то открывается диалоговое окно, предлагающее пользователю сохранить файл в любом месте в формате .txt</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="item-name">Сохранить как</span>
+                        <span class="item-desc">открывает диалоговое окно, предлагающее пользователю сохранить редактируемый файл в удобном для него месте</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="item-name">Выход</span>
+                        <span class="item-desc">выход из приложения</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="menu-section">
+                <div class="menu-title">Меню "Правка"</div>
+                <div class="menu-items">
+                    <div class="menu-item">
+                        <span class="item-name">Отменить</span>
+                        <span class="item-desc">отменяется последнее действие пользователя</span>
+                        <span class="hotkey">Ctrl+Z</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="item-name">Вернуть</span>
+                        <span class="item-desc">восстановление ранее отмененного действия пользователя</span>
+                        <span class="hotkey">Ctrl+Y</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="item-name">Вырезать</span>
+                        <span class="item-desc">сохранение выделенного текста в буфере обмена с последующим его удалением</span>
+                        <span class="hotkey">Ctrl+X</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="item-name">Копировать</span>
+                        <span class="item-desc">сохранение выделенного текста в буфере обмена</span>
+                        <span class="hotkey">Ctrl+C</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="item-name">Вставить</span>
+                        <span class="item-desc">занесение в поле ввода сохраненного в буфере обмена текста</span>
+                        <span class="hotkey">Ctrl+V</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="item-name">Удалить</span>
+                        <span class="item-desc">удаление выделенного текста</span>
+                        <span class="hotkey">Del</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="item-name">Выделить все</span>
+                        <span class="item-desc">выделяет весь текст в поле ввода</span>
+                        <span class="hotkey">Ctrl+A</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="menu-section">
+                <div class="menu-title">Меню "Справка"</div>
+                <div class="menu-items">
+                    <div class="menu-item">
+                        <span class="item-name">Вызов справки</span>
+                        <span class="item-desc">описание реализованных функций (текущий документ)</span>
+                        <span class="hotkey">F1</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="item-name">О программе</span>
+                        <span class="item-desc">описание приложения и контактная информация</span>
+                    </div>
+                </div>
+            </div>
+            <div class="menu-section">
+                <div class="menu-title"> Интерфейс программы </div>
+                <div class="menu-item">
+                    <div style="border: 2px solid #2c3e50; border-radius: 8px; padding: 5px; display: inline-block; margin-top: 10px;">
+                        <img src="Screen.jpg" alt="Скриншот программы.">
+                    </div>
+                </div>
+            </div>
+</body>
+</html>

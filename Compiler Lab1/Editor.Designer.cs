@@ -73,23 +73,35 @@
             btnCopyQuick = new ToolStripButton();
             btnCutQuick = new ToolStripButton();
             btnPasteQuick = new ToolStripButton();
-            toolStripButton14 = new ToolStripButton();
+            btnStartQuick = new ToolStripButton();
             btnHelpQuick = new ToolStripButton();
             btnAboutQuick = new ToolStripButton();
             tabControlEditor = new TabControl();
             splitContainer1 = new SplitContainer();
+            tabControlResults = new TabControl();
+            tabPageErrors = new TabPage();
             dgvOutput = new DataGridView();
             FilePath = new DataGridViewTextBoxColumn();
             Line = new DataGridViewTextBoxColumn();
             Column = new DataGridViewTextBoxColumn();
             Message = new DataGridViewTextBoxColumn();
+            tabPageResults = new TabPage();
+            rtbResults = new RichTextBox();
+            statusStrip1 = new StatusStrip();
+            labelLanguage = new ToolStripStatusLabel();
+            labelFileSize = new ToolStripStatusLabel();
+            labelLineCount = new ToolStripStatusLabel();
             toolStrip1.SuspendLayout();
             toolStrip2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
             splitContainer1.Panel2.SuspendLayout();
             splitContainer1.SuspendLayout();
+            tabControlResults.SuspendLayout();
+            tabPageErrors.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgvOutput).BeginInit();
+            tabPageResults.SuspendLayout();
+            statusStrip1.SuspendLayout();
             SuspendLayout();
             // 
             // toolStrip1
@@ -271,8 +283,9 @@
             btnStart.Image = (Image)resources.GetObject("btnStart.Image");
             btnStart.ImageTransparentColor = Color.Magenta;
             btnStart.Name = "btnStart";
-            btnStart.Size = new Size(45, 24);
-            btnStart.Text = "Пуск";
+            btnStart.Size = new Size(102, 24);
+            btnStart.Text = "Компиляция";
+            btnStart.Click += btnStart_Click;
             // 
             // ddmCertificate
             // 
@@ -348,7 +361,7 @@
             // toolStrip2
             // 
             toolStrip2.ImageScalingSize = new Size(30, 30);
-            toolStrip2.Items.AddRange(new ToolStripItem[] { createFileQuick, openFileQuick, saveFileQuick, btnCloseTabQuick, btnBackQuick, btnForwardQuick, btnCopyQuick, btnCutQuick, btnPasteQuick, toolStripButton14, btnHelpQuick, btnAboutQuick });
+            toolStrip2.Items.AddRange(new ToolStripItem[] { createFileQuick, openFileQuick, saveFileQuick, btnCloseTabQuick, btnBackQuick, btnForwardQuick, btnCopyQuick, btnCutQuick, btnPasteQuick, btnStartQuick, btnHelpQuick, btnAboutQuick });
             toolStrip2.Location = new Point(0, 27);
             toolStrip2.Name = "toolStrip2";
             toolStrip2.Size = new Size(782, 37);
@@ -445,14 +458,15 @@
             btnPasteQuick.Text = "Вставить";
             btnPasteQuick.Click += btnPaste_Click;
             // 
-            // toolStripButton14
+            // btnStartQuick
             // 
-            toolStripButton14.DisplayStyle = ToolStripItemDisplayStyle.Image;
-            toolStripButton14.Image = Properties.Resources.icons8_старт_48;
-            toolStripButton14.ImageTransparentColor = Color.Magenta;
-            toolStripButton14.Name = "toolStripButton14";
-            toolStripButton14.Size = new Size(34, 34);
-            toolStripButton14.Text = "Компиляция";
+            btnStartQuick.DisplayStyle = ToolStripItemDisplayStyle.Image;
+            btnStartQuick.Image = Properties.Resources.icons8_старт_48;
+            btnStartQuick.ImageTransparentColor = Color.Magenta;
+            btnStartQuick.Name = "btnStartQuick";
+            btnStartQuick.Size = new Size(34, 34);
+            btnStartQuick.Text = "Компиляция";
+            btnStartQuick.Click += btnStartQuick_Click;
             // 
             // btnHelpQuick
             // 
@@ -476,12 +490,16 @@
             // 
             // tabControlEditor
             // 
+            tabControlEditor.AllowDrop = true;
             tabControlEditor.Dock = DockStyle.Fill;
             tabControlEditor.Location = new Point(0, 0);
             tabControlEditor.Name = "tabControlEditor";
             tabControlEditor.SelectedIndex = 0;
             tabControlEditor.Size = new Size(782, 242);
             tabControlEditor.TabIndex = 2;
+            tabControlEditor.SelectedIndexChanged += tabControlEditor_SelectedIndexChanged;
+            tabControlEditor.DragDrop += textEditor_DragDrop;
+            tabControlEditor.DragEnter += textEditor_DragEnter;
             // 
             // splitContainer1
             // 
@@ -496,10 +514,32 @@
             // 
             // splitContainer1.Panel2
             // 
-            splitContainer1.Panel2.Controls.Add(dgvOutput);
+            splitContainer1.Panel2.Controls.Add(tabControlResults);
             splitContainer1.Size = new Size(782, 489);
             splitContainer1.SplitterDistance = 242;
             splitContainer1.TabIndex = 3;
+            // 
+            // tabControlResults
+            // 
+            tabControlResults.Controls.Add(tabPageErrors);
+            tabControlResults.Controls.Add(tabPageResults);
+            tabControlResults.Dock = DockStyle.Fill;
+            tabControlResults.Location = new Point(0, 0);
+            tabControlResults.Name = "tabControlResults";
+            tabControlResults.SelectedIndex = 0;
+            tabControlResults.Size = new Size(782, 243);
+            tabControlResults.TabIndex = 1;
+            // 
+            // tabPageErrors
+            // 
+            tabPageErrors.Controls.Add(dgvOutput);
+            tabPageErrors.Location = new Point(4, 29);
+            tabPageErrors.Name = "tabPageErrors";
+            tabPageErrors.Padding = new Padding(3);
+            tabPageErrors.Size = new Size(774, 210);
+            tabPageErrors.TabIndex = 0;
+            tabPageErrors.Text = "Ошибки";
+            tabPageErrors.UseVisualStyleBackColor = true;
             // 
             // dgvOutput
             // 
@@ -509,11 +549,11 @@
             dgvOutput.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvOutput.Columns.AddRange(new DataGridViewColumn[] { FilePath, Line, Column, Message });
             dgvOutput.Dock = DockStyle.Fill;
-            dgvOutput.Location = new Point(0, 0);
+            dgvOutput.Location = new Point(3, 3);
             dgvOutput.Name = "dgvOutput";
             dgvOutput.ReadOnly = true;
             dgvOutput.RowHeadersWidth = 51;
-            dgvOutput.Size = new Size(782, 243);
+            dgvOutput.Size = new Size(768, 204);
             dgvOutput.TabIndex = 0;
             // 
             // FilePath
@@ -544,20 +584,75 @@
             Message.Name = "Message";
             Message.ReadOnly = true;
             // 
+            // tabPageResults
+            // 
+            tabPageResults.Controls.Add(rtbResults);
+            tabPageResults.Location = new Point(4, 29);
+            tabPageResults.Name = "tabPageResults";
+            tabPageResults.Padding = new Padding(3);
+            tabPageResults.Size = new Size(774, 210);
+            tabPageResults.TabIndex = 1;
+            tabPageResults.Text = "Результаты";
+            tabPageResults.UseVisualStyleBackColor = true;
+            // 
+            // rtbResults
+            // 
+            rtbResults.Dock = DockStyle.Fill;
+            rtbResults.Location = new Point(3, 3);
+            rtbResults.Name = "rtbResults";
+            rtbResults.ReadOnly = true;
+            rtbResults.Size = new Size(768, 204);
+            rtbResults.TabIndex = 0;
+            rtbResults.Text = "";
+            // 
+            // statusStrip1
+            // 
+            statusStrip1.ImageScalingSize = new Size(20, 20);
+            statusStrip1.Items.AddRange(new ToolStripItem[] { labelLanguage, labelFileSize, labelLineCount });
+            statusStrip1.Location = new Point(0, 527);
+            statusStrip1.Name = "statusStrip1";
+            statusStrip1.Size = new Size(782, 26);
+            statusStrip1.TabIndex = 4;
+            statusStrip1.Text = "statusStrip1";
+            // 
+            // labelLanguage
+            // 
+            labelLanguage.Name = "labelLanguage";
+            labelLanguage.Size = new Size(104, 20);
+            labelLanguage.Text = "Язык: Русский";
+            // 
+            // labelFileSize
+            // 
+            labelFileSize.Name = "labelFileSize";
+            labelFileSize.Size = new Size(114, 20);
+            labelFileSize.Text = "Размер файла: ";
+            // 
+            // labelLineCount
+            // 
+            labelLineCount.Name = "labelLineCount";
+            labelLineCount.Size = new Size(135, 20);
+            labelLineCount.Text = "Количество строк:";
+            // 
             // textEditor
             // 
+            AllowDrop = true;
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             AutoScroll = true;
             ClientSize = new Size(782, 553);
+            Controls.Add(statusStrip1);
             Controls.Add(splitContainer1);
             Controls.Add(toolStrip2);
             Controls.Add(toolStrip1);
+            KeyPreview = true;
             MaximumSize = new Size(1920, 1080);
             MinimumSize = new Size(800, 600);
             Name = "textEditor";
             Text = "Текстовый редактор";
             FormClosing += textEditor_FormClosing;
+            DragDrop += textEditor_DragDrop;
+            DragEnter += textEditor_DragEnter;
+            KeyDown += textEditor_KeyDown;
             toolStrip1.ResumeLayout(false);
             toolStrip1.PerformLayout();
             toolStrip2.ResumeLayout(false);
@@ -566,7 +661,12 @@
             splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();
             splitContainer1.ResumeLayout(false);
+            tabControlResults.ResumeLayout(false);
+            tabPageErrors.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)dgvOutput).EndInit();
+            tabPageResults.ResumeLayout(false);
+            statusStrip1.ResumeLayout(false);
+            statusStrip1.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -583,7 +683,7 @@
         private ToolStripButton btnCopyQuick;
         private ToolStripButton btnCutQuick;
         private ToolStripButton btnPasteQuick;
-        private ToolStripButton toolStripButton14;
+        private ToolStripButton btnStartQuick;
         private ToolStripButton btnHelpQuick;
         private ToolStripButton btnAboutQuick;
         private ToolStripDropDownButton ddmFile;
@@ -627,5 +727,13 @@
         private ToolStripSeparator toolStripSeparator1;
         private ToolStripTextBox txtHelpLocal;
         private ToolStripComboBox cmbLocalization;
+        private StatusStrip statusStrip1;
+        private ToolStripStatusLabel labelLanguage;
+        private ToolStripStatusLabel labelFileSize;
+        private ToolStripStatusLabel labelLineCount;
+        private TabControl tabControlResults;
+        private TabPage tabPageErrors;
+        private TabPage tabPageResults;
+        private RichTextBox rtbResults;
     }
 }
