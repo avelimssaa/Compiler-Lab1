@@ -1,6 +1,6 @@
-using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Text;
+using FastColoredTextBoxNS;
 
 namespace Compiler_Lab1
 {
@@ -14,22 +14,12 @@ namespace Compiler_Lab1
 
         private ILocalization _localization;
 
-        private CancellationTokenSource _scanningCTS;
-        private Task _scanningTask;
-        private ConcurrentDictionary<RichTextBox, string> _textSnapshots = new ConcurrentDictionary<RichTextBox, string>();
-        private ConcurrentQueue<RichTextBox> _scanQueue = new ConcurrentQueue<RichTextBox>();
-        private bool _isScanningActive = false;
-        private readonly object _scanLock = new object();
-        private bool _isHighlighting = false;
-
         public textEditor()
         {
             InitializeComponent();
             _localization = new Localization();
             _pagesCount = 0;
             CreateFile();
-
-            StartBackgroundScanning();
         }
 
         private void CreateFile()
@@ -45,34 +35,22 @@ namespace Compiler_Lab1
             newTab.UseVisualStyleBackColor = true;
             tabControlEditor.TabPages.Add(newTab);
 
-            RichTextBox textBox = new RichTextBox();
+            FastColoredTextBox textBox = new FastColoredTextBox();
             textBox.Dock = DockStyle.Fill;
-            textBox.Anchor = AnchorStyles.Left | AnchorStyles.Top;
             textBox.TextChanged += TextBox_TextChanged;
             textBox.Name = $"textbox{_pagesCount}";
             textBox.TabIndex = newTab.TabIndex;
             textBox.Text = "";
+            textBox.Language = Language.CSharp;
+            textBox.ShowLineNumbers = true;
+            textBox.HighlightingRangeType = HighlightingRangeType.VisibleRange;
             newTab.Controls.Add(textBox);
-
-            Panel linePanel = new Panel();
-            linePanel.Location = new Point(0, 0);
-            linePanel.Size = new Size(57, 209);
-            linePanel.Dock = DockStyle.Left;
-            linePanel.BackColor = Color.FromArgb(240, 240, 240);
-
-            newTab.Controls.Add(linePanel);
-
-            linePanel.Paint += (s, e) => DrawLineNumbers(e, textBox, linePanel);
-
-            _textSnapshots[textBox] = "";
-            EnableLineNumbering(textBox, linePanel);
 
             TabFileInfo fileInfo = new TabFileInfo();
 
             fileInfo.FilePath = null;
             fileInfo.FileName = newTab.Name;
             fileInfo.IsChanged = false;
-            fileInfo.PushUndoStack("");
 
  
             tabControlEditor.SelectedTab = newTab;
@@ -80,315 +58,15 @@ namespace Compiler_Lab1
             _tabFileInfo[newTab] = fileInfo;
         }
 
-        private void StartBackgroundScanning()
-        {
-            _scanningCTS = new CancellationTokenSource();
-            _scanningTask = Task.Run(() => BackgroundScanningLoop(_scanningCTS.Token));
-        }
-
-        private async Task BackgroundScanningLoop(CancellationToken token)
-        {
-            while (!token.IsCancellationRequested)
-            {
-                try
-                {
-                    await CollectTextBoxesForScanning(token);
-
-                    await Task.Delay(200, token);
-
-                    await ProcessScanningQueue(token);
-
-                    await Task.Delay(600, token);
-                }
-                catch (OperationCanceledException)
-                {
-                    break;
-                }
-                catch (Exception ex)
-                {
-                    await Task.Delay(5000, token);
-                }
-            }
-        }
-
-        private async Task CollectTextBoxesForScanning(CancellationToken token)
-        {
-            if (_isScanningActive) return;
-
-            lock (_scanLock)
-            {
-                if (_isScanningActive) return;
-                _isScanningActive = true;
-            }
-
-            try
-            {
-                await Task.Run(() =>
-                {
-                    this.Invoke(new Action(() =>
-                    {
-                        if (token.IsCancellationRequested) return;
-
-                        foreach (TabPage tab in tabControlEditor.TabPages)
-                        {
-                            if (token.IsCancellationRequested) return;
-
-                            RichTextBox textBox = tab.Controls.OfType<RichTextBox>().FirstOrDefault();
-                            if (textBox != null)
-                            {
-                                string currentText = textBox.Text;
-
-                                if (_textSnapshots.TryGetValue(textBox, out string oldText))
-                                {
-                                    if (oldText != currentText)
-                                    {
-                                        _scanQueue.Enqueue(textBox);
-                                        _textSnapshots[textBox] = currentText;
-                                    }
-                                }
-                                else
-                                {
-                                    _textSnapshots[textBox] = currentText;
-                                    _scanQueue.Enqueue(textBox);
-                                }
-                            }
-                        }
-                    }));
-                }, token);
-            }
-            finally
-            {
-                lock (_scanLock)
-                {
-                    _isScanningActive = false;
-                }
-            }
-        }
-
-        private async Task ProcessScanningQueue(CancellationToken token)
-        {
-            var lastRequests = new Dictionary<RichTextBox, string>();
-
-            while (_scanQueue.TryDequeue(out RichTextBox textBox))
-            {
-                if (token.IsCancellationRequested) break;
-                if (textBox == null || textBox.IsDisposed) continue;
-
-                if (_textSnapshots.TryGetValue(textBox, out string text))
-                {
-                    lastRequests[textBox] = text;
-                }
-            }
-
-            foreach (var request in lastRequests)
-            {
-                if (token.IsCancellationRequested) break;
-
-                var textBox = request.Key;
-                var text = request.Value;
-
-                if (textBox.IsDisposed) continue;
-
-                await Task.Delay(50, token);
-
-                var highlights = await Task.Run(() => AnalyzeTextForHighlighting(text), token);
-
-                if (!token.IsCancellationRequested && !textBox.IsDisposed)
-                {
-                    this.Invoke(new Action(() =>
-                    {
-                        if (token.IsCancellationRequested || textBox.IsDisposed) return;
-                        ApplyHighlighting(textBox, highlights);
-                    }));
-                }
-            }
-        }
-
-        private List<HighlightInfo> AnalyzeTextForHighlighting(string text)
-        {
-            var highlights = new List<HighlightInfo>();
-            if (string.IsNullOrEmpty(text)) return highlights;
-
-            var keywords = new HashSet<string>
-    {
-        "abstract", "as", "base", "bool", "break", "byte", "case", "catch",
-        "char", "checked", "class", "const", "continue", "decimal", "default",
-        "delegate", "do", "double", "else", "enum", "event", "explicit", "extern",
-        "false", "finally", "fixed", "float", "for", "foreach", "goto", "if",
-        "implicit", "in", "int", "interface", "internal", "is", "lock", "long",
-        "namespace", "new", "null", "object", "operator", "out", "override",
-        "params", "private", "protected", "public", "readonly", "ref", "return",
-        "sbyte", "sealed", "short", "sizeof", "stackalloc", "static", "string",
-        "struct", "switch", "this", "throw", "true", "try", "typeof", "uint",
-        "ulong", "unchecked", "unsafe", "ushort", "using", "virtual", "void",
-        "volatile", "while"
-    };
-
-            var types = new HashSet<string>
-    {
-        "bool", "byte", "char", "decimal", "double", "float", "int", "long",
-        "object", "sbyte", "short", "string", "uint", "ulong", "ushort", "void"
-    };
-
-            int index = 0;
-            while (index < text.Length)
-            {
-                if (char.IsLetter(text[index]) || text[index] == '_')
-                {
-                    int start = index;
-                    while (index < text.Length && (char.IsLetterOrDigit(text[index]) || text[index] == '_'))
-                        index++;
-
-                    string word = text.Substring(start, index - start);
-
-                    if (keywords.Contains(word))
-                    {
-                        highlights.Add(new HighlightInfo
-                        {
-                            Start = start,
-                            Length = word.Length,
-                            Color = types.Contains(word) ? Color.Blue : Color.FromArgb(0, 0, 139),
-                            Style = FontStyle.Bold
-                        });
-                    }
-                }
-                else if (text[index] == '"')
-                {
-                    int start = index;
-                    index++;
-                    while (index < text.Length && text[index] != '"')
-                    {
-                        if (text[index] == '\\' && index + 1 < text.Length)
-                            index += 2;
-                        else
-                            index++;
-                    }
-                    if (index < text.Length) index++;
-
-                    highlights.Add(new HighlightInfo
-                    {
-                        Start = start,
-                        Length = index - start,
-                        Color = Color.Brown,
-                        Style = FontStyle.Regular
-                    });
-                }
-                else if (text[index] == '/' && index + 1 < text.Length)
-                {
-                    if (text[index + 1] == '/')
-                    {
-                        int start = index;
-                        index += 2;
-                        while (index < text.Length && text[index] != '\n')
-                            index++;
-
-                        highlights.Add(new HighlightInfo
-                        {
-                            Start = start,
-                            Length = index - start,
-                            Color = Color.Green,
-                            Style = FontStyle.Italic
-                        });
-                    }
-                    else if (text[index + 1] == '*')
-                    {
-                        int start = index;
-                        index += 2;
-                        while (index < text.Length && !(text[index] == '*' && index + 1 < text.Length && text[index + 1] == '/'))
-                            index++;
-                        if (index < text.Length) index += 2;
-
-                        highlights.Add(new HighlightInfo
-                        {
-                            Start = start,
-                            Length = index - start,
-                            Color = Color.Green,
-                            Style = FontStyle.Italic
-                        });
-                    }
-                    else
-                    {
-                        index++;
-                    }
-                }
-                else
-                {
-                    index++;
-                }
-            }
-
-            return highlights;
-        }
-
-        private void ApplyHighlighting(RichTextBox textBox, List<HighlightInfo> highlights)
-        {
-            if (textBox == null || textBox.IsDisposed) return;
-
-            try
-            {
-                _isHighlighting = true;
-
-                int selectionStart = textBox.SelectionStart;
-                int selectionLength = textBox.SelectionLength;
-
-                textBox.SuspendLayout();
-
-                textBox.TextChanged -= TextBox_TextChanged;
-
-                textBox.SelectAll();
-                textBox.SelectionColor = Color.Black;
-                textBox.SelectionFont = new Font(textBox.Font, FontStyle.Regular);
-
-                foreach (var highlight in highlights)
-                {
-                    if (highlight.Start >= 0 && highlight.Start + highlight.Length <= textBox.Text.Length)
-                    {
-                        textBox.Select(highlight.Start, highlight.Length);
-                        textBox.SelectionColor = highlight.Color;
-                        if (highlight.Style != FontStyle.Regular)
-                        {
-                            textBox.SelectionFont = new Font(textBox.Font, highlight.Style);
-                        }
-                    }
-                }
-
-                if (selectionStart <= textBox.Text.Length)
-                {
-                    textBox.Select(selectionStart, selectionLength);
-                }
-
-                textBox.TextChanged += TextBox_TextChanged;
-
-                textBox.ResumeLayout();
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"Ошибка применения подсветки: {ex.Message}");
-            }
-            finally
-            {
-                _isHighlighting = false;
-            }
-        }
-
         private void TextBox_TextChanged(object sender, EventArgs e)
         {
-            if (_isHighlighting) return;
-
-            RichTextBox textBox = sender as RichTextBox;
+            FastColoredTextBox textBox = sender as FastColoredTextBox;
             if (textBox == null) return;
 
             TabPage parentTab = textBox.Parent as TabPage;
             if (parentTab != null && _tabFileInfo.ContainsKey(parentTab))
             {
                 TabFileInfo fileInfo = _tabFileInfo[parentTab];
-
-                if (!_isUndoRedoOperation)
-                {
-                    fileInfo.PushUndoStack(textBox.Text);
-                    fileInfo.ClearRedoStack();
-                    fileInfo.UndoStackLimitation();
-                }
 
                 fileInfo.IsChanged = true;
 
@@ -461,7 +139,7 @@ namespace Compiler_Lab1
             TabPage currentTab = tabControlEditor.SelectedTab;
             if (currentTab == null) return;
 
-            RichTextBox textBox = currentTab.Controls.OfType<RichTextBox>().FirstOrDefault();
+            FastColoredTextBox textBox = currentTab.Controls.OfType<FastColoredTextBox>().FirstOrDefault();
             if (textBox == null) return;
 
             try
@@ -474,10 +152,6 @@ namespace Compiler_Lab1
                     _tabFileInfo[currentTab].FilePath = filePath;
                     _tabFileInfo[currentTab].FileName = Path.GetFileName(filePath);
                     _tabFileInfo[currentTab].IsChanged = false;
-
-                    _tabFileInfo[currentTab].ClearUndoStack();
-                    _tabFileInfo[currentTab].ClearRedoStack();
-                    _tabFileInfo[currentTab].PushUndoStack(textBox.Text);
                 }
                 currentTab.Text = Path.GetFileName(filePath);
 
@@ -523,7 +197,7 @@ namespace Compiler_Lab1
 
             TabPage newTab = new TabPage();
 
-            RichTextBox textBox = new RichTextBox();
+            FastColoredTextBox textBox = new FastColoredTextBox();
 
             newTab.Controls.Add(textBox);
             newTab.Location = new Point(4, 29);
@@ -541,23 +215,15 @@ namespace Compiler_Lab1
             textBox.Size = new Size(711, 209);
             textBox.TabIndex = newTab.TabIndex;
             textBox.Text = fileContent;
-
-            Panel linePanel = new Panel();
-            linePanel.Location = new Point(0, 0);
-            linePanel.Size = new Size(57, 209);
-            linePanel.Dock = DockStyle.Left;
-            linePanel.BackColor = Color.FromArgb(240, 240, 240);
-            linePanel.Paint += (s, e) => DrawLineNumbers(e, textBox, linePanel);
-            newTab.Controls.Add(linePanel);
-
-            EnableLineNumbering(textBox, linePanel);
+            textBox.Language = Language.CSharp;
+            textBox.ShowLineNumbers = true;
+            textBox.HighlightingRangeType = HighlightingRangeType.VisibleRange;
 
             TabFileInfo fileInfo = new TabFileInfo();
 
             fileInfo.FilePath = currentFilePath;
             fileInfo.FileName = newTab.Name;
             fileInfo.IsChanged = false;
-            fileInfo.PushUndoStack(fileContent);
 
             tabControlEditor.TabPages.Add(newTab);
             tabControlEditor.SelectedTab = newTab;
@@ -601,19 +267,6 @@ namespace Compiler_Lab1
                     }
                 }
             }
-            _scanningCTS?.Cancel();
-
-            try
-            {
-                if (_scanningTask != null)
-                {
-                    _scanningTask.Wait(1000); 
-                }
-            }
-            catch (AggregateException)
-            {
-               
-            }
         }
 
         private void exitBtn_Click(object sender, EventArgs e)
@@ -626,25 +279,10 @@ namespace Compiler_Lab1
             TabPage currentTab = tabControlEditor.SelectedTab;
             if (currentTab == null) return;
 
-            RichTextBox textBox = currentTab.Controls.OfType<RichTextBox>().FirstOrDefault();
+            FastColoredTextBox textBox = currentTab.Controls.OfType<FastColoredTextBox>().FirstOrDefault();
             if (textBox == null) return;
 
-            var fileInfo = _tabFileInfo[currentTab];
-
-            if (fileInfo.GetUndoStackCount() > 1)
-            {
-                _isUndoRedoOperation = true;
-
-                fileInfo.PushRedoStack(textBox.Text);
-
-                string previousText = fileInfo.PopUndoStack();
-                textBox.Text = previousText;
-
-                textBox.SelectionStart = textBox.Text.Length;
-                textBox.SelectionLength = 0;
-
-                _isUndoRedoOperation = false;
-            }
+            textBox.Undo();
         }
 
         private void btnBack_Click(object sender, EventArgs e)
@@ -657,27 +295,10 @@ namespace Compiler_Lab1
             TabPage currentTab = tabControlEditor.SelectedTab;
             if (currentTab == null) return;
 
-            RichTextBox textBox = currentTab.Controls.OfType<RichTextBox>().FirstOrDefault();
+            FastColoredTextBox textBox = currentTab.Controls.OfType<FastColoredTextBox>().FirstOrDefault();
             if (textBox == null) return;
 
-            var fileInfo = _tabFileInfo[currentTab];
-
-            if (fileInfo.GetRedoStackCount() > 0)
-            {
-                _isUndoRedoOperation = true;
-
-                fileInfo.PushUndoStack(textBox.Text);
-
-                string nextText = fileInfo.PopRedoStack();
-                textBox.Text = nextText;
-
-                textBox.SelectionStart = textBox.Text.Length;
-                textBox.SelectionLength = 0;
-
-                _isUndoRedoOperation = false;
-
-                fileInfo.IsChanged = true;
-            }
+            textBox.Redo();
         }
 
         private void btnForward_Click(object sender, EventArgs e)
@@ -690,7 +311,7 @@ namespace Compiler_Lab1
             TabPage currentTab = tabControlEditor.SelectedTab;
             if (currentTab == null) return;
 
-            RichTextBox textBox = currentTab.Controls.OfType<RichTextBox>().FirstOrDefault();
+            FastColoredTextBox textBox = currentTab.Controls.OfType<FastColoredTextBox>().FirstOrDefault();
             if (textBox == null) return;
 
             if (textBox.SelectionLength > 0)
@@ -709,7 +330,7 @@ namespace Compiler_Lab1
             TabPage currentTab = tabControlEditor.SelectedTab;
             if (currentTab == null) return;
 
-            RichTextBox textBox = currentTab.Controls.OfType<RichTextBox>().FirstOrDefault();
+            FastColoredTextBox textBox = currentTab.Controls.OfType<FastColoredTextBox>().FirstOrDefault();
             if (textBox == null) return;
 
             if (textBox.SelectionLength > 0)
@@ -728,7 +349,7 @@ namespace Compiler_Lab1
             TabPage currentTab = tabControlEditor.SelectedTab;
             if (currentTab == null) return;
 
-            RichTextBox textBox = currentTab.Controls.OfType<RichTextBox>().FirstOrDefault();
+            FastColoredTextBox textBox = currentTab.Controls.OfType<FastColoredTextBox>().FirstOrDefault();
             if (textBox == null) return;
 
             if (Clipboard.ContainsText())
@@ -747,7 +368,7 @@ namespace Compiler_Lab1
             TabPage currentTab = tabControlEditor.SelectedTab;
             if (currentTab == null) return;
 
-            RichTextBox textBox = currentTab.Controls.OfType<RichTextBox>().FirstOrDefault();
+            FastColoredTextBox textBox = currentTab.Controls.OfType<FastColoredTextBox>().FirstOrDefault();
             if (textBox == null) return;
 
             if (textBox.SelectionLength > 0)
@@ -766,7 +387,7 @@ namespace Compiler_Lab1
             TabPage currentTab = tabControlEditor.SelectedTab;
             if (currentTab == null) return;
 
-            RichTextBox textBox = currentTab.Controls.OfType<RichTextBox>().FirstOrDefault();
+            FastColoredTextBox textBox = currentTab.Controls.OfType<FastColoredTextBox>().FirstOrDefault();
             if (textBox != null)
             {
                 textBox.SelectAll();
@@ -836,7 +457,7 @@ namespace Compiler_Lab1
         {
             foreach (TabPage tab in tabControlEditor.TabPages)
             {
-                RichTextBox textBox = tab.Controls.OfType<RichTextBox>().FirstOrDefault();
+                FastColoredTextBox textBox = tab.Controls.OfType<FastColoredTextBox>().FirstOrDefault();
                 if (textBox != null)
                 {
                     FontStyle currentStyle = textBox.Font.Style;
@@ -1022,50 +643,6 @@ namespace Compiler_Lab1
             tabPageErrors.Text = _localization.Get("ErrorsTab");
             tabPageResults.Text = _localization.Get("ResultTab");
         }
-
-        private void EnableLineNumbering(RichTextBox textBox, Panel linePanel)
-        {
-            textBox.TextChanged += (s, e) => linePanel.Invalidate();
-            textBox.VScroll += (s, e) => linePanel.Invalidate();
-            textBox.FontChanged += (s, e) => linePanel.Invalidate();
-        }
-
-        private void DrawLineNumbers(PaintEventArgs e, RichTextBox textBox, Panel panel)
-        {
-            e.Graphics.Clear(panel.BackColor);
-
-            using (Pen pen = new Pen(Color.Gray))
-            {
-                e.Graphics.DrawLine(pen, panel.Width - 1, 0, panel.Width - 1, panel.Height);
-            }
-
-            if (textBox == null || textBox.Lines.Length == 0) return;
-
-            for (int i = 0; i < textBox.Lines.Length; i++)
-            {
-                int charIndex = textBox.GetFirstCharIndexFromLine(i);
-                if (charIndex < 0) continue;
-
-                Point linePos = textBox.GetPositionFromCharIndex(charIndex);
-
-                if (linePos.Y >= 0 && linePos.Y < textBox.Height)
-                {
-                    Rectangle rect = new Rectangle(0, linePos.Y, panel.Width - 2, textBox.Font.Height);
-
-                    using (StringFormat format = new StringFormat())
-                    {
-                        format.Alignment = StringAlignment.Far;
-                        format.LineAlignment = StringAlignment.Center;
-
-                        using (SolidBrush brush = new SolidBrush(Color.FromArgb(100, 100, 100)))
-                        {
-                            e.Graphics.DrawString((i + 1).ToString(), textBox.Font, brush, rect, format);
-                        }
-                    }
-                }
-            }
-        }
-
         private void textEditor_DragEnter(object sender, DragEventArgs e)
         {
             e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop)
@@ -1109,30 +686,21 @@ namespace Compiler_Lab1
                 _pagesCount++;
 
                 TabPage newTab = new TabPage();
-                RichTextBox textBox = new RichTextBox();
+                FastColoredTextBox textBox = new FastColoredTextBox();
 
                 newTab.Controls.Add(textBox);
                 newTab.Name = fileName;
                 newTab.Text = fileName;
                 newTab.Padding = new Padding(3);
 
-                textBox.Dock = DockStyle.Right;
+                textBox.Dock = DockStyle.Fill;
                 textBox.Location = new Point(63, 0);
-                textBox.Size = new Size(711, 209);
                 textBox.TextChanged += TextBox_TextChanged;
                 textBox.Text = fileContent;
 
-                Panel linePanel = new Panel();
-                linePanel.Location = new Point(0, 0);
-                linePanel.Size = new Size(57, 209);
-                linePanel.Dock = DockStyle.Left;
-                linePanel.BackColor = Color.FromArgb(240, 240, 240);
-                linePanel.Paint += (s, e) => DrawLineNumbers(e, textBox, linePanel);
-                newTab.Controls.Add(linePanel);
-
-                _textSnapshots[textBox] = fileContent;
-
-                EnableLineNumbering(textBox, linePanel);
+                textBox.Language = Language.CSharp;
+                textBox.ShowLineNumbers = true;
+                textBox.HighlightingRangeType = HighlightingRangeType.VisibleRange;
 
                 TabFileInfo fileInfo = new TabFileInfo
                 {
@@ -1140,7 +708,6 @@ namespace Compiler_Lab1
                     FileName = fileName,
                     IsChanged = false
                 };
-                fileInfo.PushUndoStack(fileContent);
 
                 tabControlEditor.TabPages.Add(newTab);
                 tabControlEditor.SelectedTab = newTab;
@@ -1161,7 +728,7 @@ namespace Compiler_Lab1
         {
             if (tab == null || !_tabFileInfo.ContainsKey(tab)) return;
 
-            RichTextBox textBox = tab.Controls.OfType<RichTextBox>().FirstOrDefault();
+            FastColoredTextBox textBox = tab.Controls.OfType<FastColoredTextBox>().FirstOrDefault();
             if (textBox == null) return;
 
             var fileInfo = _tabFileInfo[tab];
@@ -1173,7 +740,7 @@ namespace Compiler_Lab1
             string fileSize = GetFileSizeString(charCount);
             labelFileSize.Text = $"{_localization.Get("FileSize")}: {fileSize}";
 
-            int lineCount = textBox.Lines.Length;
+            int lineCount = textBox.Lines.Count;
             labelLineCount.Text = $"{_localization.Get("Lines")}: {lineCount}";
         }
 

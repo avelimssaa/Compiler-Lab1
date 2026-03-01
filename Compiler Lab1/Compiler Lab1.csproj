@@ -26,7 +26,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="Help.html" />
     <None Remove="Screen.jpg" />
   </ItemGroup>
 
@@ -51,12 +50,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Help.html">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
     <EmbeddedResource Include="Screen.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FastColoredTextBox.Net6" Version="1.0.0" />
   </ItemGroup>
 
   <ItemGroup>
