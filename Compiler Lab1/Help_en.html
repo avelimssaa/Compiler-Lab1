@@ -47,6 +47,7 @@
             border: 1px solid #e1e8ed;
             border-radius: 6px;
             overflow: hidden;
+            position: relative;
         }
 
         .menu-title {
@@ -58,6 +59,18 @@
             border-bottom: 1px solid #e1e8ed;
         }
 
+        .menu-hotkey {
+            position: absolute;
+            top: 12px;
+            right: 15px;
+            background-color: #e9ecef;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 12px;
+            color: #495057;
+        }
+
         .menu-items {
             padding: 10px 0;
         }
@@ -67,6 +80,7 @@
             border-bottom: 1px solid #f0f0f0;
             display: flex;
             align-items: flex-start;
+            position: relative;
         }
 
             .menu-item:last-child {
@@ -77,21 +91,28 @@
             min-width: 120px;
             font-weight: 600;
             color: #34495e;
+margin-right: 15px;
         }
 
         .item-desc {
             color: #555;
             line-height: 1.5;
+            flex: 1;
+            padding-right: 80px;
+margin-left: 10px;
         }
 
-        .hotkey {
+        .item-hotkey {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
             background-color: #e9ecef;
             padding: 2px 8px;
             border-radius: 4px;
             font-family: monospace;
             font-size: 12px;
             color: #495057;
-            margin-left: 10px;
         }
 
         .info-block {
@@ -116,24 +137,35 @@
         </div>
 
         <div class="content">
+
             <div class="menu-section">
                 <div class="menu-title">The "File" menu</div>
+                <div class="menu-hotkey">Alt+F</div>
                 <div class="menu-items">
                     <div class="menu-item">
-                        <span class="item-name">To create</span>
+                        <span class="item-name">Create</span>
                         <span class="item-desc">opens a new empty file</span>
+                        <span class="item-hotkey">Ctrl+N</span>
                     </div>
                     <div class="menu-item">
                         <span class="item-name">Open</span>
                         <span class="item-desc">opens a file on your computer in the .txt format</span>
+                        <span class="item-hotkey">Ctrl+O</span>
                     </div>
                     <div class="menu-item">
                         <span class="item-name">Save</span>
                         <span class="item-desc">if the edited file has a save location on the computer, the edited file is saved with all the changes instead of the old one. If the file is saved for the first time, a dialog box opens, prompting the user to save the file in any location in the .txt format</span>
+                        <span class="item-hotkey">Ctrl+S</span>
                     </div>
                     <div class="menu-item">
                         <span class="item-name">Save as</span>
                         <span class="item-desc">opens a dialog box that prompts the user to save the edited file in a convenient location</span>
+                        <span class="item-hotkey">Ctrl+Shift+S</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="item-name">Close the tab</span>
+                        <span class="item-desc">closes the current tab</span>
+                        <span class="item-hotkey">Ctrl+W</span>
                     </div>
                     <div class="menu-item">
                         <span class="item-name">Exit</span>
@@ -142,68 +174,145 @@
                 </div>
             </div>
 
+
             <div class="menu-section">
                 <div class="menu-title">The Edit menu</div>
+                <div class="menu-hotkey">Alt+E</div>
                 <div class="menu-items">
                     <div class="menu-item">
-                        <span class="item-name">Undo</span>
+                        <span class="item-name">Cancel</span>
                         <span class="item-desc">the user's last action is canceled</span>
-                        <span class="hotkey">Ctrl+Z</span>
+                        <span class="item-hotkey">Ctrl+Z</span>
                     </div>
                     <div class="menu-item">
-                        <span class="item-name">Redo</span>
+                        <span class="item-name">Return</span>
                         <span class="item-desc">restoring a previously canceled user action</span>
-                        <span class="hotkey">Ctrl+Y</span>
+                        <span class="item-hotkey">Ctrl+Y</span>
                     </div>
                     <div class="menu-item">
                         <span class="item-name">Cut</span>
                         <span class="item-desc">saving the selected text to the clipboard and then deleting it</span>
-                        <span class="hotkey">Ctrl+X</span>
+                        <span class="item-hotkey">Ctrl+X</span>
                     </div>
                     <div class="menu-item">
                         <span class="item-name">Copy</span>
                         <span class="item-desc">saving the selected text to the clipboard</span>
-                        <span class="hotkey">Ctrl+C</span>
+                        <span class="item-hotkey">Ctrl+C</span>
                     </div>
                     <div class="menu-item">
                         <span class="item-name">Paste</span>
                         <span class="item-desc">entering the text saved in the clipboard into the input field</span>
-                        <span class="hotkey">Ctrl+V</span>
+                        <span class="item-hotkey">Ctrl+V</span>
                     </div>
                     <div class="menu-item">
                         <span class="item-name">Remove</span>
                         <span class="item-desc">deleting selected text</span>
-                        <span class="hotkey">Del</span>
+                        <span class="item-hotkey">Del</span>
                     </div>
                     <div class="menu-item">
                         <span class="item-name">Select all</span>
                         <span class="item-desc">highlights all the text in the input field</span>
-                        <span class="hotkey">Ctrl+A</span>
+                        <span class="item-hotkey">Ctrl+A</span>
                     </div>
                 </div>
             </div>
 
+
+            <div class="menu-section">
+                <div class="menu-title">The "Text" menu</div>
+                <div class="menu-hotkey">Alt+T</div>
+                <div class="menu-items">
+                    <div class="menu-item">
+                        <span class="item-name">Setting the task</span>
+                        <span class="item-desc"></span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="item-name">Grammar</span>
+                        <span class="item-desc"></span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="item-name">Grammar classification</span>
+                        <span class="item-desc"></span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="item-name">The method of analysis</span>
+                        <span class="item-desc"></span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="item-name">A test case</span>
+                        <span class="item-desc"></span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="item-name">List of literature</span>
+                        <span class="item-desc"></span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="item-name">The source code of the program</span>
+                        <span class="item-desc"></span>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="menu-section">
+                <div class="menu-title">The "Compilation" button</div>
+                <div class="menu-hotkey">F5</div>
+                <div class="menu-items">
+                    <div class="menu-item">
+                        <span class="item-name">Launch</span>
+                        <span class="item-desc">starts the process of compiling and analyzing the entered code. The results are displayed in the output window</span>
+                        <span class="item-hotkey">F5</span>
+                    </div>
+                </div>
+            </div>
+
+
             <div class="menu-section">
                 <div class="menu-title">The Help menu</div>
+                <div class="menu-hotkey">Alt+C</div>
                 <div class="menu-items">
                     <div class="menu-item">
                         <span class="item-name">Calling Help</span>
                         <span class="item-desc">description of implemented functions (current document)</span>
-                        <span class="hotkey">F1</span>
+                        <span class="item-hotkey">F1</span>
                     </div>
                     <div class="menu-item">
                         <span class="item-name">About the program</span>
                         <span class="item-desc">Application description and contact information</span>
+                        <span class="item-hotkey">F12</span>
                     </div>
                 </div>
             </div>
+
+
             <div class="menu-section">
-                <div class="menu-title"> Program interface </div>
-                <div class="menu-item">
-                    <div style="border: 2px solid #2c3e50; border-radius: 8px; padding: 5px; display: inline-block; margin-top: 10px;">
-                        <img src="Screen.jpg" alt="Screenshot of the program.">
+                <div class="menu-title">The View menu</div>
+                <div class="menu-hotkey">Alt+V</div>
+                <div class="menu-items">
+                    <div class="menu-item">
+                        <span class="item-name">Choosing the font size</span>
+                        <span class="item-desc">The desired font size is selected from the drop-down list. Sizes from 8 to 72 are available</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="item-name">Localization selection</span>
+                        <span class="item-desc">The required interface language is selected from the drop-down list. Russian and English are supported</span>
                     </div>
                 </div>
             </div>
+
+
+            <div class="menu-section">
+                <div class="menu-title">Program interface</div>
+                <div class="menu-items">
+                    <div class="menu-item">
+                        <div style="border: 2px solid #2c3e50; border-radius: 8px; padding: 5px; display: inline-block; margin-top: 10px; width: 100%;">
+                            <img src="Screen.jpg" alt="Screenshot of the program" style="max-width: 100%; height: auto; display: block;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+             </div>
+    </div>
 </body>
 </html>

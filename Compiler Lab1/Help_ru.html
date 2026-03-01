@@ -47,6 +47,7 @@
             border: 1px solid #e1e8ed;
             border-radius: 6px;
             overflow: hidden;
+            position: relative;
         }
 
         .menu-title {
@@ -58,6 +59,18 @@
             border-bottom: 1px solid #e1e8ed;
         }
 
+        .menu-hotkey {
+            position: absolute;
+            top: 12px;
+            right: 15px;
+            background-color: #e9ecef;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 12px;
+            color: #495057;
+        }
+
         .menu-items {
             padding: 10px 0;
         }
@@ -67,6 +80,7 @@
             border-bottom: 1px solid #f0f0f0;
             display: flex;
             align-items: flex-start;
+            position: relative;
         }
 
             .menu-item:last-child {
@@ -77,21 +91,28 @@
             min-width: 120px;
             font-weight: 600;
             color: #34495e;
+margin-right: 15px;
         }
 
         .item-desc {
             color: #555;
             line-height: 1.5;
+            flex: 1;
+            padding-right: 80px;
+margin-left: 10px;
         }
 
-        .hotkey {
+        .item-hotkey {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
             background-color: #e9ecef;
             padding: 2px 8px;
             border-radius: 4px;
             font-family: monospace;
             font-size: 12px;
             color: #495057;
-            margin-left: 10px;
         }
 
         .info-block {
@@ -116,24 +137,35 @@
         </div>
 
         <div class="content">
+
             <div class="menu-section">
                 <div class="menu-title">Меню "Файл"</div>
+                <div class="menu-hotkey">Alt+F</div>
                 <div class="menu-items">
                     <div class="menu-item">
                         <span class="item-name">Создать</span>
                         <span class="item-desc">открывает новый пустой файл</span>
+                        <span class="item-hotkey">Ctrl+N</span>
                     </div>
                     <div class="menu-item">
                         <span class="item-name">Открыть</span>
                         <span class="item-desc">открывает имеющийся на компьютере файл в формате .txt</span>
+                        <span class="item-hotkey">Ctrl+O</span>
                     </div>
                     <div class="menu-item">
                         <span class="item-name">Сохранить</span>
                         <span class="item-desc">если редактируемый файл имеет место сохранения на компьютере, то редактированный файл сохраняется со всеми изменениями вместо старого. Если файл сохраняется впервые, то открывается диалоговое окно, предлагающее пользователю сохранить файл в любом месте в формате .txt</span>
+                        <span class="item-hotkey">Ctrl+S</span>
                     </div>
                     <div class="menu-item">
                         <span class="item-name">Сохранить как</span>
                         <span class="item-desc">открывает диалоговое окно, предлагающее пользователю сохранить редактируемый файл в удобном для него месте</span>
+                        <span class="item-hotkey">Ctrl+Shift+S</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="item-name">Закрыть вкладку</span>
+                        <span class="item-desc">закрывает текущую вкладку</span>
+                        <span class="item-hotkey">Ctrl+W</span>
                     </div>
                     <div class="menu-item">
                         <span class="item-name">Выход</span>
@@ -142,68 +174,145 @@
                 </div>
             </div>
 
+
             <div class="menu-section">
                 <div class="menu-title">Меню "Правка"</div>
+                <div class="menu-hotkey">Alt+E</div>
                 <div class="menu-items">
                     <div class="menu-item">
                         <span class="item-name">Отменить</span>
                         <span class="item-desc">отменяется последнее действие пользователя</span>
-                        <span class="hotkey">Ctrl+Z</span>
+                        <span class="item-hotkey">Ctrl+Z</span>
                     </div>
                     <div class="menu-item">
                         <span class="item-name">Вернуть</span>
                         <span class="item-desc">восстановление ранее отмененного действия пользователя</span>
-                        <span class="hotkey">Ctrl+Y</span>
+                        <span class="item-hotkey">Ctrl+Y</span>
                     </div>
                     <div class="menu-item">
                         <span class="item-name">Вырезать</span>
                         <span class="item-desc">сохранение выделенного текста в буфере обмена с последующим его удалением</span>
-                        <span class="hotkey">Ctrl+X</span>
+                        <span class="item-hotkey">Ctrl+X</span>
                     </div>
                     <div class="menu-item">
                         <span class="item-name">Копировать</span>
                         <span class="item-desc">сохранение выделенного текста в буфере обмена</span>
-                        <span class="hotkey">Ctrl+C</span>
+                        <span class="item-hotkey">Ctrl+C</span>
                     </div>
                     <div class="menu-item">
                         <span class="item-name">Вставить</span>
                         <span class="item-desc">занесение в поле ввода сохраненного в буфере обмена текста</span>
-                        <span class="hotkey">Ctrl+V</span>
+                        <span class="item-hotkey">Ctrl+V</span>
                     </div>
                     <div class="menu-item">
                         <span class="item-name">Удалить</span>
                         <span class="item-desc">удаление выделенного текста</span>
-                        <span class="hotkey">Del</span>
+                        <span class="item-hotkey">Del</span>
                     </div>
                     <div class="menu-item">
                         <span class="item-name">Выделить все</span>
                         <span class="item-desc">выделяет весь текст в поле ввода</span>
-                        <span class="hotkey">Ctrl+A</span>
+                        <span class="item-hotkey">Ctrl+A</span>
                     </div>
                 </div>
             </div>
 
+
+            <div class="menu-section">
+                <div class="menu-title">Меню "Текст"</div>
+                <div class="menu-hotkey">Alt+T</div>
+                <div class="menu-items">
+                    <div class="menu-item">
+                        <span class="item-name">Постановка задачи</span>
+                        <span class="item-desc"></span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="item-name">Грамматика</span>
+                        <span class="item-desc"></span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="item-name">Классификация грамматики</span>
+                        <span class="item-desc"></span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="item-name">Метод анализа</span>
+                        <span class="item-desc"></span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="item-name">Тестовый пример</span>
+                        <span class="item-desc"></span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="item-name">Список литературы</span>
+                        <span class="item-desc"></span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="item-name">Исходный код программы</span>
+                        <span class="item-desc"></span>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="menu-section">
+                <div class="menu-title">Кнопка "Компиляция"</div>
+                <div class="menu-hotkey">F5</div>
+                <div class="menu-items">
+                    <div class="menu-item">
+                        <span class="item-name">Запуск</span>
+                        <span class="item-desc">запускает процесс компиляции и анализа введенного кода. Результаты отображаются в окне вывода</span>
+                        <span class="item-hotkey">F5</span>
+                    </div>
+                </div>
+            </div>
+
+
             <div class="menu-section">
                 <div class="menu-title">Меню "Справка"</div>
+                <div class="menu-hotkey">Alt+C</div>
                 <div class="menu-items">
                     <div class="menu-item">
                         <span class="item-name">Вызов справки</span>
                         <span class="item-desc">описание реализованных функций (текущий документ)</span>
-                        <span class="hotkey">F1</span>
+                        <span class="item-hotkey">F1</span>
                     </div>
                     <div class="menu-item">
                         <span class="item-name">О программе</span>
                         <span class="item-desc">описание приложения и контактная информация</span>
+                        <span class="item-hotkey">F12</span>
                     </div>
                 </div>
             </div>
+
+
             <div class="menu-section">
-                <div class="menu-title"> Интерфейс программы </div>
-                <div class="menu-item">
-                    <div style="border: 2px solid #2c3e50; border-radius: 8px; padding: 5px; display: inline-block; margin-top: 10px;">
-                        <img src="Screen.jpg" alt="Скриншот программы.">
+                <div class="menu-title">Меню "Вид"</div>
+                <div class="menu-hotkey">Alt+V</div>
+                <div class="menu-items">
+                    <div class="menu-item">
+                        <span class="item-name">Выбор размера шрифта</span>
+                        <span class="item-desc">нужный размер шрифта выбирается из выпадающего списка. Доступны размеры от 8 до 72</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="item-name">Выбор локализации</span>
+                        <span class="item-desc">нужный язык интерфейса выбирается из выпадающего списка. Поддерживаются русский и английский языки</span>
                     </div>
                 </div>
             </div>
+
+
+            <div class="menu-section">
+                <div class="menu-title">Интерфейс программы</div>
+                <div class="menu-items">
+                    <div class="menu-item">
+                        <div style="border: 2px solid #2c3e50; border-radius: 8px; padding: 5px; display: inline-block; margin-top: 10px; width: 100%;">
+                            <img src="Screen.jpg" alt="Скриншот программы" style="max-width: 100%; height: auto; display: block;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+             </div>
+    </div>
 </body>
 </html>
