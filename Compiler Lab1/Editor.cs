@@ -20,6 +20,7 @@ namespace Compiler_Lab1
         private ConcurrentQueue<RichTextBox> _scanQueue = new ConcurrentQueue<RichTextBox>();
         private bool _isScanningActive = false;
         private readonly object _scanLock = new object();
+        private bool _isHighlighting = false;
 
         public textEditor()
         {
@@ -62,11 +63,6 @@ namespace Compiler_Lab1
             newTab.Controls.Add(linePanel);
 
             linePanel.Paint += (s, e) => DrawLineNumbers(e, textBox, linePanel);
-
-
-
-
-
 
             _textSnapshots[textBox] = "";
             EnableLineNumbering(textBox, linePanel);
@@ -330,10 +326,14 @@ namespace Compiler_Lab1
 
             try
             {
+                _isHighlighting = true;
+
                 int selectionStart = textBox.SelectionStart;
                 int selectionLength = textBox.SelectionLength;
 
                 textBox.SuspendLayout();
+
+                textBox.TextChanged -= TextBox_TextChanged;
 
                 textBox.SelectAll();
                 textBox.SelectionColor = Color.Black;
@@ -357,16 +357,24 @@ namespace Compiler_Lab1
                     textBox.Select(selectionStart, selectionLength);
                 }
 
+                textBox.TextChanged += TextBox_TextChanged;
+
                 textBox.ResumeLayout();
             }
             catch (Exception ex)
             {
                 Debug.WriteLine($"Ошибка применения подсветки: {ex.Message}");
             }
+            finally
+            {
+                _isHighlighting = false;
+            }
         }
 
         private void TextBox_TextChanged(object sender, EventArgs e)
         {
+            if (_isHighlighting) return;
+
             RichTextBox textBox = sender as RichTextBox;
             if (textBox == null) return;
 
@@ -421,7 +429,7 @@ namespace Compiler_Lab1
                 saveFileDialog.FilterIndex = 1;
                 saveFileDialog.DefaultExt = "txt";
                 saveFileDialog.AddExtension = true;
-                saveFileDialog.FileName = fileInfo.FileName ?? "Без имени.txt";
+                saveFileDialog.FileName = fileInfo.FileName ?? $"{_localization.Get("Untitled")}.txt";
                 saveFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
                 if (saveFileDialog.ShowDialog() == DialogResult.OK)
@@ -623,7 +631,7 @@ namespace Compiler_Lab1
 
             var fileInfo = _tabFileInfo[currentTab];
 
-            if (fileInfo.GetUndoStackCount() > 0)
+            if (fileInfo.GetUndoStackCount() > 1)
             {
                 _isUndoRedoOperation = true;
 
@@ -844,6 +852,27 @@ namespace Compiler_Lab1
                 string outputFontFamily = dgvOutput.Font.FontFamily.Name;
                 dgvOutput.Font = new Font(outputFontFamily, size, outputStyle);
             }
+
+            if (tabPageErrors != null)
+            {
+                FontStyle errorsStyle = tabPageErrors.Font.Style;
+                string errorsFontFamily = tabPageErrors.Font.FontFamily.Name;
+                tabPageErrors.Font = new Font(errorsFontFamily, size, errorsStyle);
+            }
+
+            if (tabPageResults != null)
+            {
+                FontStyle resultsStyle = tabPageResults.Font.Style;
+                string resultsFontFamily = tabPageResults.Font.FontFamily.Name;
+                tabPageResults.Font = new Font(resultsFontFamily, size, resultsStyle);
+            }
+
+            if (rtbResults != null)
+            {
+                FontStyle rtbResultsStyle = rtbResults.Font.Style;
+                string rtbResultsFontFamily = rtbResults.Font.FontFamily.Name;
+                rtbResults.Font = new Font(rtbResultsFontFamily, size, rtbResultsStyle);
+            }
         }
 
         private void CloseTab()
@@ -914,6 +943,8 @@ namespace Compiler_Lab1
             UpdateToolStripDown();
 
             UpdateToolStripQuickBtn();
+
+            UpdateOutputWindow();
         }
 
         private void UpdateToolStripDown()
@@ -986,6 +1017,12 @@ namespace Compiler_Lab1
             btnAboutQuick.ToolTipText = _localization.Get("About");
         }
 
+        private void UpdateOutputWindow()
+        {
+            tabPageErrors.Text = _localization.Get("ErrorsTab");
+            tabPageResults.Text = _localization.Get("ResultTab");
+        }
+
         private void EnableLineNumbering(RichTextBox textBox, Panel linePanel)
         {
             textBox.TextChanged += (s, e) => linePanel.Invalidate();
@@ -1003,8 +1040,6 @@ namespace Compiler_Lab1
             }
 
             if (textBox == null || textBox.Lines.Length == 0) return;
-
-            Point firstVisiblePos = textBox.GetPositionFromCharIndex(0);
 
             for (int i = 0; i < textBox.Lines.Length; i++)
             {

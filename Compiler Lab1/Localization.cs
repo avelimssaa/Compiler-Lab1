@@ -79,7 +79,10 @@
                     ["Chars"] = "Символов",
 
                     ["Compile"] = "Компиляция...",
-                    ["Ready"] = "Готово."
+                    ["Ready"] = "Готово.",
+
+                    ["ErrorsTab"] = "Ошибки",
+                    ["ResultTab"] = "Результаты"
                 },
 
                 ["en"] = new Dictionary<string, string>
@@ -142,7 +145,10 @@
                     ["Chars"] = "Chars",
 
                     ["Compile"] = "Compile...",
-                    ["Ready"] = "Ready."
+                    ["Ready"] = "Ready.",
+
+                    ["ErrorsTab"] = "Errors",
+                    ["ResultTab"] = "Results"
                 }
             };
 
