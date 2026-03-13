@@ -23,10 +23,6 @@
         private bool _isError;
         private string _errorMessage;
 
-        //private int _code;
-        //private string _typeDescription;
-        //private string _location;
-
         ITokenDescription _description;
 
         public Token(TokenType type, string lexeme, int line, int startColumn, int endColumn, bool isError, string errorMessage)

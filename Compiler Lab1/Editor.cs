@@ -1,6 +1,5 @@
 using Compiler_Lab1.LexicalAnalyzer;
 using FastColoredTextBoxNS;
-using System.Data.Common;
 using System.Diagnostics;
 using System.Text;
 
@@ -27,6 +26,7 @@ namespace Compiler_Lab1
             _pagesCount = 0;
             CreateFile();
             _analyzer = new Analyzer();
+            //_analyzer = new FlexBisonParser();
         }
 
         private void CreateFile()
