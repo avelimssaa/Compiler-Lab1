@@ -8,6 +8,9 @@
         string GetLocation();
         bool IsError();
         string GetMessageDescription();
+        int GetStartColumn();
+        int GetLine();
+        int GetEndColumn();
     }
     public class Token : IToken
     {
@@ -66,6 +69,21 @@
         public string GetMessageDescription()
         {
             return _errorMessage;
+        }
+
+        public int GetStartColumn()
+        {
+            return _startColumn;
+        }
+
+        public int GetLine()
+        {
+            return _line;
+        }
+
+        public int GetEndColumn()
+        {
+            return _endColumn;
         }
     }
 }

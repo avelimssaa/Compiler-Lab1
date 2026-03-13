@@ -1,7 +1,8 @@
+using Compiler_Lab1.LexicalAnalyzer;
+using FastColoredTextBoxNS;
+using System.Data.Common;
 using System.Diagnostics;
 using System.Text;
-using FastColoredTextBoxNS;
-using Compiler_Lab1.LexicalAnalyzer;
 
 namespace Compiler_Lab1
 {
@@ -16,6 +17,8 @@ namespace Compiler_Lab1
         private ILocalization _localization;
 
         private IAnalyzer _analyzer;
+
+        private List<IToken> _currentTokens = new List<IToken>();
 
         public textEditor()
         {
@@ -56,7 +59,7 @@ namespace Compiler_Lab1
             fileInfo.FileName = newTab.Name;
             fileInfo.IsChanged = false;
 
- 
+
             tabControlEditor.SelectedTab = newTab;
 
             _tabFileInfo[newTab] = fileInfo;
@@ -885,13 +888,16 @@ namespace Compiler_Lab1
         private void Compile()
         {
             TabPage currentTab = tabControlEditor.SelectedTab;
+            if (currentTab == null) return;
+
             FastColoredTextBox textBox = currentTab.Controls.OfType<FastColoredTextBox>().FirstOrDefault();
+            if (textBox == null) return;
+
             string textToAnalyze = textBox.Text;
 
-            //_analyzer.GetText(textToAnalyze);
-            List<IToken> tokens = new List<IToken>();
-            tokens = _analyzer.Scan(textToAnalyze);
-            DisplayTokensInDataGridView(tokens);
+            _currentTokens = _analyzer.Scan(textToAnalyze);
+
+            DisplayTokensInDataGridView(_currentTokens);
         }
 
         private void DisplayTokensInDataGridView(List<IToken> tokens)
@@ -900,24 +906,25 @@ namespace Compiler_Lab1
 
             foreach (Token token in tokens)
             {
-                dgvResults.Rows.Add(
+                int rowIndex = dgvResults.Rows.Add(
                     token.GetConditionCode(),
                     token.GetTokenType(),
                     token.GetLexeme(),
                     token.GetLocation()
-                    //token.IsError() ? "Ошибка" : "",
-                    //token.GetMessageDescription()
                 );
-            }
 
-            //foreach (DataGridViewRow row in dgvResults.Rows)
-            //{
-            //    if (row.Cells[4].Value?.ToString() == "Ошибка")
-            //    {
-            //        row.DefaultCellStyle.BackColor = Color.LightCoral;
-            //        row.DefaultCellStyle.ForeColor = Color.White;
-            //    }
-            //}
+                DataGridViewRow row = dgvResults.Rows[rowIndex];
+
+                if (token.IsError())
+                {
+                    row.DefaultCellStyle.BackColor = Color.LightCoral;
+                    row.DefaultCellStyle.ForeColor = Color.White;
+                    row.DefaultCellStyle.SelectionBackColor = Color.DarkRed;
+                    row.DefaultCellStyle.SelectionForeColor = Color.White;
+
+                    row.Cells[0].ToolTipText = token.GetMessageDescription();
+                }
+            }
         }
 
         private void btnStart_Click(object sender, EventArgs e)
@@ -928,6 +935,53 @@ namespace Compiler_Lab1
         private void btnStartQuick_Click(object sender, EventArgs e)
         {
             Compile();
+        }
+
+        private void dgvResults_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex < 0 || e.RowIndex >= _currentTokens.Count) return;
+
+            IToken selectedToken = _currentTokens[e.RowIndex];
+
+            NavigateToToken(selectedToken);
+        }
+
+        private void NavigateToToken(IToken token)
+        {
+            TabPage currentTab = tabControlEditor.SelectedTab;
+            if (currentTab == null) return;
+
+            FastColoredTextBox textBox = currentTab.Controls.OfType<FastColoredTextBox>().FirstOrDefault();
+            if (textBox == null) return;
+
+            try
+            {
+                int line = token.GetLine();
+                int startColumn = token.GetStartColumn();
+                int endColumn = token.GetEndColumn();
+
+                if (line <= 0 || line > textBox.Lines.Count) return;
+
+                int position = 0;
+                for (int i = 0; i < line - 1; i++)
+                {
+                    position += textBox.Lines[i].Length + Environment.NewLine.Length;
+                }
+
+                position += startColumn - 1;
+
+                if (position >= 0)
+                {
+                    textBox.SelectionStart = position;
+                    textBox.SelectionLength = Math.Max(1, endColumn - startColumn + 1);
+                    textBox.DoSelectionVisible();
+                    textBox.Focus();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка навигации: {ex.Message}");
+            }
         }
     }
 }

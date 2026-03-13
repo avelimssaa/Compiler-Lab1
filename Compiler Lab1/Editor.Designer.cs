@@ -81,14 +81,14 @@
             tabControlResults = new TabControl();
             tabPageResults = new TabPage();
             dgvResults = new DataGridView();
-            statusStrip1 = new StatusStrip();
-            labelLanguage = new ToolStripStatusLabel();
-            labelFileSize = new ToolStripStatusLabel();
-            labelLineCount = new ToolStripStatusLabel();
             ConditionCode = new DataGridViewTextBoxColumn();
             TokenType = new DataGridViewTextBoxColumn();
             Token = new DataGridViewTextBoxColumn();
             Place = new DataGridViewTextBoxColumn();
+            statusStrip1 = new StatusStrip();
+            labelLanguage = new ToolStripStatusLabel();
+            labelFileSize = new ToolStripStatusLabel();
+            labelLineCount = new ToolStripStatusLabel();
             toolStrip1.SuspendLayout();
             toolStrip2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
@@ -547,9 +547,39 @@
             dgvResults.Dock = DockStyle.Fill;
             dgvResults.Location = new Point(3, 3);
             dgvResults.Name = "dgvResults";
+            dgvResults.ReadOnly = true;
             dgvResults.RowHeadersWidth = 51;
             dgvResults.Size = new Size(768, 204);
             dgvResults.TabIndex = 0;
+            dgvResults.CellClick += dgvResults_CellClick;
+            // 
+            // ConditionCode
+            // 
+            ConditionCode.HeaderText = "Условный код";
+            ConditionCode.MinimumWidth = 6;
+            ConditionCode.Name = "ConditionCode";
+            ConditionCode.ReadOnly = true;
+            // 
+            // TokenType
+            // 
+            TokenType.HeaderText = "Тип лексемы";
+            TokenType.MinimumWidth = 6;
+            TokenType.Name = "TokenType";
+            TokenType.ReadOnly = true;
+            // 
+            // Token
+            // 
+            Token.HeaderText = "Лексема";
+            Token.MinimumWidth = 6;
+            Token.Name = "Token";
+            Token.ReadOnly = true;
+            // 
+            // Place
+            // 
+            Place.HeaderText = "Местоположение";
+            Place.MinimumWidth = 6;
+            Place.Name = "Place";
+            Place.ReadOnly = true;
             // 
             // statusStrip1
             // 
@@ -578,30 +608,6 @@
             labelLineCount.Name = "labelLineCount";
             labelLineCount.Size = new Size(135, 20);
             labelLineCount.Text = "Количество строк:";
-            // 
-            // ConditionCode
-            // 
-            ConditionCode.HeaderText = "Условный код";
-            ConditionCode.MinimumWidth = 6;
-            ConditionCode.Name = "ConditionCode";
-            // 
-            // TokenType
-            // 
-            TokenType.HeaderText = "Тип лексемы";
-            TokenType.MinimumWidth = 6;
-            TokenType.Name = "TokenType";
-            // 
-            // Token
-            // 
-            Token.HeaderText = "Лексема";
-            Token.MinimumWidth = 6;
-            Token.Name = "Token";
-            // 
-            // Place
-            // 
-            Place.HeaderText = "Местоположение";
-            Place.MinimumWidth = 6;
-            Place.Name = "Place";
             // 
             // textEditor
             // 
