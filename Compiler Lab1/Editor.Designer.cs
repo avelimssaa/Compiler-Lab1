@@ -79,14 +79,12 @@
             tabControlEditor = new TabControl();
             splitContainer1 = new SplitContainer();
             tabControlResults = new TabControl();
-            tabPageErrors = new TabPage();
-            dgvOutput = new DataGridView();
-            FilePath = new DataGridViewTextBoxColumn();
-            Line = new DataGridViewTextBoxColumn();
-            Column = new DataGridViewTextBoxColumn();
-            Message = new DataGridViewTextBoxColumn();
             tabPageResults = new TabPage();
-            rtbResults = new RichTextBox();
+            dgvResults = new DataGridView();
+            ConditionCode = new DataGridViewTextBoxColumn();
+            TokenType = new DataGridViewTextBoxColumn();
+            Token = new DataGridViewTextBoxColumn();
+            Place = new DataGridViewTextBoxColumn();
             statusStrip1 = new StatusStrip();
             labelLanguage = new ToolStripStatusLabel();
             labelFileSize = new ToolStripStatusLabel();
@@ -98,9 +96,8 @@
             splitContainer1.Panel2.SuspendLayout();
             splitContainer1.SuspendLayout();
             tabControlResults.SuspendLayout();
-            tabPageErrors.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)dgvOutput).BeginInit();
             tabPageResults.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)dgvResults).BeginInit();
             statusStrip1.SuspendLayout();
             SuspendLayout();
             // 
@@ -521,7 +518,6 @@
             // 
             // tabControlResults
             // 
-            tabControlResults.Controls.Add(tabPageErrors);
             tabControlResults.Controls.Add(tabPageResults);
             tabControlResults.Dock = DockStyle.Fill;
             tabControlResults.Location = new Point(0, 0);
@@ -530,63 +526,9 @@
             tabControlResults.Size = new Size(782, 243);
             tabControlResults.TabIndex = 1;
             // 
-            // tabPageErrors
-            // 
-            tabPageErrors.Controls.Add(dgvOutput);
-            tabPageErrors.Location = new Point(4, 29);
-            tabPageErrors.Name = "tabPageErrors";
-            tabPageErrors.Padding = new Padding(3);
-            tabPageErrors.Size = new Size(774, 210);
-            tabPageErrors.TabIndex = 0;
-            tabPageErrors.Text = "Ошибки";
-            tabPageErrors.UseVisualStyleBackColor = true;
-            // 
-            // dgvOutput
-            // 
-            dgvOutput.AllowUserToAddRows = false;
-            dgvOutput.AllowUserToDeleteRows = false;
-            dgvOutput.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            dgvOutput.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvOutput.Columns.AddRange(new DataGridViewColumn[] { FilePath, Line, Column, Message });
-            dgvOutput.Dock = DockStyle.Fill;
-            dgvOutput.Location = new Point(3, 3);
-            dgvOutput.Name = "dgvOutput";
-            dgvOutput.ReadOnly = true;
-            dgvOutput.RowHeadersWidth = 51;
-            dgvOutput.Size = new Size(768, 204);
-            dgvOutput.TabIndex = 0;
-            // 
-            // FilePath
-            // 
-            FilePath.HeaderText = "FilePath";
-            FilePath.MinimumWidth = 6;
-            FilePath.Name = "FilePath";
-            FilePath.ReadOnly = true;
-            // 
-            // Line
-            // 
-            Line.HeaderText = "Line";
-            Line.MinimumWidth = 6;
-            Line.Name = "Line";
-            Line.ReadOnly = true;
-            // 
-            // Column
-            // 
-            Column.HeaderText = "Column";
-            Column.MinimumWidth = 6;
-            Column.Name = "Column";
-            Column.ReadOnly = true;
-            // 
-            // Message
-            // 
-            Message.HeaderText = "Message";
-            Message.MinimumWidth = 6;
-            Message.Name = "Message";
-            Message.ReadOnly = true;
-            // 
             // tabPageResults
             // 
-            tabPageResults.Controls.Add(rtbResults);
+            tabPageResults.Controls.Add(dgvResults);
             tabPageResults.Location = new Point(4, 29);
             tabPageResults.Name = "tabPageResults";
             tabPageResults.Padding = new Padding(3);
@@ -595,15 +537,43 @@
             tabPageResults.Text = "Результаты";
             tabPageResults.UseVisualStyleBackColor = true;
             // 
-            // rtbResults
+            // dgvResults
             // 
-            rtbResults.Dock = DockStyle.Fill;
-            rtbResults.Location = new Point(3, 3);
-            rtbResults.Name = "rtbResults";
-            rtbResults.ReadOnly = true;
-            rtbResults.Size = new Size(768, 204);
-            rtbResults.TabIndex = 0;
-            rtbResults.Text = "";
+            dgvResults.AllowUserToAddRows = false;
+            dgvResults.AllowUserToDeleteRows = false;
+            dgvResults.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dgvResults.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvResults.Columns.AddRange(new DataGridViewColumn[] { ConditionCode, TokenType, Token, Place });
+            dgvResults.Dock = DockStyle.Fill;
+            dgvResults.Location = new Point(3, 3);
+            dgvResults.Name = "dgvResults";
+            dgvResults.RowHeadersWidth = 51;
+            dgvResults.Size = new Size(768, 204);
+            dgvResults.TabIndex = 0;
+            // 
+            // ConditionCode
+            // 
+            ConditionCode.HeaderText = "Condition Code";
+            ConditionCode.MinimumWidth = 6;
+            ConditionCode.Name = "ConditionCode";
+            // 
+            // TokenType
+            // 
+            TokenType.HeaderText = "Token Type";
+            TokenType.MinimumWidth = 6;
+            TokenType.Name = "TokenType";
+            // 
+            // Token
+            // 
+            Token.HeaderText = "Token";
+            Token.MinimumWidth = 6;
+            Token.Name = "Token";
+            // 
+            // Place
+            // 
+            Place.HeaderText = "Place";
+            Place.MinimumWidth = 6;
+            Place.Name = "Place";
             // 
             // statusStrip1
             // 
@@ -662,9 +632,8 @@
             ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();
             splitContainer1.ResumeLayout(false);
             tabControlResults.ResumeLayout(false);
-            tabPageErrors.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)dgvOutput).EndInit();
             tabPageResults.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)dgvResults).EndInit();
             statusStrip1.ResumeLayout(false);
             statusStrip1.PerformLayout();
             ResumeLayout(false);
@@ -717,11 +686,6 @@
         private ToolStripTextBox txtHelpFont;
         private TabControl tabControlEditor;
         private SplitContainer splitContainer1;
-        private DataGridView dgvOutput;
-        private DataGridViewTextBoxColumn FilePath;
-        private DataGridViewTextBoxColumn Line;
-        private DataGridViewTextBoxColumn Column;
-        private DataGridViewTextBoxColumn Message;
         private ToolStripButton btnCloseTabQuick;
         private ToolStripMenuItem btnCloseTab;
         private ToolStripSeparator toolStripSeparator1;
@@ -732,8 +696,11 @@
         private ToolStripStatusLabel labelFileSize;
         private ToolStripStatusLabel labelLineCount;
         private TabControl tabControlResults;
-        private TabPage tabPageErrors;
         private TabPage tabPageResults;
-        private RichTextBox rtbResults;
+        private DataGridView dgvResults;
+        private DataGridViewTextBoxColumn ConditionCode;
+        private DataGridViewTextBoxColumn TokenType;
+        private DataGridViewTextBoxColumn Token;
+        private DataGridViewTextBoxColumn Place;
     }
 }

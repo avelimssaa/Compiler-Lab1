@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.Text;
 using FastColoredTextBoxNS;
+using Compiler_Lab1.LexicalAnalyzer;
 
 namespace Compiler_Lab1
 {
@@ -14,12 +15,15 @@ namespace Compiler_Lab1
 
         private ILocalization _localization;
 
+        private IAnalyzer _analyzer;
+
         public textEditor()
         {
             InitializeComponent();
             _localization = new Localization();
             _pagesCount = 0;
             CreateFile();
+            _analyzer = new Analyzer();
         }
 
         private void CreateFile()
@@ -467,20 +471,6 @@ namespace Compiler_Lab1
                 }
             }
 
-            if (dgvOutput != null)
-            {
-                FontStyle outputStyle = dgvOutput.Font.Style;
-                string outputFontFamily = dgvOutput.Font.FontFamily.Name;
-                dgvOutput.Font = new Font(outputFontFamily, size, outputStyle);
-            }
-
-            if (tabPageErrors != null)
-            {
-                FontStyle errorsStyle = tabPageErrors.Font.Style;
-                string errorsFontFamily = tabPageErrors.Font.FontFamily.Name;
-                tabPageErrors.Font = new Font(errorsFontFamily, size, errorsStyle);
-            }
-
             if (tabPageResults != null)
             {
                 FontStyle resultsStyle = tabPageResults.Font.Style;
@@ -488,11 +478,11 @@ namespace Compiler_Lab1
                 tabPageResults.Font = new Font(resultsFontFamily, size, resultsStyle);
             }
 
-            if (rtbResults != null)
+            if (dgvResults != null)
             {
-                FontStyle rtbResultsStyle = rtbResults.Font.Style;
-                string rtbResultsFontFamily = rtbResults.Font.FontFamily.Name;
-                rtbResults.Font = new Font(rtbResultsFontFamily, size, rtbResultsStyle);
+                FontStyle rtbResultsStyle = dgvResults.Font.Style;
+                string rtbResultsFontFamily = dgvResults.Font.FontFamily.Name;
+                dgvResults.Font = new Font(rtbResultsFontFamily, size, rtbResultsStyle);
             }
         }
 
@@ -640,7 +630,6 @@ namespace Compiler_Lab1
 
         private void UpdateOutputWindow()
         {
-            tabPageErrors.Text = _localization.Get("ErrorsTab");
             tabPageResults.Text = _localization.Get("ResultTab");
         }
         private void textEditor_DragEnter(object sender, DragEventArgs e)
@@ -893,14 +882,14 @@ namespace Compiler_Lab1
             }
         }
 
-        private async void Compile()
+        private void Compile()
         {
-            tabControlResults.SelectedTab = tabPageResults;
-            rtbResults.Text = "";
-            rtbResults.AppendText(_localization.Get("Compile"));
-            rtbResults.AppendText("\n");
-            await Task.Delay(2000);
-            rtbResults.AppendText(_localization.Get("Ready"));
+            TabPage currentTab = tabControlEditor.SelectedTab;
+            FastColoredTextBox textBox = currentTab.Controls.OfType<FastColoredTextBox>().FirstOrDefault();
+            string textToAnalyze = textBox.Text;
+
+            //_analyzer.GetText(textToAnalyze);
+
         }
 
         private void btnStart_Click(object sender, EventArgs e)
