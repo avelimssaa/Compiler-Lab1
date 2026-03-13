@@ -1,19 +1,30 @@
 ﻿namespace Compiler_Lab1.LexicalAnalyzer
 {
-    public class Token
+    public interface IToken
     {
-        public TokenType _type;
-        public string _lexeme;
-        public int _line;
-        public int _startColumn;
-        public int _endColumn;
+        int GetConditionCode();
+        string GetTokenType();
+        string GetLexeme();
+        string GetLocation();
+        bool IsError();
+        string GetMessageDescription();
+    }
+    public class Token : IToken
+    {
+        private TokenType _type;
+        private string _lexeme;
+        private int _line;
+        private int _startColumn;
+        private int _endColumn;
 
-        public bool _isError;
-        public string _errorMessage;
+        private bool _isError;
+        private string _errorMessage;
 
-        public int _code;
-        public string _typeDescription;
-        public string _location;
+        //private int _code;
+        //private string _typeDescription;
+        //private string _location;
+
+        ITokenDescription _description;
 
         public Token(TokenType type, string lexeme, int line, int startColumn, int endColumn, bool isError, string errorMessage)
         {
@@ -24,6 +35,37 @@
             _endColumn = endColumn;
             _isError = isError;
             _errorMessage = errorMessage;
+            _description = new TokenDescription(); 
+        }
+
+        public int GetConditionCode()
+        {
+            return (int)_type;
+        }
+        
+        public string GetTokenType()
+        {
+            return _description.GetTokenDescription(_type);
+        }
+
+        public string GetLexeme()
+        {
+            return _lexeme;
+        }
+
+        public string GetLocation()
+        {
+            return $"строка {_line}, {_startColumn} - {_endColumn}";
+        }
+
+        public bool IsError()
+        {
+            return _isError;
+        }
+
+        public string GetMessageDescription()
+        {
+            return _errorMessage;
         }
     }
 }

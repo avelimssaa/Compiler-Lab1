@@ -889,7 +889,35 @@ namespace Compiler_Lab1
             string textToAnalyze = textBox.Text;
 
             //_analyzer.GetText(textToAnalyze);
+            List<IToken> tokens = new List<IToken>();
+            tokens = _analyzer.Scan(textToAnalyze);
+            DisplayTokensInDataGridView(tokens);
+        }
 
+        private void DisplayTokensInDataGridView(List<IToken> tokens)
+        {
+            dgvResults.Rows.Clear();
+
+            foreach (Token token in tokens)
+            {
+                dgvResults.Rows.Add(
+                    token.GetConditionCode(),
+                    token.GetTokenType(),
+                    token.GetLexeme(),
+                    token.GetLocation()
+                    //token.IsError() ? "Ошибка" : "",
+                    //token.GetMessageDescription()
+                );
+            }
+
+            //foreach (DataGridViewRow row in dgvResults.Rows)
+            //{
+            //    if (row.Cells[4].Value?.ToString() == "Ошибка")
+            //    {
+            //        row.DefaultCellStyle.BackColor = Color.LightCoral;
+            //        row.DefaultCellStyle.ForeColor = Color.White;
+            //    }
+            //}
         }
 
         private void btnStart_Click(object sender, EventArgs e)

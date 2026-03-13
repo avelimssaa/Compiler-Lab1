@@ -81,14 +81,14 @@
             tabControlResults = new TabControl();
             tabPageResults = new TabPage();
             dgvResults = new DataGridView();
-            ConditionCode = new DataGridViewTextBoxColumn();
-            TokenType = new DataGridViewTextBoxColumn();
-            Token = new DataGridViewTextBoxColumn();
-            Place = new DataGridViewTextBoxColumn();
             statusStrip1 = new StatusStrip();
             labelLanguage = new ToolStripStatusLabel();
             labelFileSize = new ToolStripStatusLabel();
             labelLineCount = new ToolStripStatusLabel();
+            ConditionCode = new DataGridViewTextBoxColumn();
+            TokenType = new DataGridViewTextBoxColumn();
+            Token = new DataGridViewTextBoxColumn();
+            Place = new DataGridViewTextBoxColumn();
             toolStrip1.SuspendLayout();
             toolStrip2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
@@ -551,30 +551,6 @@
             dgvResults.Size = new Size(768, 204);
             dgvResults.TabIndex = 0;
             // 
-            // ConditionCode
-            // 
-            ConditionCode.HeaderText = "Condition Code";
-            ConditionCode.MinimumWidth = 6;
-            ConditionCode.Name = "ConditionCode";
-            // 
-            // TokenType
-            // 
-            TokenType.HeaderText = "Token Type";
-            TokenType.MinimumWidth = 6;
-            TokenType.Name = "TokenType";
-            // 
-            // Token
-            // 
-            Token.HeaderText = "Token";
-            Token.MinimumWidth = 6;
-            Token.Name = "Token";
-            // 
-            // Place
-            // 
-            Place.HeaderText = "Place";
-            Place.MinimumWidth = 6;
-            Place.Name = "Place";
-            // 
             // statusStrip1
             // 
             statusStrip1.ImageScalingSize = new Size(20, 20);
@@ -602,6 +578,30 @@
             labelLineCount.Name = "labelLineCount";
             labelLineCount.Size = new Size(135, 20);
             labelLineCount.Text = "Количество строк:";
+            // 
+            // ConditionCode
+            // 
+            ConditionCode.HeaderText = "Условный код";
+            ConditionCode.MinimumWidth = 6;
+            ConditionCode.Name = "ConditionCode";
+            // 
+            // TokenType
+            // 
+            TokenType.HeaderText = "Тип лексемы";
+            TokenType.MinimumWidth = 6;
+            TokenType.Name = "TokenType";
+            // 
+            // Token
+            // 
+            Token.HeaderText = "Лексема";
+            Token.MinimumWidth = 6;
+            Token.Name = "Token";
+            // 
+            // Place
+            // 
+            Place.HeaderText = "Местоположение";
+            Place.MinimumWidth = 6;
+            Place.Name = "Place";
             // 
             // textEditor
             // 

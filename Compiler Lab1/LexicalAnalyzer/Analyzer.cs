@@ -1,11 +1,8 @@
-﻿using static System.Runtime.InteropServices.JavaScript.JSType;
-
-namespace Compiler_Lab1.LexicalAnalyzer
+﻿namespace Compiler_Lab1.LexicalAnalyzer
 {
     public interface IAnalyzer
     {
-        void GetText(string fileContent);
-        List<Token> Scan(string input);
+        List<IToken> Scan(string input);
     }
     internal class Analyzer : IAnalyzer
     {
@@ -14,20 +11,16 @@ namespace Compiler_Lab1.LexicalAnalyzer
         private int _line;
         private int _column;
 
-        private List<Token> _tokens;
+        private List<IToken> _tokens;
 
 
         public Analyzer()
         {
-            _tokens = new List<Token>();
+            _tokens = new List<IToken>();
         }
 
-        public void GetText(string fileContent)
-        {
 
-        }
-
-        public List<Token> Scan(string input)
+        public List<IToken> Scan(string input)
         {
             _input = input;
             _position = 0;
@@ -91,7 +84,6 @@ namespace Compiler_Lab1.LexicalAnalyzer
             }
 
             string number = _input.Substring(startPos, _position - startPos);
-            Console.WriteLine($"Найдено число: '{number}'");
 
             _tokens.Add(new Token(TokenType.DIGIT, number, _line, startCol, _column - 1, false, ""));
         }
@@ -178,6 +170,7 @@ namespace Compiler_Lab1.LexicalAnalyzer
             }
             else
             {
+                type = TokenType.UNKNOWN;
                 _tokens.Add(new Token(type.Value, current.ToString(), _line, startCol, startCol, true, $"Недопустимый символ '{current}'"));
                 _position++;
                 _column++;

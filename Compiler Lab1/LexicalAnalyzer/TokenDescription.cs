@@ -25,8 +25,19 @@
 
         UNKNOWN = 99
     }
-    internal class TokenDescription
+
+    public interface ITokenDescription
     {
+        string GetTokenDescription(TokenType type);
+    }
+
+    internal class TokenDescription : ITokenDescription
+    {
+        public TokenDescription()
+        {
+
+        }
+
         public string GetTokenDescription(TokenType type)
         {
             switch (type)
