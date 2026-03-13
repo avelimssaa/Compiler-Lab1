@@ -25,8 +25,8 @@ namespace Compiler_Lab1
             _localization = new Localization();
             _pagesCount = 0;
             CreateFile();
-            _analyzer = new Analyzer();
-            //_analyzer = new FlexBisonParser();
+            //_analyzer = new Analyzer();
+            _analyzer = new FlexBisonParser();
         }
 
         private void CreateFile()
