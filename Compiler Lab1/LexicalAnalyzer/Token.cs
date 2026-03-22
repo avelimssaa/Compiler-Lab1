@@ -11,6 +11,7 @@
         int GetStartColumn();
         int GetLine();
         int GetEndColumn();
+        TokenType GetTokenTypeEnum();
     }
     public class Token : IToken
     {
@@ -80,6 +81,11 @@
         public int GetEndColumn()
         {
             return _endColumn;
+        }
+
+        public TokenType GetTokenTypeEnum()
+        {
+            return _type;
         }
     }
 }

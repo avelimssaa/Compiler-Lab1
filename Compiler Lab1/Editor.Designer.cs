@@ -81,14 +81,13 @@
             tabControlResults = new TabControl();
             tabPageResults = new TabPage();
             dgvResults = new DataGridView();
-            ConditionCode = new DataGridViewTextBoxColumn();
-            TokenType = new DataGridViewTextBoxColumn();
-            Token = new DataGridViewTextBoxColumn();
-            Place = new DataGridViewTextBoxColumn();
             statusStrip1 = new StatusStrip();
             labelLanguage = new ToolStripStatusLabel();
             labelFileSize = new ToolStripStatusLabel();
             labelLineCount = new ToolStripStatusLabel();
+            InvalidFragment = new DataGridViewTextBoxColumn();
+            Location = new DataGridViewTextBoxColumn();
+            Description = new DataGridViewTextBoxColumn();
             toolStrip1.SuspendLayout();
             toolStrip2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
@@ -543,7 +542,7 @@
             dgvResults.AllowUserToDeleteRows = false;
             dgvResults.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvResults.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvResults.Columns.AddRange(new DataGridViewColumn[] { ConditionCode, TokenType, Token, Place });
+            dgvResults.Columns.AddRange(new DataGridViewColumn[] { InvalidFragment, Location, Description });
             dgvResults.Dock = DockStyle.Fill;
             dgvResults.Location = new Point(3, 3);
             dgvResults.Name = "dgvResults";
@@ -552,34 +551,6 @@
             dgvResults.Size = new Size(768, 204);
             dgvResults.TabIndex = 0;
             dgvResults.CellClick += dgvResults_CellClick;
-            // 
-            // ConditionCode
-            // 
-            ConditionCode.HeaderText = "Условный код";
-            ConditionCode.MinimumWidth = 6;
-            ConditionCode.Name = "ConditionCode";
-            ConditionCode.ReadOnly = true;
-            // 
-            // TokenType
-            // 
-            TokenType.HeaderText = "Тип лексемы";
-            TokenType.MinimumWidth = 6;
-            TokenType.Name = "TokenType";
-            TokenType.ReadOnly = true;
-            // 
-            // Token
-            // 
-            Token.HeaderText = "Лексема";
-            Token.MinimumWidth = 6;
-            Token.Name = "Token";
-            Token.ReadOnly = true;
-            // 
-            // Place
-            // 
-            Place.HeaderText = "Местоположение";
-            Place.MinimumWidth = 6;
-            Place.Name = "Place";
-            Place.ReadOnly = true;
             // 
             // statusStrip1
             // 
@@ -608,6 +579,27 @@
             labelLineCount.Name = "labelLineCount";
             labelLineCount.Size = new Size(135, 20);
             labelLineCount.Text = "Количество строк:";
+            // 
+            // InvalidFragment
+            // 
+            InvalidFragment.HeaderText = "Неверный фрагмент";
+            InvalidFragment.MinimumWidth = 6;
+            InvalidFragment.Name = "InvalidFragment";
+            InvalidFragment.ReadOnly = true;
+            // 
+            // Location
+            // 
+            Location.HeaderText = "Местоположение";
+            Location.MinimumWidth = 6;
+            Location.Name = "Location";
+            Location.ReadOnly = true;
+            // 
+            // Description
+            // 
+            Description.HeaderText = "Описание";
+            Description.MinimumWidth = 6;
+            Description.Name = "Description";
+            Description.ReadOnly = true;
             // 
             // textEditor
             // 
@@ -704,9 +696,8 @@
         private TabControl tabControlResults;
         private TabPage tabPageResults;
         private DataGridView dgvResults;
-        private DataGridViewTextBoxColumn ConditionCode;
-        private DataGridViewTextBoxColumn TokenType;
-        private DataGridViewTextBoxColumn Token;
-        private DataGridViewTextBoxColumn Place;
+        private DataGridViewTextBoxColumn InvalidFragment;
+        private DataGridViewTextBoxColumn Location;
+        private DataGridViewTextBoxColumn Description;
     }
 }

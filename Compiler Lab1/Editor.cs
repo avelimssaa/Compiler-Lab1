@@ -1,4 +1,5 @@
 using Compiler_Lab1.LexicalAnalyzer;
+using Compiler_Lab1.Parser;
 using FastColoredTextBoxNS;
 using System.Diagnostics;
 using System.Text;
@@ -25,8 +26,9 @@ namespace Compiler_Lab1
             _localization = new Localization();
             _pagesCount = 0;
             CreateFile();
-            //_analyzer = new Analyzer();
-            _analyzer = new FlexBisonParser();
+            _analyzer = new Analyzer();
+
+            //_analyzer = new FlexBisonParser();
         }
 
         private void CreateFile()
@@ -887,17 +889,81 @@ namespace Compiler_Lab1
 
         private void Compile()
         {
-            TabPage currentTab = tabControlEditor.SelectedTab;
-            if (currentTab == null) return;
+            //TabPage currentTab = tabControlEditor.SelectedTab;
+            //if (currentTab == null) return;
 
-            FastColoredTextBox textBox = currentTab.Controls.OfType<FastColoredTextBox>().FirstOrDefault();
-            if (textBox == null) return;
+            //FastColoredTextBox textBox = currentTab.Controls.OfType<FastColoredTextBox>().FirstOrDefault();
+            //if (textBox == null) return;
 
-            string textToAnalyze = textBox.Text;
+            //string textToAnalyze = textBox.Text;
 
-            _currentTokens = _analyzer.Scan(textToAnalyze);
+            //_currentTokens = _analyzer.Scan(textToAnalyze);
 
-            DisplayTokensInDataGridView(_currentTokens);
+            //IParser parser = new CodeParser(_currentTokens);
+            //parser.ParseStart();
+
+            //DisplayTokensInDataGridView(_currentTokens);
+            RunSyntaxAnalysis();
+        }
+
+        private void RunSyntaxAnalysis()
+        {
+            dgvResults.Rows.Clear();
+
+            var textBox = tabControlEditor.SelectedTab.Controls
+                .OfType<FastColoredTextBox>()
+                .FirstOrDefault();
+
+            if (textBox == null)
+                return;
+
+            string code = textBox.Text;
+
+            var tokens = _analyzer.Scan(code);
+
+            var parser = new CodeParser(tokens);
+            parser.ParseStart();
+
+            dgvResults.Rows.Clear();
+
+            foreach (var err in parser.Errors)
+            {
+                dgvResults.Rows.Add(
+                    err.UnexpectedLexeme,
+                    err.Location,
+                    err.Message
+                );
+            }
+
+            if (parser.Errors.Count == 0)
+            {
+                dgvResults.Rows.Add(
+                    "",
+                    "",
+                    "Синтаксический анализ завершён успешно"
+                );
+            }
+        }
+
+
+        private void AddErrorToGrid(SyntaxError error)
+        {
+            dgvResults.Rows.Add(
+                "Ошибка",
+                error.Message,
+                error.Line,
+                error.Column
+            );
+        }
+
+        private void AddSuccessMessage()
+        {
+            dgvResults.Rows.Add(
+                "OK",
+                "Синтаксический анализ завершён успешно",
+                "",
+                ""
+            );
         }
 
         private void DisplayTokensInDataGridView(List<IToken> tokens)

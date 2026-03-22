@@ -4,6 +4,7 @@
     {
         List<IToken> Scan(string input);
     }
+
     internal class Analyzer : IAnalyzer
     {
         private string _input;
@@ -11,14 +12,12 @@
         private int _line;
         private int _column;
 
-        private List<IToken> _tokens;
-
+        private readonly List<IToken> _tokens;
 
         public Analyzer()
         {
             _tokens = new List<IToken>();
         }
-
 
         public List<IToken> Scan(string input)
         {
@@ -34,14 +33,11 @@
 
                 if (current == ' ')
                 {
-                    _tokens.Add(new Token(TokenType.DELIMITER_SPACE, " ", _line, _column, _column, false, ""));
-                    _position++;
-                    _column++;
+                    AddToken(TokenType.DELIMITER_SPACE, " ", 1);
                 }
                 else if (current == '\n')
                 {
-                    _tokens.Add(new Token(TokenType.DELIMITER_NEWLINE, "\n", _line, _column, _column, false, ""));
-                    _position++;
+                    AddToken(TokenType.DELIMITER_NEWLINE, "\n", 1);
                     _line++;
                     _column = 1;
                 }
@@ -51,9 +47,7 @@
                 }
                 else if (current == '\t')
                 {
-                    _tokens.Add(new Token(TokenType.DELIMITER_TABULATION, "\t", _line, _column, _column, false, ""));
-                    _position++;
-                    _column++;
+                    AddToken(TokenType.DELIMITER_TABULATION, "\t", 1);
                 }
                 else if (char.IsDigit(current))
                 {
@@ -77,14 +71,14 @@
             int startPos = _position;
             int startCol = _column;
 
-            while (_position < _input.Length && char.IsDigit(_input[_position]))
+            while (_position < _input.Length &&
+                   char.IsDigit(_input[_position]))
             {
                 _position++;
                 _column++;
             }
 
             string number = _input.Substring(startPos, _position - startPos);
-
             _tokens.Add(new Token(TokenType.DIGIT, number, _line, startCol, _column - 1, false, ""));
         }
 
@@ -102,79 +96,79 @@
 
             string lexeme = _input.Substring(startPos, _position - startPos);
 
-            TokenType type;
-
-            switch (lexeme)
+            if (lexeme == "for")
             {
-                case "for":
-                    type = TokenType.KEYWORD_FOR;
-                    break;
-                case "to":
-                    type = TokenType.KEYWORD_TO;
-                    break;
-                case "println":
-                    type = TokenType.KEYWORD_PRINTLN;
-                    break;
-                default:
-                    type = TokenType.IDENTIFIER;
-                    break;
+                if (_position >= _input.Length || !char.IsLetterOrDigit(_input[_position]))
+                {
+                    _tokens.Add(new Token(TokenType.KEYWORD_FOR, lexeme, _line, startCol, _column - 1, false, ""));
+                    return;
+                }
             }
 
-            _tokens.Add(new Token(type, lexeme, _line, startCol, _column - 1, false, ""));
+            if (lexeme == "to")
+            {
+                if (_position >= _input.Length || !char.IsLetterOrDigit(_input[_position]))
+                {
+                    _tokens.Add(new Token(TokenType.KEYWORD_TO, lexeme, _line, startCol, _column - 1, false, ""));
+                    return;
+                }
+            }
+
+            if (lexeme == "println")
+            {
+                _tokens.Add(new Token(TokenType.KEYWORD_PRINTLN, lexeme, _line, startCol, _column - 1, false, ""));
+                return;
+            }
+
+            _tokens.Add(new Token(TokenType.IDENTIFIER, lexeme, _line, startCol, _column - 1, false, ""));
         }
 
         private void ProcessOperatorOrDelimiter()
         {
             char current = _input[_position];
-            int startCol = _column;
-
-            if (_position + 1 < _input.Length)
-            {
-                string twoChars = current.ToString() + _input[_position + 1];
-
-                if (twoChars == "<-")
-                {
-                    _tokens.Add(new Token(TokenType.OPERATOR_ARROW, twoChars, _line, startCol, startCol + 1, false, ""));
-                    _position += 2;
-                    _column += 2;
-                    return;
-                }
-            }
-
-            TokenType? type = null;
 
             switch (current)
             {
                 case '(':
-                    type = TokenType.DELIMITER_LPAREN;
-                    break;
+                    AddToken(TokenType.DELIMITER_LPAREN, "(", 1);
+                    return;
+
                 case ')':
-                    type = TokenType.DELIMITER_RPAREN;
-                    break;
+                    AddToken(TokenType.DELIMITER_RPAREN, ")", 1);
+                    return;
+
                 case '{':
-                    type = TokenType.DELIMITER_LBRACE;
-                    break;
+                    AddToken(TokenType.DELIMITER_LBRACE, "{", 1);
+                    return;
+
                 case '}':
-                    type = TokenType.DELIMITER_RBRACE;
-                    break;
+                    AddToken(TokenType.DELIMITER_RBRACE, "}", 1);
+                    return;
+
                 case ';':
-                    type = TokenType.DELIMITER_SEMICOLON;
-                    break;
+                    AddToken(TokenType.DELIMITER_SEMICOLON, ";", 1);
+                    return;
             }
 
-            if (type.HasValue)
+            if (_position + 1 < _input.Length)
             {
-                _tokens.Add(new Token(type.Value, current.ToString(), _line, startCol, startCol, false, ""));
-                _position++;
-                _column++;
+                string two = _input.Substring(_position, 2);
+
+                if (two == "<-")
+                {
+                    AddToken(TokenType.OPERATOR_ARROW, two, 2);
+                    return;
+                }
             }
-            else
-            {
-                type = TokenType.UNKNOWN;
-                _tokens.Add(new Token(type.Value, current.ToString(), _line, startCol, startCol, true, $"Недопустимый символ '{current}'"));
-                _position++;
-                _column++;
-            }
+
+            AddToken(TokenType.UNKNOWN, current.ToString(), 1, true, $"Недопустимый символ '{current}'");
+        }
+
+        private void AddToken(TokenType type, string lexeme, int length, bool isError = false, string message = "")
+        {
+            _tokens.Add(new Token(type, lexeme, _line, _column, _column + length - 1, isError, message));
+            _position += length;
+            _column += length;
         }
     }
 }
