@@ -1,0 +1,25 @@
+digraph ATN {
+rankdir=LR;
+s7[fontsize=11, label="7", shape=doublecircle, fixedsize=true, width=.6];
+s48[fontsize=11,label="48", shape=circle, fixedsize=true, width=.55, peripheries=1];
+s49[fontsize=11,label="49", shape=circle, fixedsize=true, width=.55, peripheries=1];
+s6[fontsize=11,label="6", shape=circle, fixedsize=true, width=.55, peripheries=1];
+s41[fontsize=11,label="41", shape=circle, fixedsize=true, width=.55, peripheries=1];
+s42[fontsize=11,label="&rarr;\n42*", shape=circle, fixedsize=true, width=.55, peripheries=1];
+s43[fontsize=11,label="&larr;\n43", shape=circle, fixedsize=true, width=.55, peripheries=1];
+s44[fontsize=11,label="{44*\nd=0|{<p0>|<p1>}}", shape=record, fixedsize=false, peripheries=1];
+s45[fontsize=11,label="45", shape=circle, fixedsize=true, width=.55, peripheries=1];
+s46[fontsize=11,label="46*", shape=circle, fixedsize=true, width=.55, peripheries=1];
+s47[fontsize=11,label="47", shape=circle, fixedsize=true, width=.55, peripheries=1];
+s6 -> s44 [fontname="Times-Italic", label="&epsilon;"];
+s44:p0 -> s42 [fontname="Times-Italic", label="&epsilon;"];
+s44:p1 -> s45 [fontname="Times-Italic", label="&epsilon;"];
+s42 -> s41 [fontname="Times-Italic", label="&epsilon;"];
+s45 -> s47 [fontname="Times-Italic", label="&epsilon;"];
+s41 -> s43 [fontsize=11, fontname="Courier", arrowsize=.7, label = "{'_', IDENTIFIER, DIGIT}", arrowhead = normal];
+s47 -> s48 [fontsize=11, fontname="Courier", arrowsize=.7, label = "'<-'", arrowhead = normal];
+s43 -> s46 [fontname="Times-Italic", label="&epsilon;"];
+s48 -> s49 [fontsize=11, fontname="Courier", arrowsize=.7, label = "<operatorExpression>", arrowhead = normal];
+s46 -> s44 [fontname="Times-Italic", label="&epsilon;", style="dashed"];
+s49 -> s7 [fontname="Times-Italic", label="&epsilon;"];
+}

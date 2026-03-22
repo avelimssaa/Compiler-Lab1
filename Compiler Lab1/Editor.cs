@@ -1,3 +1,5 @@
+using Antlr4.Runtime;
+using Compiler_Lab1.GRAMMAR;
 using Compiler_Lab1.LexicalAnalyzer;
 using Compiler_Lab1.Parser;
 using FastColoredTextBoxNS;
@@ -18,7 +20,7 @@ namespace Compiler_Lab1
 
         private IAnalyzer _analyzer;
 
-        private List<IToken> _currentTokens = new List<IToken>();
+        //private List<LexicalAnalyzer.IToken> _currentTokens = new List<LexicalAnalyzer.IToken>();
 
         public textEditor()
         {
@@ -903,7 +905,51 @@ namespace Compiler_Lab1
             //parser.ParseStart();
 
             //DisplayTokensInDataGridView(_currentTokens);
+
+
+
+
+
             RunSyntaxAnalysis();
+
+
+
+
+        }
+
+        private void AntlrParser()
+        {
+            dgvResults.Rows.Clear();
+
+            TabPage currentTab = tabControlEditor.SelectedTab;
+            if (currentTab == null) return;
+
+            FastColoredTextBox textBox = currentTab.Controls.OfType<FastColoredTextBox>().FirstOrDefault();
+            if (textBox == null) return;
+
+            string code = textBox.Text;
+
+            var input = new AntlrInputStream(code);
+            var lexer = new ForLangLexer(input);
+            var tokens = new CommonTokenStream(lexer);
+            var parser = new ForLangParser(tokens);
+
+            var errorListener = new ForLangErrorListener();
+
+            parser.RemoveErrorListeners();
+            parser.AddErrorListener(errorListener);
+
+            parser.start();
+
+            foreach (var err in errorListener.Errors)
+            {
+                dgvResults.Rows.Add(err.Fragment, err.Location, err.Description);
+            }
+
+            if (errorListener.Errors.Count == 0)
+            {
+                dgvResults.Rows.Add("Ч", "Ч", "ќшибок не обнаружено");
+            }
         }
 
         private void RunSyntaxAnalysis()
@@ -925,8 +971,6 @@ namespace Compiler_Lab1
             parser.ParseStart();
 
             dgvResults.Rows.Clear();
-
-            textBox.AppendText(parser.GetRecoveredSource());
 
             foreach (var err in parser.Errors)
             {
@@ -968,32 +1012,32 @@ namespace Compiler_Lab1
             );
         }
 
-        private void DisplayTokensInDataGridView(List<IToken> tokens)
-        {
-            dgvResults.Rows.Clear();
+        //private void DisplayTokensInDataGridView(List<IToken> tokens)
+        //{
+        //    dgvResults.Rows.Clear();
 
-            foreach (Token token in tokens)
-            {
-                int rowIndex = dgvResults.Rows.Add(
-                    token.GetConditionCode(),
-                    token.GetTokenType(),
-                    token.GetLexeme(),
-                    token.GetLocation()
-                );
+        //    foreach (Token token in tokens)
+        //    {
+        //        int rowIndex = dgvResults.Rows.Add(
+        //            token.GetConditionCode(),
+        //            token.GetTokenType(),
+        //            token.GetLexeme(),
+        //            token.GetLocation()
+        //        );
 
-                DataGridViewRow row = dgvResults.Rows[rowIndex];
+        //        DataGridViewRow row = dgvResults.Rows[rowIndex];
 
-                if (token.IsError())
-                {
-                    row.DefaultCellStyle.BackColor = Color.LightCoral;
-                    row.DefaultCellStyle.ForeColor = Color.White;
-                    row.DefaultCellStyle.SelectionBackColor = Color.DarkRed;
-                    row.DefaultCellStyle.SelectionForeColor = Color.White;
+        //        if (token.IsError())
+        //        {
+        //            row.DefaultCellStyle.BackColor = Color.LightCoral;
+        //            row.DefaultCellStyle.ForeColor = Color.White;
+        //            row.DefaultCellStyle.SelectionBackColor = Color.DarkRed;
+        //            row.DefaultCellStyle.SelectionForeColor = Color.White;
 
-                    row.Cells[0].ToolTipText = token.GetMessageDescription();
-                }
-            }
-        }
+        //            row.Cells[0].ToolTipText = token.GetMessageDescription();
+        //        }
+        //    }
+        //}
 
         private void btnStart_Click(object sender, EventArgs e)
         {
@@ -1007,49 +1051,49 @@ namespace Compiler_Lab1
 
         private void dgvResults_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex < 0 || e.RowIndex >= _currentTokens.Count) return;
+            //if (e.RowIndex < 0 || e.RowIndex >= _currentTokens.Count) return;
 
-            IToken selectedToken = _currentTokens[e.RowIndex];
+            //IToken selectedToken = _currentTokens[e.RowIndex];
 
-            NavigateToToken(selectedToken);
+            //NavigateToToken(selectedToken);
         }
 
-        private void NavigateToToken(IToken token)
-        {
-            TabPage currentTab = tabControlEditor.SelectedTab;
-            if (currentTab == null) return;
+        //private void NavigateToToken(IToken token)
+        //{
+        //    TabPage currentTab = tabControlEditor.SelectedTab;
+        //    if (currentTab == null) return;
 
-            FastColoredTextBox textBox = currentTab.Controls.OfType<FastColoredTextBox>().FirstOrDefault();
-            if (textBox == null) return;
+        //    FastColoredTextBox textBox = currentTab.Controls.OfType<FastColoredTextBox>().FirstOrDefault();
+        //    if (textBox == null) return;
 
-            try
-            {
-                int line = token.GetLine();
-                int startColumn = token.GetStartColumn();
-                int endColumn = token.GetEndColumn();
+        //    try
+        //    {
+        //        int line = token.GetLine();
+        //        int startColumn = token.GetStartColumn();
+        //        int endColumn = token.GetEndColumn();
 
-                if (line <= 0 || line > textBox.Lines.Count) return;
+        //        if (line <= 0 || line > textBox.Lines.Count) return;
 
-                int position = 0;
-                for (int i = 0; i < line - 1; i++)
-                {
-                    position += textBox.Lines[i].Length + Environment.NewLine.Length;
-                }
+        //        int position = 0;
+        //        for (int i = 0; i < line - 1; i++)
+        //        {
+        //            position += textBox.Lines[i].Length + Environment.NewLine.Length;
+        //        }
 
-                position += startColumn - 1;
+        //        position += startColumn - 1;
 
-                if (position >= 0)
-                {
-                    textBox.SelectionStart = position;
-                    textBox.SelectionLength = Math.Max(1, endColumn - startColumn + 1);
-                    textBox.DoSelectionVisible();
-                    textBox.Focus();
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"ќшибка навигации: {ex.Message}");
-            }
-        }
+        //        if (position >= 0)
+        //        {
+        //            textBox.SelectionStart = position;
+        //            textBox.SelectionLength = Math.Max(1, endColumn - startColumn + 1);
+        //            textBox.DoSelectionVisible();
+        //            textBox.Focus();
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show($"ќшибка навигации: {ex.Message}");
+        //    }
+        //}
     }
 }
