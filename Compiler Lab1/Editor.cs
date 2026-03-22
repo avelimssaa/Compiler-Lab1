@@ -926,6 +926,8 @@ namespace Compiler_Lab1
 
             dgvResults.Rows.Clear();
 
+            textBox.AppendText(parser.GetRecoveredSource());
+
             foreach (var err in parser.Errors)
             {
                 dgvResults.Rows.Add(
