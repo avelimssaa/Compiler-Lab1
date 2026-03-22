@@ -81,13 +81,14 @@
             tabControlResults = new TabControl();
             tabPageResults = new TabPage();
             dgvResults = new DataGridView();
+            InvalidFragment = new DataGridViewTextBoxColumn();
+            Location = new DataGridViewTextBoxColumn();
+            Description = new DataGridViewTextBoxColumn();
             statusStrip1 = new StatusStrip();
             labelLanguage = new ToolStripStatusLabel();
             labelFileSize = new ToolStripStatusLabel();
             labelLineCount = new ToolStripStatusLabel();
-            InvalidFragment = new DataGridViewTextBoxColumn();
-            Location = new DataGridViewTextBoxColumn();
-            Description = new DataGridViewTextBoxColumn();
+            ErrorsCount = new ToolStripStatusLabel();
             toolStrip1.SuspendLayout();
             toolStrip2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
@@ -552,10 +553,31 @@
             dgvResults.TabIndex = 0;
             dgvResults.CellClick += dgvResults_CellClick;
             // 
+            // InvalidFragment
+            // 
+            InvalidFragment.HeaderText = "Неверный фрагмент";
+            InvalidFragment.MinimumWidth = 6;
+            InvalidFragment.Name = "InvalidFragment";
+            InvalidFragment.ReadOnly = true;
+            // 
+            // Location
+            // 
+            Location.HeaderText = "Местоположение";
+            Location.MinimumWidth = 6;
+            Location.Name = "Location";
+            Location.ReadOnly = true;
+            // 
+            // Description
+            // 
+            Description.HeaderText = "Описание";
+            Description.MinimumWidth = 6;
+            Description.Name = "Description";
+            Description.ReadOnly = true;
+            // 
             // statusStrip1
             // 
             statusStrip1.ImageScalingSize = new Size(20, 20);
-            statusStrip1.Items.AddRange(new ToolStripItem[] { labelLanguage, labelFileSize, labelLineCount });
+            statusStrip1.Items.AddRange(new ToolStripItem[] { labelLanguage, labelFileSize, labelLineCount, ErrorsCount });
             statusStrip1.Location = new Point(0, 527);
             statusStrip1.Name = "statusStrip1";
             statusStrip1.Size = new Size(782, 26);
@@ -580,26 +602,11 @@
             labelLineCount.Size = new Size(135, 20);
             labelLineCount.Text = "Количество строк:";
             // 
-            // InvalidFragment
+            // ErrorsCount
             // 
-            InvalidFragment.HeaderText = "Неверный фрагмент";
-            InvalidFragment.MinimumWidth = 6;
-            InvalidFragment.Name = "InvalidFragment";
-            InvalidFragment.ReadOnly = true;
-            // 
-            // Location
-            // 
-            Location.HeaderText = "Местоположение";
-            Location.MinimumWidth = 6;
-            Location.Name = "Location";
-            Location.ReadOnly = true;
-            // 
-            // Description
-            // 
-            Description.HeaderText = "Описание";
-            Description.MinimumWidth = 6;
-            Description.Name = "Description";
-            Description.ReadOnly = true;
+            ErrorsCount.Name = "ErrorsCount";
+            ErrorsCount.Size = new Size(152, 20);
+            ErrorsCount.Text = "Количество ошибок:";
             // 
             // textEditor
             // 
@@ -699,5 +706,6 @@
         private DataGridViewTextBoxColumn InvalidFragment;
         private DataGridViewTextBoxColumn Location;
         private DataGridViewTextBoxColumn Description;
+        private ToolStripStatusLabel ErrorsCount;
     }
 }

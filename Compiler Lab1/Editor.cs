@@ -974,23 +974,27 @@ namespace Compiler_Lab1
 
             foreach (var err in parser.Errors)
             {
-                dgvResults.Rows.Add(
+                int rowIndex = dgvResults.Rows.Add(
                     err.UnexpectedLexeme,
                     err.Location,
                     err.Message
                 );
+
+                dgvResults.Rows[rowIndex].Tag = err;
             }
 
             if (parser.Errors.Count == 0)
             {
-                dgvResults.Rows.Add(
+                int rowIndex = dgvResults.Rows.Add(
                     "",
                     "",
                     "Синтаксический анализ завершён успешно"
                 );
+                dgvResults.Rows[rowIndex].Tag = null;
             }
-        }
 
+            ErrorsCount.Text = $"Количество ошибок: {parser.Errors.Count}";
+        }
 
         private void AddErrorToGrid(SyntaxError error)
         {
@@ -1048,52 +1052,64 @@ namespace Compiler_Lab1
         {
             Compile();
         }
-
         private void dgvResults_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            //if (e.RowIndex < 0 || e.RowIndex >= _currentTokens.Count) return;
+            if (e.RowIndex < 0 || e.RowIndex >= dgvResults.Rows.Count)
+                return;
 
-            //IToken selectedToken = _currentTokens[e.RowIndex];
+            var error = dgvResults.Rows[e.RowIndex].Tag as SyntaxError;
+            if (error == null)
+                return;
 
-            //NavigateToToken(selectedToken);
+            var textBox = tabControlEditor.SelectedTab.Controls
+                .OfType<FastColoredTextBox>()
+                .FirstOrDefault();
+
+            if (textBox == null)
+                return;
+
+            SetCursorPosition(textBox, error.Line, error.Column);
         }
 
-        //private void NavigateToToken(IToken token)
-        //{
-        //    TabPage currentTab = tabControlEditor.SelectedTab;
-        //    if (currentTab == null) return;
+        private void SetCursorPosition(FastColoredTextBox textBox, int line, int column)
+        {
+            if (textBox == null) return;
 
-        //    FastColoredTextBox textBox = currentTab.Controls.OfType<FastColoredTextBox>().FirstOrDefault();
-        //    if (textBox == null) return;
+            line = Math.Max(1, Math.Min(line, textBox.LinesCount));
+            column = Math.Max(1, column);
 
-        //    try
-        //    {
-        //        int line = token.GetLine();
-        //        int startColumn = token.GetStartColumn();
-        //        int endColumn = token.GetEndColumn();
+            var place = new Place(column - 1, line - 1);
 
-        //        if (line <= 0 || line > textBox.Lines.Count) return;
+            string currentLine = textBox.Lines[line - 1];
+            if (place.iChar > currentLine.Length)
+            {
+                place = new Place(currentLine.Length, line - 1);
+            }
 
-        //        int position = 0;
-        //        for (int i = 0; i < line - 1; i++)
-        //        {
-        //            position += textBox.Lines[i].Length + Environment.NewLine.Length;
-        //        }
+            try
+            {
+                int position = textBox.PlaceToPosition(place);
+                textBox.SelectionStart = position;
+                textBox.SelectionLength = 0;
 
-        //        position += startColumn - 1;
+                var range = new FastColoredTextBoxNS.Range(textBox, place, place);
+                textBox.DoRangeVisible(range, true);
 
-        //        if (position >= 0)
-        //        {
-        //            textBox.SelectionStart = position;
-        //            textBox.SelectionLength = Math.Max(1, endColumn - startColumn + 1);
-        //            textBox.DoSelectionVisible();
-        //            textBox.Focus();
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        MessageBox.Show($"Ошибка навигации: {ex.Message}");
-        //    }
-        //}
+                textBox.Focus();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Ошибка установки позиции: {ex.Message}");
+                try
+                {
+                    var fallbackPlace = new Place(0, line - 1);
+                    textBox.SelectionStart = textBox.PlaceToPosition(fallbackPlace);
+                    textBox.SelectionLength = 0;
+                    textBox.DoRangeVisible(new FastColoredTextBoxNS.Range(textBox, fallbackPlace, fallbackPlace), true);
+                    textBox.Focus();
+                }
+                catch { }
+            }
+        }
     }
 }
