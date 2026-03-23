@@ -179,6 +179,7 @@ namespace Compiler_Lab1.Parser
                 Column = token?.GetStartColumn() ?? 0
             };
 
+            _position++;
             _errors.Add(err);
         }
 
@@ -260,27 +261,249 @@ namespace Compiler_Lab1.Parser
         {
             _ntStack.Push(NonTerminal.START);
 
-            if (TryConsumeToken(TokenType.KEYWORD_FOR, "Ожидалось ключевое слово 'for'"))
-            {
-                ParseKeywordFor();
-            }
-            else
-            {
-                IronsRecover();
-            }
+            //if (TryConsumeToken(TokenType.KEYWORD_FOR, "Ожидалось ключевое слово 'for'"))
+            //{
+            //    ParseKeywordFor();
+            //}
+            //else
+            //{
+            //    IronsRecover();
+            //}
+
+            TryConsumeToken(TokenType.KEYWORD_FOR, "Ожидалось ключевое слово 'for'");
+            ParseKeywordFor();
 
             _ntStack.Pop();
 
             CompleteMissingTokens();
         }
 
+        //private void CompleteMissingTokens()
+        //{
+        //    var lastToken = _validTokens.LastOrDefault();
+        //    if (lastToken != null && lastToken.GetTokenTypeEnum() != TokenType.DELIMITER_SEMICOLON)
+        //    {
+        //        InsertSyntheticToken(TokenType.DELIMITER_SEMICOLON, ";");
+        //    }
+        //}
+
         private void CompleteMissingTokens()
         {
+            if (_validTokens.Count == 0)
+                return;
+
             var lastToken = _validTokens.LastOrDefault();
             if (lastToken != null && lastToken.GetTokenTypeEnum() != TokenType.DELIMITER_SEMICOLON)
             {
-                InsertSyntheticToken(TokenType.DELIMITER_SEMICOLON, ";");
+                if (lastToken.GetTokenTypeEnum() != TokenType.DELIMITER_RBRACE)
+                {
+                    InsertSyntheticToken(TokenType.DELIMITER_SEMICOLON, ";");
+                }
             }
+
+            CheckForCycleStructure();
+
+            CheckCycleBodyStructure();
+
+            CheckPrintlnStructure();
+
+            
+        }
+
+        private void CheckForCycleStructure()
+        {
+            int forIndex = FindTokenIndex(TokenType.KEYWORD_FOR);
+            if (forIndex == -1) return;
+
+            if (!HasTokenAfterPosition(TokenType.DELIMITER_LPAREN, forIndex))
+            {
+                InsertSyntheticTokenAtPosition(forIndex + 1, TokenType.DELIMITER_LPAREN, "(");
+            }
+
+            int lparenIndex = FindTokenIndexAfter(TokenType.DELIMITER_LPAREN, forIndex);
+            if (lparenIndex != -1 && !HasTokenAfterPosition(TokenType.IDENTIFIER, lparenIndex))
+            {
+                InsertSyntheticTokenAtPosition(lparenIndex + 1, TokenType.IDENTIFIER, "<identifier>");
+            }
+
+            int identIndex = FindTokenIndexAfter(TokenType.IDENTIFIER, forIndex);
+            if (identIndex != -1 && !HasTokenAfterPosition(TokenType.OPERATOR_ARROW, identIndex))
+            {
+                InsertSyntheticTokenAtPosition(identIndex + 1, TokenType.OPERATOR_ARROW, "<-");
+            }
+
+            int arrowIndex = FindTokenIndexAfter(TokenType.OPERATOR_ARROW, forIndex);
+            if (arrowIndex != -1 && !HasTokenAfterPosition(TokenType.DIGIT, arrowIndex))
+            {
+                InsertSyntheticTokenAtPosition(arrowIndex + 1, TokenType.DIGIT, "<number>");
+            }
+
+            int startNumberIndex = FindTokenIndexAfter(TokenType.DIGIT, forIndex);
+            if (startNumberIndex != -1 && !HasTokenAfterPosition(TokenType.KEYWORD_TO, startNumberIndex))
+            {
+                InsertSyntheticTokenAtPosition(startNumberIndex + 1, TokenType.KEYWORD_TO, "to");
+            }
+
+            int toIndex = FindTokenIndexAfter(TokenType.KEYWORD_TO, forIndex);
+            if (toIndex != -1 && !HasTokenAfterPosition(TokenType.DIGIT, toIndex))
+            {
+                InsertSyntheticTokenAtPosition(toIndex + 1, TokenType.DIGIT, "<number>");
+            }
+
+            int endNumberIndex = FindTokenIndexAfter(TokenType.DIGIT, toIndex);
+            if (endNumberIndex != -1 && !HasTokenAfterPosition(TokenType.DELIMITER_RPAREN, endNumberIndex))
+            {
+                InsertSyntheticTokenAtPosition(endNumberIndex + 1, TokenType.DELIMITER_RPAREN, ")");
+            }
+
+            int rparenIndex = FindTokenIndexAfter(TokenType.DELIMITER_RPAREN, forIndex);
+            if (rparenIndex != -1 && !HasTokenAfterPosition(TokenType.DELIMITER_LBRACE, rparenIndex))
+            {
+                InsertSyntheticTokenAtPosition(rparenIndex + 1, TokenType.DELIMITER_LBRACE, "{");
+            }
+
+            int lbraceIndex = FindTokenIndexAfter(TokenType.DELIMITER_LBRACE, forIndex);
+            if (lbraceIndex != -1 && !HasTokenAfterPosition(TokenType.DELIMITER_NEWLINE, lbraceIndex))
+            {
+                InsertSyntheticTokenAtPosition(lbraceIndex + 1, TokenType.DELIMITER_NEWLINE, "\n");
+            }
+        }
+
+        private void CheckCycleBodyStructure()
+        {
+            int lbraceIndex = FindTokenIndex(TokenType.DELIMITER_LBRACE);
+            if (lbraceIndex == -1) return;
+
+            int rbraceIndex = FindTokenIndexAfter(TokenType.DELIMITER_RBRACE, lbraceIndex);
+
+            if (rbraceIndex == -1)
+            {
+                int printlnIndex = FindTokenIndexAfter(TokenType.KEYWORD_PRINTLN, lbraceIndex);
+                if (printlnIndex == -1)
+                {
+                    InsertSyntheticTokenAtPosition(lbraceIndex + 1, TokenType.KEYWORD_PRINTLN, "println");
+                    InsertSyntheticTokenAtPosition(lbraceIndex + 2, TokenType.DELIMITER_LPAREN, "(");
+                    InsertSyntheticTokenAtPosition(lbraceIndex + 3, TokenType.IDENTIFIER, "<identifier>");
+                    InsertSyntheticTokenAtPosition(lbraceIndex + 4, TokenType.DELIMITER_RPAREN, ")");
+                    InsertSyntheticTokenAtPosition(lbraceIndex + 5, TokenType.DELIMITER_NEWLINE, "\n");
+                }
+
+                int lastPos = _validTokens.Count;
+                InsertSyntheticTokenAtPosition(lastPos, TokenType.DELIMITER_RBRACE, "}");
+
+                InsertSyntheticTokenAtPosition(lastPos + 1, TokenType.DELIMITER_SEMICOLON, ";");
+            }
+        }
+
+        private void CheckPrintlnStructure()
+        {
+            for (int i = 0; i < _validTokens.Count; i++)
+            {
+                if (_validTokens[i].GetTokenTypeEnum() == TokenType.KEYWORD_PRINTLN)
+                {
+                    if (i + 1 >= _validTokens.Count ||
+                        _validTokens[i + 1].GetTokenTypeEnum() != TokenType.DELIMITER_LPAREN)
+                    {
+                        InsertSyntheticTokenAtPosition(i + 1, TokenType.DELIMITER_LPAREN, "(");
+                    }
+
+                    int lparenPos = i + 1;
+                    if (lparenPos < _validTokens.Count &&
+                        _validTokens[lparenPos].GetTokenTypeEnum() == TokenType.DELIMITER_LPAREN)
+                    {
+                        if (lparenPos + 1 >= _validTokens.Count ||
+                            _validTokens[lparenPos + 1].GetTokenTypeEnum() != TokenType.IDENTIFIER)
+                        {
+                            InsertSyntheticTokenAtPosition(lparenPos + 1, TokenType.IDENTIFIER, "<identifier>");
+                        }
+
+                        int identPos = lparenPos + 1;
+                        if (identPos < _validTokens.Count &&
+                            _validTokens[identPos].GetTokenTypeEnum() == TokenType.IDENTIFIER)
+                        {
+                            if (identPos + 1 >= _validTokens.Count ||
+                                _validTokens[identPos + 1].GetTokenTypeEnum() != TokenType.DELIMITER_RPAREN)
+                            {
+                                InsertSyntheticTokenAtPosition(identPos + 1, TokenType.DELIMITER_RPAREN, ")");
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+
+        private int FindTokenIndex(TokenType type)
+        {
+            for (int i = 0; i < _validTokens.Count; i++)
+            {
+                if (_validTokens[i].GetTokenTypeEnum() == type)
+                    return i;
+            }
+            return -1;
+        }
+
+        private int FindTokenIndexAfter(TokenType type, int startIndex)
+        {
+            for (int i = startIndex + 1; i < _validTokens.Count; i++)
+            {
+                if (_validTokens[i].GetTokenTypeEnum() == type)
+                    return i;
+            }
+            return -1;
+        }
+
+        private bool HasTokenAfterPosition(TokenType type, int position)
+        {
+            for (int i = position + 1; i < _validTokens.Count; i++)
+            {
+                if (_validTokens[i].GetTokenTypeEnum() == type)
+                    return true;
+            }
+            return false;
+        }
+
+        private void InsertSyntheticTokenAtPosition(int position, TokenType type, string lexeme)
+        {
+            if (position < 0) position = 0;
+            if (position > _validTokens.Count) position = _validTokens.Count;
+
+            var syntheticToken = new SyntheticToken(
+                type,
+                lexeme,
+                GetLineForPosition(position),
+                GetColumnForPosition(position)
+            );
+
+            _validTokens.Insert(position, syntheticToken);
+        }
+
+        private int GetLineForPosition(int position)
+        {
+            if (position > 0 && position <= _validTokens.Count)
+            {
+                return _validTokens[position - 1].GetLine();
+            }
+            else if (_validTokens.Count > 0)
+            {
+                return _validTokens.Last().GetLine();
+            }
+            return 1;
+        }
+
+        private int GetColumnForPosition(int position)
+        {
+            if (position > 0 && position <= _validTokens.Count)
+            {
+                var prevToken = _validTokens[position - 1];
+                return prevToken.GetStartColumn() + prevToken.GetLexeme().Length;
+            }
+            else if (_validTokens.Count > 0)
+            {
+                var lastToken = _validTokens.Last();
+                return lastToken.GetStartColumn() + lastToken.GetLexeme().Length;
+            }
+            return 1;
         }
 
         private void ParseKeywordFor()
@@ -307,14 +530,17 @@ namespace Compiler_Lab1.Parser
         {
             _ntStack.Push(NonTerminal.ID_CYCLE);
 
-            if (TryConsumeToken(TokenType.OPERATOR_ARROW, "Ожидался оператор '<-'"))
-            {
-                ParseExpression();
-            }
-            else
-            {
-                IronsRecover();
-            }
+            //if (TryConsumeToken(TokenType.OPERATOR_ARROW, "Ожидался оператор '<-'"))
+            //{
+            //    ParseExpression();
+            //}
+            //else
+            //{
+            //    IronsRecover();
+            //}
+
+            TryConsumeToken(TokenType.OPERATOR_ARROW, "Ожидался оператор '<-'");
+            ParseExpression();
 
             _ntStack.Pop();
         }
@@ -333,14 +559,17 @@ namespace Compiler_Lab1.Parser
         {
             _ntStack.Push(NonTerminal.BEGIN_NUMBER);
 
-            if (TryConsumeToken(TokenType.KEYWORD_TO, "Ожидалось ключевое слово 'to'"))
-            {
-                ParseTo();
-            }
-            else
-            {
-                IronsRecover();
-            }
+            //if (TryConsumeToken(TokenType.KEYWORD_TO, "Ожидалось ключевое слово 'to'"))
+            //{
+            //    ParseTo();
+            //}
+            //else
+            //{
+            //    IronsRecover();
+            //}
+
+            TryConsumeToken(TokenType.KEYWORD_TO, "Ожидалось ключевое слово 'to'");
+            ParseTo();
 
             _ntStack.Pop();
         }
@@ -359,14 +588,17 @@ namespace Compiler_Lab1.Parser
         {
             _ntStack.Push(NonTerminal.END_NUMBER);
 
-            if (TryConsumeToken(TokenType.DELIMITER_RPAREN, "Ожидалась закрывающая скобка ')' после конечного числа"))
-            {
-                ParseOpenCurly();
-            }
-            else
-            {
-                IronsRecover();
-            }
+            //if (TryConsumeToken(TokenType.DELIMITER_RPAREN, "Ожидалась закрывающая скобка ')' после конечного числа"))
+            //{
+            //    ParseOpenCurly();
+            //}
+            //else
+            //{
+            //    IronsRecover();
+            //}
+
+            TryConsumeToken(TokenType.DELIMITER_RPAREN, "Ожидалась закрывающая скобка ')' после конечного числа");
+            ParseOpenCurly();
 
             _ntStack.Pop();
         }
@@ -405,7 +637,9 @@ namespace Compiler_Lab1.Parser
             else
             {
                 AddError($"Ожидался 'println' или '}}', найдено {Current?.GetTokenType()} ('{Current?.GetLexeme()}')");
-                IronsRecover();
+                //ParseSemicolon();
+                ParseNewline();
+                //       IronsRecover();
             }
 
             _ntStack.Pop();
@@ -435,15 +669,18 @@ namespace Compiler_Lab1.Parser
         {
             _ntStack.Push(NonTerminal.ID_CYCLE_BODY);
 
-            if (TryConsumeToken(TokenType.DELIMITER_RPAREN, "Ожидалась ')'"))
-            {
-                ParseCloseBracePrintln();
-            }
-            else
-            {
-                AddError($"Ожидалась ')', найдено {Current?.GetTokenType()} ('{Current?.GetLexeme()}')");
-                IronsRecover();
-            }
+            //if (TryConsumeToken(TokenType.DELIMITER_RPAREN, "Ожидалась ')'"))
+            //{
+            //    ParseCloseBracePrintln();
+            //}
+            //else
+            //{
+            //    AddError($"Ожидалась ')', найдено {Current?.GetTokenType()} ('{Current?.GetLexeme()}')");
+            //    IronsRecover();
+            //}
+
+            TryConsumeToken(TokenType.DELIMITER_RPAREN, "Ожидалась ')'");
+            ParseCloseBracePrintln();
 
             _ntStack.Pop();
         }

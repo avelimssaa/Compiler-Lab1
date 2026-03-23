@@ -833,6 +833,12 @@ namespace Compiler_Lab1
                         e.Handled = true;
                         e.SuppressKeyPress = true;
                         break;
+
+                    case Keys.P:
+                        AntlrParser();
+                        e.Handled = true;
+                        e.SuppressKeyPress = true;
+                        break;
                 }
             }
 
@@ -908,7 +914,19 @@ namespace Compiler_Lab1
 
 
 
+            TabPage currentTab = tabControlEditor.SelectedTab;
+            if (currentTab == null) return;
 
+            FastColoredTextBox textBox = currentTab.Controls.OfType<FastColoredTextBox>().FirstOrDefault();
+            if (textBox == null) return;
+
+            string textToAnalyze = textBox.Text;
+
+            if (string.IsNullOrEmpty(textToAnalyze))
+            {
+                MessageBox.Show("Введена пустая строка.");
+                return;
+            }
 
             RunSyntaxAnalysis();
 
