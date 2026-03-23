@@ -947,6 +947,12 @@ namespace Compiler_Lab1
 
             string code = textBox.Text;
 
+            if (string.IsNullOrEmpty(code))
+            {
+                MessageBox.Show("Введена пустая строка.");
+                return;
+            }
+
             var input = new AntlrInputStream(code);
             var lexer = new ForLangLexer(input);
             var tokens = new CommonTokenStream(lexer);

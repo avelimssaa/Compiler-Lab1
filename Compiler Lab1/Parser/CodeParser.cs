@@ -261,14 +261,6 @@ namespace Compiler_Lab1.Parser
         {
             _ntStack.Push(NonTerminal.START);
 
-            //if (TryConsumeToken(TokenType.KEYWORD_FOR, "Ожидалось ключевое слово 'for'"))
-            //{
-            //    ParseKeywordFor();
-            //}
-            //else
-            //{
-            //    IronsRecover();
-            //}
 
             TryConsumeToken(TokenType.KEYWORD_FOR, "Ожидалось ключевое слово 'for'");
             ParseKeywordFor();
@@ -276,27 +268,7 @@ namespace Compiler_Lab1.Parser
             _ntStack.Pop();
 
             CompleteMissingTokens();
-
-            //for (int i = 0; i < _validTokens.Count; i++)
-            //{
-            //    var token = _validTokens[i];
-            //    string type = token.GetTokenTypeEnum().ToString();
-            //    string lexeme = token.GetLexeme();
-            //    int line = token.GetLine();
-            //    int column = token.GetStartColumn();
-
-            //    MessageBox.Show($"{i,5} | {type,-24} | {lexeme,-18} | {line,4} | {column,6}");
-            //}
         }
-
-        //private void CompleteMissingTokens()
-        //{
-        //    var lastToken = _validTokens.LastOrDefault();
-        //    if (lastToken != null && lastToken.GetTokenTypeEnum() != TokenType.DELIMITER_SEMICOLON)
-        //    {
-        //        InsertSyntheticToken(TokenType.DELIMITER_SEMICOLON, ";");
-        //    }
-        //}
 
         private void CompleteMissingTokens()
         {
@@ -541,15 +513,6 @@ namespace Compiler_Lab1.Parser
         {
             _ntStack.Push(NonTerminal.ID_CYCLE);
 
-            //if (TryConsumeToken(TokenType.OPERATOR_ARROW, "Ожидался оператор '<-'"))
-            //{
-            //    ParseExpression();
-            //}
-            //else
-            //{
-            //    IronsRecover();
-            //}
-
             TryConsumeToken(TokenType.OPERATOR_ARROW, "Ожидался оператор '<-'");
             ParseExpression();
 
@@ -570,15 +533,6 @@ namespace Compiler_Lab1.Parser
         {
             _ntStack.Push(NonTerminal.BEGIN_NUMBER);
 
-            //if (TryConsumeToken(TokenType.KEYWORD_TO, "Ожидалось ключевое слово 'to'"))
-            //{
-            //    ParseTo();
-            //}
-            //else
-            //{
-            //    IronsRecover();
-            //}
-
             TryConsumeToken(TokenType.KEYWORD_TO, "Ожидалось ключевое слово 'to'");
             ParseTo();
 
@@ -598,15 +552,6 @@ namespace Compiler_Lab1.Parser
         private void ParseEndNumber()
         {
             _ntStack.Push(NonTerminal.END_NUMBER);
-
-            //if (TryConsumeToken(TokenType.DELIMITER_RPAREN, "Ожидалась закрывающая скобка ')' после конечного числа"))
-            //{
-            //    ParseOpenCurly();
-            //}
-            //else
-            //{
-            //    IronsRecover();
-            //}
 
             TryConsumeToken(TokenType.DELIMITER_RPAREN, "Ожидалась закрывающая скобка ')' после конечного числа");
             ParseOpenCurly();
@@ -648,9 +593,7 @@ namespace Compiler_Lab1.Parser
             else
             {
                 AddError($"Ожидался 'println' или '}}', найдено {Current?.GetTokenType()} ('{Current?.GetLexeme()}')");
-                //ParseSemicolon();
                 ParseNewline();
-                //       IronsRecover();
             }
 
             _ntStack.Pop();
@@ -679,16 +622,6 @@ namespace Compiler_Lab1.Parser
         private void ParseIdCycleBody()
         {
             _ntStack.Push(NonTerminal.ID_CYCLE_BODY);
-
-            //if (TryConsumeToken(TokenType.DELIMITER_RPAREN, "Ожидалась ')'"))
-            //{
-            //    ParseCloseBracePrintln();
-            //}
-            //else
-            //{
-            //    AddError($"Ожидалась ')', найдено {Current?.GetTokenType()} ('{Current?.GetLexeme()}')");
-            //    IronsRecover();
-            //}
 
             TryConsumeToken(TokenType.DELIMITER_RPAREN, "Ожидалась ')'");
             ParseCloseBracePrintln();
