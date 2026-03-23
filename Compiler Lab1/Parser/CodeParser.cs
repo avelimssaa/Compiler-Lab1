@@ -276,6 +276,17 @@ namespace Compiler_Lab1.Parser
             _ntStack.Pop();
 
             CompleteMissingTokens();
+
+            //for (int i = 0; i < _validTokens.Count; i++)
+            //{
+            //    var token = _validTokens[i];
+            //    string type = token.GetTokenTypeEnum().ToString();
+            //    string lexeme = token.GetLexeme();
+            //    int line = token.GetLine();
+            //    int column = token.GetStartColumn();
+
+            //    MessageBox.Show($"{i,5} | {type,-24} | {lexeme,-18} | {line,4} | {column,6}");
+            //}
         }
 
         //private void CompleteMissingTokens()
