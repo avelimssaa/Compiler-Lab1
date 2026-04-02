@@ -26,6 +26,12 @@ for (i <- 0 to 9) {
   
 for (a <- 11 to 10000) {  
     println(a)  
+    println(b)  
+    println(c)  
+};  
+
+for (i <- 0 to 9) {  
+
 };  
 
 ## Разработка грамматики.
@@ -49,3 +55,5 @@ for (a <- 11 to 10000) {
 ![Тест4](Test4.jpg)
 
 ![Тест5](Test5.jpg)
+
+![Тест6](Test6.jpg)
