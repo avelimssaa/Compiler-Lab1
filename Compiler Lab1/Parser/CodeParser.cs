@@ -42,7 +42,7 @@ namespace Compiler_Lab1.Parser
             _errors.Add(err);
         }
 
-        private bool TryConsumeToken(TokenType expectedType, TokenType nextToken, string errorMessage, bool addError = true)
+        private bool TryConsumeToken(TokenType expectedType, TokenType nextToken, string errorMessage)
         {
             if (Current != null && Current.GetTokenTypeEnum() == expectedType)
             {
@@ -51,10 +51,8 @@ namespace Compiler_Lab1.Parser
             }
             else
             {
-                if (addError)
-                {
-                    AddError(errorMessage);
-                }
+
+                AddError(errorMessage);
 
                 while (Current != null)
                 {
@@ -280,7 +278,29 @@ namespace Compiler_Lab1.Parser
 
         private void ParseSemicolon()
         {
-            TryConsumeToken(TokenType.DELIMITER_SEMICOLON, TokenType.DELIMITER_SEMICOLON, "Ожидался ';' после '}'");
+            if (TryConsumeToken(TokenType.DELIMITER_SEMICOLON, TokenType.DELIMITER_NEWLINE, "Ожидался ';' после '}'"))
+            {
+                if (Current != null)
+                {
+                    if (Current.GetTokenTypeEnum() == TokenType.DELIMITER_NEWLINE)
+                    {
+                        _position++;
+                        if (Current != null && Current.GetTokenTypeEnum() != TokenType.DELIMITER_NEWLINE)
+                        {
+                            ParseStart();
+                        }
+                    }
+                    else
+                    {
+                        AddError("Ожидался перевод строки.");
+                    }
+                }
+            }
+
+            else
+            {
+                return;
+            }
         }
     }
 }
