@@ -2,6 +2,7 @@ using Antlr4.Runtime;
 using Compiler_Lab1.GRAMMAR;
 using Compiler_Lab1.LexicalAnalyzer;
 using Compiler_Lab1.Parser;
+using Compiler_Lab1.RegEx;
 using FastColoredTextBoxNS;
 using System.Diagnostics;
 using System.Text;
@@ -897,22 +898,6 @@ namespace Compiler_Lab1
 
         private void Compile()
         {
-            //TabPage currentTab = tabControlEditor.SelectedTab;
-            //if (currentTab == null) return;
-
-            //FastColoredTextBox textBox = currentTab.Controls.OfType<FastColoredTextBox>().FirstOrDefault();
-            //if (textBox == null) return;
-
-            //string textToAnalyze = textBox.Text;
-
-            //_currentTokens = _analyzer.Scan(textToAnalyze);
-
-            //IParser parser = new CodeParser(_currentTokens);
-            //parser.ParseStart();
-
-            //DisplayTokensInDataGridView(_currentTokens);
-
-
 
             TabPage currentTab = tabControlEditor.SelectedTab;
             if (currentTab == null) return;
@@ -1020,53 +1005,6 @@ namespace Compiler_Lab1
             ErrorsCount.Text = $"Количество ошибок: {parser.Errors.Count}";
         }
 
-        private void AddErrorToGrid(SyntaxError error)
-        {
-            dgvResults.Rows.Add(
-                "Ошибка",
-                error.Message,
-                error.Line,
-                error.Column
-            );
-        }
-
-        private void AddSuccessMessage()
-        {
-            dgvResults.Rows.Add(
-                "OK",
-                "Синтаксический анализ завершён успешно",
-                "",
-                ""
-            );
-        }
-
-        //private void DisplayTokensInDataGridView(List<IToken> tokens)
-        //{
-        //    dgvResults.Rows.Clear();
-
-        //    foreach (Token token in tokens)
-        //    {
-        //        int rowIndex = dgvResults.Rows.Add(
-        //            token.GetConditionCode(),
-        //            token.GetTokenType(),
-        //            token.GetLexeme(),
-        //            token.GetLocation()
-        //        );
-
-        //        DataGridViewRow row = dgvResults.Rows[rowIndex];
-
-        //        if (token.IsError())
-        //        {
-        //            row.DefaultCellStyle.BackColor = Color.LightCoral;
-        //            row.DefaultCellStyle.ForeColor = Color.White;
-        //            row.DefaultCellStyle.SelectionBackColor = Color.DarkRed;
-        //            row.DefaultCellStyle.SelectionForeColor = Color.White;
-
-        //            row.Cells[0].ToolTipText = token.GetMessageDescription();
-        //        }
-        //    }
-        //}
-
         private void btnStart_Click(object sender, EventArgs e)
         {
             Compile();
@@ -1134,6 +1072,118 @@ namespace Compiler_Lab1
                 }
                 catch { }
             }
+        }
+
+        private void ddmStartAnalysis_Click(object sender, EventArgs e)
+        {
+            RegEx();
+        }
+
+        private void btnSearchQuick_Click(object sender, EventArgs e)
+        {
+            RegEx();
+        }
+
+        private void RegEx()
+        { 
+
+            string selectedRegEx = "Китайские почтовые индексы";
+
+            dgvRegular.Rows.Clear();
+
+
+            if (cmbRegEx.SelectedItem != null)
+            {
+                selectedRegEx = cmbRegEx.SelectedItem.ToString();
+            }
+
+            var textBox = tabControlEditor.SelectedTab.Controls
+                .OfType<FastColoredTextBox>()
+                .FirstOrDefault();
+
+            if (textBox == null)
+                return;
+
+
+            string code = textBox.Text;
+
+            if (string.IsNullOrEmpty(code))
+            {
+                MessageBox.Show("Нет данных для поиска.");
+            }
+
+            IRegEx regEx = new RegularExpressionsFind(code, selectedRegEx);
+            List<ISubString> subStrings = regEx.SubStrings();
+            foreach (var regular in subStrings)
+            {
+                int rowIndex = dgvRegular.Rows.Add(
+                    regular.RegEx,
+                    regular.Position(),
+                    regular.Length);
+
+                dgvRegular.Rows[rowIndex].Tag = regular;
+            }
+
+            if (subStrings.Count == 0)
+            {
+                int rowIndex = dgvRegular.Rows.Add(
+                    "",
+                    "",
+                    "Совпадений не найдено.");
+
+                dgvRegular.Rows[rowIndex].Tag = null;
+            }
+
+            else if (subStrings.Count > 0)
+            {
+                int rowIndex = dgvRegular.Rows.Add(
+    "",
+    "",
+    $"Совпадений найдено : {subStrings.Count}.");
+
+                dgvRegular.Rows[rowIndex].Tag = null;
+            }
+        }
+
+        private void dgvRegular_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex < 0 || e.RowIndex >= dgvRegular.Rows.Count)
+                return;
+
+            var subString = dgvRegular.Rows[e.RowIndex].Tag as ISubString;
+            if (subString == null)
+                return;
+
+            var textBox = tabControlEditor.SelectedTab.Controls
+                .OfType<FastColoredTextBox>()
+                .FirstOrDefault();
+
+            if (textBox == null)
+                return;
+
+            if (!int.TryParse(subString.Line, out int line))
+                return;
+
+            if (!int.TryParse(subString.Column, out int column))
+                return;
+
+            var startPlace = new Place(column - 1, line - 1);
+            var endPlace = new Place(column - 1 + subString.Length, line - 1);
+
+            int startPosition = textBox.PlaceToPosition(startPlace);
+            int endPosition = textBox.PlaceToPosition(endPlace);
+
+            textBox.SelectionStart = startPosition;
+            textBox.SelectionLength = endPosition - startPosition;
+
+            textBox.DoSelectionVisible();
+
+            var range = new FastColoredTextBoxNS.Range(textBox, startPlace, endPlace);
+            textBox.DoRangeVisible(range, true);
+
+            textBox.Focus();
+
+            textBox.Invalidate();
         }
     }
 }

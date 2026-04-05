@@ -93,6 +93,16 @@ namespace Compiler_Lab1.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap free_icon_loupe_751463 {
+            get {
+                object obj = ResourceManager.GetObject("free-icon-loupe-751463", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap free_icon_multiply_399274 {
             get {
                 object obj = ResourceManager.GetObject("free-icon-multiply-399274", resourceCulture);

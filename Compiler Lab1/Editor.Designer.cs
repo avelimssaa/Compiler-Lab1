@@ -54,6 +54,10 @@
             btnListOfLiterature = new ToolStripMenuItem();
             btnSourceCode = new ToolStripMenuItem();
             btnStart = new ToolStripButton();
+            ddbRegEx = new ToolStripDropDownButton();
+            ddmStartAnalysis = new ToolStripMenuItem();
+            toolStripTextBox1 = new ToolStripTextBox();
+            cmbRegEx = new ToolStripComboBox();
             ddmCertificate = new ToolStripDropDownButton();
             btnHelp = new ToolStripMenuItem();
             btnAbout = new ToolStripMenuItem();
@@ -74,6 +78,7 @@
             btnCutQuick = new ToolStripButton();
             btnPasteQuick = new ToolStripButton();
             btnStartQuick = new ToolStripButton();
+            btnSearchQuick = new ToolStripButton();
             btnHelpQuick = new ToolStripButton();
             btnAboutQuick = new ToolStripButton();
             tabControlEditor = new TabControl();
@@ -84,6 +89,11 @@
             InvalidFragment = new DataGridViewTextBoxColumn();
             Location = new DataGridViewTextBoxColumn();
             Description = new DataGridViewTextBoxColumn();
+            tabPageRegular = new TabPage();
+            dgvRegular = new DataGridView();
+            foundSubString = new DataGridViewTextBoxColumn();
+            startPosition = new DataGridViewTextBoxColumn();
+            Length = new DataGridViewTextBoxColumn();
             statusStrip1 = new StatusStrip();
             labelLanguage = new ToolStripStatusLabel();
             labelFileSize = new ToolStripStatusLabel();
@@ -98,13 +108,15 @@
             tabControlResults.SuspendLayout();
             tabPageResults.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgvResults).BeginInit();
+            tabPageRegular.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)dgvRegular).BeginInit();
             statusStrip1.SuspendLayout();
             SuspendLayout();
             // 
             // toolStrip1
             // 
             toolStrip1.ImageScalingSize = new Size(20, 20);
-            toolStrip1.Items.AddRange(new ToolStripItem[] { ddmFile, ddmEdit, ddmText, btnStart, ddmCertificate, viewDropDownBtn });
+            toolStrip1.Items.AddRange(new ToolStripItem[] { ddmFile, ddmEdit, ddmText, btnStart, ddbRegEx, ddmCertificate, viewDropDownBtn });
             toolStrip1.Location = new Point(0, 0);
             toolStrip1.Name = "toolStrip1";
             toolStrip1.Size = new Size(782, 27);
@@ -284,6 +296,37 @@
             btnStart.Text = "Компиляция";
             btnStart.Click += btnStart_Click;
             // 
+            // ddbRegEx
+            // 
+            ddbRegEx.DisplayStyle = ToolStripItemDisplayStyle.Text;
+            ddbRegEx.DropDownItems.AddRange(new ToolStripItem[] { ddmStartAnalysis, toolStripTextBox1, cmbRegEx });
+            ddbRegEx.Image = (Image)resources.GetObject("ddbRegEx.Image");
+            ddbRegEx.ImageTransparentColor = Color.Magenta;
+            ddbRegEx.Name = "ddbRegEx";
+            ddbRegEx.Size = new Size(190, 24);
+            ddbRegEx.Text = "Регулярные выражения";
+            // 
+            // ddmStartAnalysis
+            // 
+            ddmStartAnalysis.Name = "ddmStartAnalysis";
+            ddmStartAnalysis.Size = new Size(324, 26);
+            ddmStartAnalysis.Text = "Начать анализ";
+            ddmStartAnalysis.Click += ddmStartAnalysis_Click;
+            // 
+            // toolStripTextBox1
+            // 
+            toolStripTextBox1.Name = "toolStripTextBox1";
+            toolStripTextBox1.ReadOnly = true;
+            toolStripTextBox1.Size = new Size(250, 27);
+            toolStripTextBox1.Text = "Выберите регулярное выражение";
+            // 
+            // cmbRegEx
+            // 
+            cmbRegEx.Items.AddRange(new object[] { "Китайские почтовые индексы", "UnionPay", "Таблица Менделеева" });
+            cmbRegEx.Name = "cmbRegEx";
+            cmbRegEx.Size = new Size(250, 28);
+            cmbRegEx.Text = "Регулярное выражение";
+            // 
             // ddmCertificate
             // 
             ddmCertificate.DisplayStyle = ToolStripItemDisplayStyle.Text;
@@ -358,7 +401,7 @@
             // toolStrip2
             // 
             toolStrip2.ImageScalingSize = new Size(30, 30);
-            toolStrip2.Items.AddRange(new ToolStripItem[] { createFileQuick, openFileQuick, saveFileQuick, btnCloseTabQuick, btnBackQuick, btnForwardQuick, btnCopyQuick, btnCutQuick, btnPasteQuick, btnStartQuick, btnHelpQuick, btnAboutQuick });
+            toolStrip2.Items.AddRange(new ToolStripItem[] { createFileQuick, openFileQuick, saveFileQuick, btnCloseTabQuick, btnBackQuick, btnForwardQuick, btnCopyQuick, btnCutQuick, btnPasteQuick, btnStartQuick, btnSearchQuick, btnHelpQuick, btnAboutQuick });
             toolStrip2.Location = new Point(0, 27);
             toolStrip2.Name = "toolStrip2";
             toolStrip2.Size = new Size(782, 37);
@@ -465,6 +508,16 @@
             btnStartQuick.Text = "Компиляция";
             btnStartQuick.Click += btnStartQuick_Click;
             // 
+            // btnSearchQuick
+            // 
+            btnSearchQuick.DisplayStyle = ToolStripItemDisplayStyle.Image;
+            btnSearchQuick.Image = Properties.Resources.free_icon_loupe_751463;
+            btnSearchQuick.ImageTransparentColor = Color.Magenta;
+            btnSearchQuick.Name = "btnSearchQuick";
+            btnSearchQuick.Size = new Size(34, 34);
+            btnSearchQuick.Text = "toolStripButton1";
+            btnSearchQuick.Click += btnSearchQuick_Click;
+            // 
             // btnHelpQuick
             // 
             btnHelpQuick.DisplayStyle = ToolStripItemDisplayStyle.Image;
@@ -519,6 +572,7 @@
             // tabControlResults
             // 
             tabControlResults.Controls.Add(tabPageResults);
+            tabControlResults.Controls.Add(tabPageRegular);
             tabControlResults.Dock = DockStyle.Fill;
             tabControlResults.Location = new Point(0, 0);
             tabControlResults.Name = "tabControlResults";
@@ -573,6 +627,53 @@
             Description.MinimumWidth = 6;
             Description.Name = "Description";
             Description.ReadOnly = true;
+            // 
+            // tabPageRegular
+            // 
+            tabPageRegular.Controls.Add(dgvRegular);
+            tabPageRegular.Location = new Point(4, 29);
+            tabPageRegular.Name = "tabPageRegular";
+            tabPageRegular.Size = new Size(774, 210);
+            tabPageRegular.TabIndex = 2;
+            tabPageRegular.Text = "Регулярные выражения";
+            tabPageRegular.UseVisualStyleBackColor = true;
+            // 
+            // dgvRegular
+            // 
+            dgvRegular.AllowUserToAddRows = false;
+            dgvRegular.AllowUserToDeleteRows = false;
+            dgvRegular.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dgvRegular.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvRegular.Columns.AddRange(new DataGridViewColumn[] { foundSubString, startPosition, Length });
+            dgvRegular.Dock = DockStyle.Fill;
+            dgvRegular.Location = new Point(0, 0);
+            dgvRegular.Name = "dgvRegular";
+            dgvRegular.ReadOnly = true;
+            dgvRegular.RowHeadersWidth = 51;
+            dgvRegular.Size = new Size(774, 210);
+            dgvRegular.TabIndex = 0;
+            dgvRegular.CellClick += dgvRegular_CellClick;
+            // 
+            // foundSubString
+            // 
+            foundSubString.HeaderText = "Найденная подстрока";
+            foundSubString.MinimumWidth = 6;
+            foundSubString.Name = "foundSubString";
+            foundSubString.ReadOnly = true;
+            // 
+            // startPosition
+            // 
+            startPosition.HeaderText = "Начальная позиция";
+            startPosition.MinimumWidth = 6;
+            startPosition.Name = "startPosition";
+            startPosition.ReadOnly = true;
+            // 
+            // Length
+            // 
+            Length.HeaderText = "Длина";
+            Length.MinimumWidth = 6;
+            Length.Name = "Length";
+            Length.ReadOnly = true;
             // 
             // statusStrip1
             // 
@@ -639,6 +740,8 @@
             tabControlResults.ResumeLayout(false);
             tabPageResults.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)dgvResults).EndInit();
+            tabPageRegular.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)dgvRegular).EndInit();
             statusStrip1.ResumeLayout(false);
             statusStrip1.PerformLayout();
             ResumeLayout(false);
@@ -707,5 +810,15 @@
         private DataGridViewTextBoxColumn Location;
         private DataGridViewTextBoxColumn Description;
         private ToolStripStatusLabel ErrorsCount;
+        private ToolStripDropDownButton ddbRegEx;
+        private ToolStripMenuItem ddmStartAnalysis;
+        private ToolStripComboBox cmbRegEx;
+        private ToolStripButton btnSearchQuick;
+        private ToolStripTextBox toolStripTextBox1;
+        private TabPage tabPageRegular;
+        private DataGridView dgvRegular;
+        private DataGridViewTextBoxColumn foundSubString;
+        private DataGridViewTextBoxColumn startPosition;
+        private DataGridViewTextBoxColumn Length;
     }
 }
