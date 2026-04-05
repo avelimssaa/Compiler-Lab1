@@ -6,6 +6,7 @@ using Compiler_Lab1.RegEx;
 using FastColoredTextBoxNS;
 using System.Diagnostics;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Compiler_Lab1
 {
@@ -840,6 +841,12 @@ namespace Compiler_Lab1
                         e.Handled = true;
                         e.SuppressKeyPress = true;
                         break;
+
+                    case Keys.M:
+                        StateMachineRegEx();
+                        e.Handled = true;
+                        e.SuppressKeyPress = true;
+                        break;
                 }
             }
 
@@ -1184,6 +1191,60 @@ namespace Compiler_Lab1
             textBox.Focus();
 
             textBox.Invalidate();
+        }
+
+        private void StateMachineRegEx()
+        {
+            dgvRegular.Rows.Clear();
+
+            var textBox = tabControlEditor.SelectedTab.Controls
+    .OfType<FastColoredTextBox>()
+    .FirstOrDefault();
+
+            if (textBox == null)
+                return;
+
+
+            string code = textBox.Text;
+
+            if (string.IsNullOrEmpty(code))
+            {
+                MessageBox.Show("Нет данных для поиска.");
+            }
+
+            IRegEx regex = new StateMachine(code);
+
+            List<ISubString> subStrings = regex.SubStrings();
+
+            foreach (var regular in subStrings)
+            {
+                int rowIndex = dgvRegular.Rows.Add(
+                    regular.RegEx,
+                    regular.Position(),
+                    regular.Length);
+
+                dgvRegular.Rows[rowIndex].Tag = regular;
+            }
+
+            if (subStrings.Count == 0)
+            {
+                int rowIndex = dgvRegular.Rows.Add(
+                    "",
+                    "",
+                    "Совпадений не найдено.");
+
+                dgvRegular.Rows[rowIndex].Tag = null;
+            }
+
+            else if (subStrings.Count > 0)
+            {
+                int rowIndex = dgvRegular.Rows.Add(
+    "",
+    "",
+    $"Совпадений найдено : {subStrings.Count}.");
+
+                dgvRegular.Rows[rowIndex].Tag = null;
+            }
         }
     }
 }
