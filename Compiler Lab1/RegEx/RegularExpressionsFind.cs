@@ -34,61 +34,56 @@ namespace Compiler_Lab1.RegEx
 
         private void MatchChineseZIP()
         {
-            string pattern = @"[1-9]\d{5}";
+            ////string pattern = @"[1-9]\d{5}";
+
+            string pattern = @"(?=([1-9]\d{5}))";
             Regex regex = new Regex(pattern);
 
             MatchCollection matches = regex.Matches(_text);
 
             foreach (Match match in matches)
             {
-                ISubString sub = new SubStringInfo
+                if (match.Groups[1].Success)
                 {
-                    RegEx = match.Value,
-                    Length = match.Length,
-                    Line = GetLineNumber(match.Index).ToString(),
-                    Column = GetColumnPosition(match.Index).ToString()
-                };
-                _subs.Add(sub);
+                    ISubString sub = new SubStringInfo
+                    {
+                        RegEx = match.Groups[1].Value,
+                        Length = match.Groups[1].Length,
+                        Line = GetLineNumber(match.Groups[1].Index).ToString(),
+                        Column = GetColumnPosition(match.Groups[1].Index).ToString()
+                    };
+                    _subs.Add(sub);
+                }
             }
         }
 
         private void MatchUnionPay()
         {
-            string pattern = @"62\d{14,17}";
+            //string pattern = @"62\d{14,17}";
+            string pattern = @"(?=(62\d{14,17}))";
             Regex regex = new(pattern);
 
             MatchCollection matches = regex.Matches(_text);
 
             foreach (Match match in matches)
             {
-                ISubString sub = new SubStringInfo
+                if (match.Groups[1].Success)
                 {
-                    RegEx = match.Value,
-                    Length = match.Length,
-                    Line = GetLineNumber(match.Index).ToString(),
-                    Column = GetColumnPosition(match.Index).ToString()
-                };
-                _subs.Add(sub);
+                    ISubString sub = new SubStringInfo
+                    {
+                        RegEx = match.Groups[1].Value,
+                        Length = match.Groups[1].Length,
+                        Line = GetLineNumber(match.Groups[1].Index).ToString(),
+                        Column = GetColumnPosition(match.Groups[1].Index).ToString()
+                    };
+                    _subs.Add(sub);
+                }
             }
         }
 
         private void MatchMendeleevTable()
         {
-            string pattern = @"\b(H|He|
-Li|Be|B|C|N|O|F|Ne|
-Na|Mg|Al|Si|P|S|Cl|Ar|
-K|Ca|Sc|Ti|V|Cr|Mn|Fe|Co|Ni|
-Cu|Zn|Ga|Ge|As|Se|Br|Kr|
-Rb|Sr|Y|Zr|Nb|Mo|Tc|Ru|Rh|Pd|
-Ag|Cd|In|Sn|Sb|Te|I|Xe|
-Cs|Ba|La|
-Ce|Pr|Nd|Pm|Sm|Eu|Gd|Tb|Dy|Ho|Er|Tm|Yb|Lu|
-Hf|Ta|W|Re|Os|Ir|Pt|
-Au|Hg|Tl|Pb|Bi|Po|At|Rn|
-Fr|Ra|Ac|
-Th|Pa|U|Np|Pu|Am|Cm|Bk|Cf|Es|Fm|Md|No|Lr|
-Rf|Db|Sg|Bh|Hs|Mt|Ds|
-Rg|Cn|Nh|Fl|Mc|Lv|Ts|Og)\b";
+            string pattern = @"\b(H|He|Li|Be|B|C|N|O|F|Ne|Na|Mg|Al|Si|P|S|Cl|Ar|K|Ca|Sc|Ti|V|Cr|Mn|Fe|Co|Ni|Cu|Zn|Ga|Ge|As|Se|Br|Kr|Rb|Sr|Y|Zr|Nb|Mo|Tc|Ru|Rh|Pd|Ag|Cd|In|Sn|Sb|Te|I|Xe|Cs|Ba|La|Ce|Pr|Nd|Pm|Sm|Eu|Gd|Tb|Dy|Ho|Er|Tm|Yb|Lu|Hf|Ta|W|Re|Os|Ir|Pt|Au|Hg|Tl|Pb|Bi|Po|At|Rn|Fr|Ra|Ac|Th|Pa|U|Np|Pu|Am|Cm|Bk|Cf|Es|Fm|Md|No|Lr|Rf|Db|Sg|Bh|Hs|Mt|Ds|Rg|Cn|Nh|Fl|Mc|Lv|Ts|Og)\b";
 
             Regex regex = new(pattern);
 
