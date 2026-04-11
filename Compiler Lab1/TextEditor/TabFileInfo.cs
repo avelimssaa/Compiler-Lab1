@@ -1,5 +1,4 @@
-﻿
-namespace Compiler_Lab1
+﻿namespace Compiler_Lab1.TextEditor
 {
     public class TabFileInfo
     {

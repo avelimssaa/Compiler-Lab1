@@ -22,7 +22,8 @@ namespace Compiler_Lab1.Parser
         {
             _tokens = tokens.Where(t =>
     t.GetTokenTypeEnum() != TokenType.DELIMITER_SPACE &&
-    t.GetTokenTypeEnum() != TokenType.DELIMITER_TABULATION)
+    t.GetTokenTypeEnum() != TokenType.DELIMITER_TABULATION && 
+    t.GetTokenTypeEnum() != TokenType.DELIMITER_NEWLINE)
     .ToList();
             _position = 0;
         }
@@ -42,7 +43,7 @@ namespace Compiler_Lab1.Parser
             _errors.Add(err);
         }
 
-        private bool TryConsumeToken(TokenType expectedType, TokenType nextToken, string errorMessage, string errorMessage2 = null)
+        private bool TryConsumeToken(TokenType expectedType, TokenType nextToken, string errorMessage)
         {
             if (Current != null && Current.GetTokenTypeEnum() == expectedType)
             {
@@ -53,14 +54,8 @@ namespace Compiler_Lab1.Parser
             {
 
                 AddError(errorMessage);
-                bool flag = true;
                 while (Current != null)
                 {
-                    if (flag == true && errorMessage2 != null)
-                    {
-                        AddError(errorMessage2);
-                        flag = false;
-                    }
                     if (Current.GetTokenTypeEnum() == nextToken)
                     {
                         return true;
@@ -73,7 +68,7 @@ namespace Compiler_Lab1.Parser
 
         public void ParseStart()
         {
-            if (TryConsumeToken(TokenType.KEYWORD_FOR, TokenType.DELIMITER_LPAREN, "Ожидалось ключевое слово 'for'", "Ожидался '(' после 'for'"))
+            if (TryConsumeToken(TokenType.KEYWORD_FOR, TokenType.DELIMITER_LPAREN, "Ожидалось ключевое слово 'for'"))
             {
                 ParseKeywordFor();
             }
@@ -85,7 +80,7 @@ namespace Compiler_Lab1.Parser
 
         private void ParseKeywordFor()
         {
-            if (TryConsumeToken(TokenType.DELIMITER_LPAREN, TokenType.IDENTIFIER, "Ожидался '(' после 'for'", "Ожидался идентификатор в заголовке цикла for"))
+            if (TryConsumeToken(TokenType.DELIMITER_LPAREN, TokenType.IDENTIFIER, "Ожидался '(' после 'for'"))
             {
                 ParseOpenBracketCycle();
             }
@@ -97,7 +92,7 @@ namespace Compiler_Lab1.Parser
 
         private void ParseOpenBracketCycle()
         {
-            if (TryConsumeToken(TokenType.IDENTIFIER, TokenType.OPERATOR_ARROW, "Ожидался идентификатор в заголовке цикла for", "Ожидался оператор '<-'"))
+            if (TryConsumeToken(TokenType.IDENTIFIER, TokenType.OPERATOR_ARROW, "Ожидался идентификатор в заголовке цикла for"))
             {
                 ParseIdCycle();
             }
@@ -109,7 +104,7 @@ namespace Compiler_Lab1.Parser
 
         private void ParseIdCycle()
         {
-            if (TryConsumeToken(TokenType.OPERATOR_ARROW, TokenType.DIGIT, "Ожидался оператор '<-'", "Ожидалась цифра в выражении после '<-'"))
+            if (TryConsumeToken(TokenType.OPERATOR_ARROW, TokenType.DIGIT, "Ожидался оператор '<-'"))
             {
                 ParseExpression();
             }
@@ -121,7 +116,7 @@ namespace Compiler_Lab1.Parser
 
         private void ParseExpression()
         {
-            if (TryConsumeToken(TokenType.DIGIT, TokenType.KEYWORD_TO, "Ожидалась цифра в выражении после '<-'", "Ожидалось ключевое слово 'to'"))
+            if (TryConsumeToken(TokenType.DIGIT, TokenType.KEYWORD_TO, "Ожидалась цифра в выражении после '<-'"))
             {
                 ParseBeginNumber();
             }
@@ -133,7 +128,7 @@ namespace Compiler_Lab1.Parser
 
         private void ParseBeginNumber()
         {
-            if (TryConsumeToken(TokenType.KEYWORD_TO, TokenType.DIGIT, "Ожидалось ключевое слово 'to'", "Ожидалась цифра после 'to'"))
+            if (TryConsumeToken(TokenType.KEYWORD_TO, TokenType.DIGIT, "Ожидалось ключевое слово 'to'"))
             {
                 ParseTo();
             }
@@ -145,7 +140,7 @@ namespace Compiler_Lab1.Parser
 
         private void ParseTo()
         {
-            if (TryConsumeToken(TokenType.DIGIT, TokenType.DELIMITER_RPAREN, "Ожидалась цифра после 'to'", "Ожидалась закрывающая скобка ')' после конечного числа"))
+            if (TryConsumeToken(TokenType.DIGIT, TokenType.DELIMITER_RPAREN, "Ожидалась цифра после 'to'"))
             {
                 ParseEndNumber();
             }
@@ -157,7 +152,7 @@ namespace Compiler_Lab1.Parser
 
         private void ParseEndNumber()
         {
-            if (TryConsumeToken(TokenType.DELIMITER_RPAREN, TokenType.DELIMITER_LBRACE, "Ожидалась закрывающая скобка ')' после конечного числа", "Ожидался '{' после заголовка цикла"))
+            if (TryConsumeToken(TokenType.DELIMITER_RPAREN, TokenType.DELIMITER_LBRACE, "Ожидалась закрывающая скобка ')' после конечного числа"))
             {
                 ParseCloseBracketCycle();
             }
@@ -169,7 +164,7 @@ namespace Compiler_Lab1.Parser
 
         private void ParseCloseBracketCycle()
         {
-            if (TryConsumeToken(TokenType.DELIMITER_LBRACE, TokenType.DELIMITER_NEWLINE, "Ожидался '{' после заголовка цикла", "Ожидался перевод строки после '{'"))
+            if (TryConsumeToken(TokenType.DELIMITER_LBRACE, TokenType.KEYWORD_PRINTLN, "Ожидался '{' после заголовка цикла"))
             {
                 ParseOpenCurly();
             }
@@ -181,9 +176,9 @@ namespace Compiler_Lab1.Parser
 
         private void ParseOpenCurly()
         {
-            if (TryConsumeToken(TokenType.DELIMITER_NEWLINE, TokenType.DELIMITER_RBRACE, "Ожидался перевод строки после '{'"))
+            if (TryConsumeToken(TokenType.KEYWORD_PRINTLN, TokenType.DELIMITER_LPAREN, "Ожидался оператор 'println'"))
             {
-                ParseNewline();
+                ParsePrintln();
             }
             else
             {
@@ -191,51 +186,9 @@ namespace Compiler_Lab1.Parser
             }
         }
 
-        private void ParseNewline()
-        {
-            if (Current.GetTokenTypeEnum() == TokenType.KEYWORD_PRINTLN || Current.GetTokenTypeEnum() == TokenType.DELIMITER_RBRACE)
-            {
-                if (Current.GetTokenTypeEnum() == TokenType.KEYWORD_PRINTLN)
-                {
-                    _position++;
-                    ParsePrintln();
-                }
-                else
-                {
-                    _position++;
-                    ParseSemicolon();
-                }
-            }
-
-            else
-            {
-                AddError("Ожидался оператор println() или }}");
-                _position++;
-
-                while (Current != null && Current.GetTokenTypeEnum() != TokenType.KEYWORD_PRINTLN && Current.GetTokenTypeEnum() != TokenType.DELIMITER_RBRACE)
-                {
-                    _position++;
-                }
-                if (Current == null)
-                {
-                    return;
-                }
-                else if (Current.GetTokenTypeEnum() == TokenType.KEYWORD_PRINTLN)
-                {
-                    _position++;
-                    ParsePrintln();
-                }
-                else
-                {
-                    _position++;
-                    ParseSemicolon();
-                }
-            }
-        }
-
         private void ParsePrintln()
         {
-            if (TryConsumeToken(TokenType.DELIMITER_LPAREN, TokenType.IDENTIFIER, "Ожидался '(' после 'println'", "Ожидался идентификатор в аргументе println"))
+            if (TryConsumeToken(TokenType.DELIMITER_LPAREN, TokenType.IDENTIFIER, "Ожидался '(' после 'println'"))
             {
                 ParseOpenBracePrintln();
             }
@@ -247,7 +200,7 @@ namespace Compiler_Lab1.Parser
 
         private void ParseOpenBracePrintln()
         {
-            if (TryConsumeToken(TokenType.IDENTIFIER, TokenType.DELIMITER_RPAREN, "Ожидался идентификатор в аргументе println", "Ожидалась ')'"))
+            if (TryConsumeToken(TokenType.IDENTIFIER, TokenType.DELIMITER_RPAREN, "Ожидался идентификатор в аргументе println"))
             {
                 ParseIdCycleBody();
             }
@@ -259,7 +212,7 @@ namespace Compiler_Lab1.Parser
 
         private void ParseIdCycleBody()
         {
-            if (TryConsumeToken(TokenType.DELIMITER_RPAREN, TokenType.DELIMITER_NEWLINE, "Ожидалась ')'", "Ожидался перевод строки после println(...)"))
+            if (TryConsumeToken(TokenType.DELIMITER_RPAREN, TokenType.DELIMITER_RBRACE, "Ожидалась ')'"))
             {
                 ParseCloseBracePrintln();
             }
@@ -271,9 +224,9 @@ namespace Compiler_Lab1.Parser
 
         private void ParseCloseBracePrintln()
         {
-            if (TryConsumeToken(TokenType.DELIMITER_NEWLINE, TokenType.DELIMITER_RBRACE, "Ожидался перевод строки после println(...)"))
+            if (TryConsumeToken(TokenType.DELIMITER_RBRACE, TokenType.DELIMITER_SEMICOLON, "Ожидалася '}' после println(...)"))
             {
-                ParseNewline();
+                ParseSemicolon();
             }
             else
             {

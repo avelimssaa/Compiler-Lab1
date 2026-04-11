@@ -1,4 +1,4 @@
-﻿namespace Compiler_Lab1
+﻿namespace Compiler_Lab1.TextEditor
 {
     public interface ILocalization
     {
@@ -58,7 +58,7 @@
                     ["Help font"] = "Выберите размер шрифта",
                     ["Font size"] = "Размер шрифта",
                     ["Choose local"] = "Выберите локализацию",
-                    ["UserManual"] = "Help_ru.html",
+                    ["UserManual"] = "HTMLs/Help_ru.html",
 
                     ["Untitled"] = "Без имени",
                     ["AllFiles"] = "Все файлы",
@@ -120,7 +120,7 @@
                     ["Certificate"] = "Certificate",
                     ["Help"] = "Help",
                     ["About"] = "About",
-                    ["UserManual"] = "Help_en.html",
+                    ["UserManual"] = "HTMLs/Help_en.html",
 
                     ["View"] = "View",
                     ["Help font"] = "Choose the font size",

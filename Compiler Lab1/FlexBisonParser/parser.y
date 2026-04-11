@@ -9,6 +9,7 @@ extern FILE *yyin;
 extern int yyleng;
 
 int current_column = 1;
+int has_error = 0;
 
 void yyerror(const char *s);
 
@@ -30,6 +31,8 @@ void add_token(int code, char* lexeme, int line, int start_col, int end_col, int
 char* get_token_type(int code);
 int yylex();
 void print_tokens();
+
+void update_column(const char *text, int length);
 %}
 
 %union {
@@ -37,9 +40,8 @@ void print_tokens();
     char *strval;
 }
 
-%token TOKEN_PRINTLN
-%token TOKEN_IDENTIFIER
 %token TOKEN_FOR
+%token TOKEN_PRINTLN
 %token TOKEN_TO
 %token TOKEN_LPAREN
 %token TOKEN_RPAREN
@@ -47,43 +49,116 @@ void print_tokens();
 %token TOKEN_RBRACE
 %token TOKEN_SEMICOLON
 %token TOKEN_ARROW
+%token TOKEN_ASSIGN
+%token TOKEN_IDENTIFIER
 %token TOKEN_NUMBER
 %token TOKEN_SPACE
 %token TOKEN_TAB
 %token TOKEN_NEWLINE
-%token TOKEN_ASSIGN
 %token TOKEN_ERROR
+%token TOKEN_LETTER
+%token TOKEN_DIGIT
 
-%type <intval> TOKEN_NUMBER
-%type <strval> TOKEN_IDENTIFIER TOKEN_SPACE TOKEN_ERROR
+%type <strval> TOKEN_IDENTIFIER TOKEN_NUMBER TOKEN_LETTER TOKEN_DIGIT
+
+%start START
+
+%%
+
+START:
+    TOKEN_FOR KEYWORD_FOR
+    ;
+
+KEYWORD_FOR:
+    TOKEN_LPAREN OPERATOR_OPEN_BRACKET_CYCLE
+    ;
+
+OPERATOR_OPEN_BRACKET_CYCLE:
+    TOKEN_IDENTIFIER ID_CYCLE
+    ;
+
+ID_CYCLE:
+    TOKEN_IDENTIFIER ID_CYCLE
+    | TOKEN_NUMBER ID_CYCLE
+    | TOKEN_ASSIGN OPERATOR_EXPRESSION
+    ;
+
+OPERATOR_EXPRESSION:
+    TOKEN_NUMBER BEGIN_NUMBER
+    ;
+
+BEGIN_NUMBER:
+    TOKEN_NUMBER BEGIN_NUMBER
+    | TOKEN_TO OPERATOR_TO
+    ;
+
+OPERATOR_TO:
+    TOKEN_NUMBER END_NUMBER
+    ;
+
+END_NUMBER:
+    TOKEN_NUMBER END_NUMBER
+    | TOKEN_RPAREN OPERATOR_CLOSE_BRACKET_CYCLE
+    ;
+
+OPERATOR_CLOSE_BRACKET_CYCLE:
+    TOKEN_LBRACE OPERATOR_OPEN_CURLY_BRACE
+    ;
+
+OPERATOR_OPEN_CURLY_BRACE:
+    TOKEN_NEWLINE OPERATOR_NEWLINE
+    ;
+
+OPERATOR_NEWLINE:
+    TOKEN_PRINTLN KEYWORD_PRINTLN
+    | TOKEN_RBRACE OPERATOR_CLOSE_CURLY_BRACE
+    ;
+
+KEYWORD_PRINTLN:
+    TOKEN_LPAREN OPERATOR_OPEN_BRACE_PRINTLN
+    ;
+
+OPERATOR_OPEN_BRACE_PRINTLN:
+    TOKEN_IDENTIFIER ID_CYCLE_BODY
+    ;
+
+ID_CYCLE_BODY:
+    TOKEN_IDENTIFIER ID_CYCLE_BODY
+    | TOKEN_NUMBER ID_CYCLE_BODY
+    | TOKEN_RPAREN OPERATOR_CLOSE_BRACE_PRINTLN
+    ;
+
+OPERATOR_CLOSE_BRACE_PRINTLN:
+    TOKEN_NEWLINE OPERATOR_NEWLINE
+    ;
+
+OPERATOR_CLOSE_CURLY_BRACE:
+    TOKEN_SEMICOLON
+    ;
 
 %%
 
-program:
-    /* empty */
-    | program token
-    ;
+void yyerror(const char *s) {
+    has_error = 1;
+    fprintf(stderr, "Syntax error at line %d, column %d: %s\n", 
+            yylineno, current_column, s);
+    fprintf(stderr, "  Unexpected token: '%s'\n", yytext);
+    
+    add_token(273, yytext, yylineno, current_column, 
+              current_column + yyleng - 1, 1, s);
+}
 
-token:
-    TOKEN_FOR
-    | TOKEN_PRINTLN
-    | TOKEN_TO
-    | TOKEN_IDENTIFIER
-    | TOKEN_NUMBER
-    | TOKEN_LPAREN
-    | TOKEN_RPAREN
-    | TOKEN_LBRACE
-    | TOKEN_RBRACE
-    | TOKEN_SEMICOLON
-    | TOKEN_ARROW
-    | TOKEN_ASSIGN
-    | TOKEN_SPACE
-    | TOKEN_NEWLINE
-    | TOKEN_TAB
-    | TOKEN_ERROR
-    ;
-
-%%
+void update_column(const char *text, int length) {
+    for (int i = 0; i < length; i++) {
+        if (text[i] == '\n') {
+            current_column = 1;
+        } else if (text[i] == '\t') {
+            current_column += 4;
+        } else {
+            current_column++;
+        }
+    }
+}
 
 void add_token(int code, char* lexeme, int line, int start_col, int end_col, int is_error, const char* error_msg) {
     if (token_count < 10000) {
@@ -101,27 +176,24 @@ void add_token(int code, char* lexeme, int line, int start_col, int end_col, int
 
 char* get_token_type(int code) {
     switch (code) {
-        case 258: return strdup("println");
-        case 259: return strdup("identifier");
-        case 260: return strdup("for");
-        case 261: return strdup("to");
-        case 262: return strdup("(");
-        case 263: return strdup(")");
-        case 264: return strdup("{");
-        case 265: return strdup("}");
-        case 266: return strdup(";");
-        case 267: return strdup("<-");
-        case 268: return strdup("number");
-        case 269: return strdup("space");
-        case 270: return strdup("tab");
-        case 271: return strdup("newline");
-        case 272: return strdup("=");
+        case 258: return strdup("for");
+        case 259: return strdup("println");
+        case 260: return strdup("to");
+        case 261: return strdup("(");
+        case 262: return strdup(")");
+        case 263: return strdup("{");
+        case 264: return strdup("}");
+        case 265: return strdup(";");
+        case 266: return strdup("<-");
+        case 267: return strdup("=");
+        case 268: return strdup("identifier");
+        case 269: return strdup("number");
+        case 270: return strdup("letter");
+        case 271: return strdup("digit");
+        case 272: return strdup("newline");
         case 273: return strdup("error");
         default:  return strdup("unknown");
     }
-}
-
-void yyerror(const char *s) {
 }
 
 void print_tokens() {
@@ -165,9 +237,10 @@ int main(int argc, char **argv) {
     
     token_count = 0;
     current_column = 1;
+    has_error = 0;
     
     yyparse();
     print_tokens();
     
-    return 0;
+    return has_error ? 1 : 0;
 }

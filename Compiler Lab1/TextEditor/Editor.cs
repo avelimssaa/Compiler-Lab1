@@ -3,10 +3,10 @@ using Compiler_Lab1.GRAMMAR;
 using Compiler_Lab1.LexicalAnalyzer;
 using Compiler_Lab1.Parser;
 using Compiler_Lab1.RegEx;
+using Compiler_Lab1.TextEditor;
 using FastColoredTextBoxNS;
 using System.Diagnostics;
 using System.Text;
-using System.Text.RegularExpressions;
 
 namespace Compiler_Lab1
 {
@@ -847,6 +847,12 @@ namespace Compiler_Lab1
                         e.Handled = true;
                         e.SuppressKeyPress = true;
                         break;
+
+                    case Keys.B:
+                        FlexBisonParser();
+                        e.Handled = true;
+                        e.SuppressKeyPress = true;
+                        break;
                 }
             }
 
@@ -1244,6 +1250,58 @@ namespace Compiler_Lab1
     $"Совпадений найдено : {subStrings.Count}.");
 
                 dgvRegular.Rows[rowIndex].Tag = null;
+            }
+        }
+
+        private void FlexBisonParser()
+        {
+            dgvResults.Rows.Clear();
+
+            var textBox = tabControlEditor.SelectedTab.Controls
+                .OfType<FastColoredTextBox>()
+                .FirstOrDefault();
+
+            if (textBox == null)
+                return;
+
+            string code = textBox.Text;
+
+            if (string.IsNullOrEmpty(code))
+            {
+                MessageBox.Show(_localization.Get("EmptyString"));
+                return;
+            }
+
+            var parser = new FlexBisonParser();
+            var tokens = parser.Scan(code);
+
+            if (parser.Errors != null && parser.Errors.Count > 0)
+            {
+                foreach (var error in parser.Errors)
+                {
+                    int rowIndex = dgvResults.Rows.Add(
+                        error.UnexpectedLexeme ?? "?",
+                        error.Location,
+                        error.Message
+                    );
+                    dgvResults.Rows[rowIndex].Tag = error;
+                }
+                ErrorsCount.Text = $"Количество ошибок: {parser.Errors.Count}";
+            }
+            else
+            {
+                int rowIndex = dgvResults.Rows.Add(
+                    "",
+                    "",
+                    "Синтаксический анализ завершён успешно"
+                );
+                dgvResults.Rows[rowIndex].Tag = null;
+                ErrorsCount.Text = "Количество ошибок: 0";
+            }
+
+            Debug.WriteLine($"Получено токенов: {tokens.Count}");
+            foreach (var token in tokens.Take(10))
+            {
             }
         }
     }
