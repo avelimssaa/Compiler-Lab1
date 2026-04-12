@@ -911,6 +911,7 @@ namespace Compiler_Lab1
 
         private void Compile()
         {
+            dgvResults.Rows.Clear();
 
             TabPage currentTab = tabControlEditor.SelectedTab;
             if (currentTab == null) return;
@@ -927,10 +928,6 @@ namespace Compiler_Lab1
             }
 
             RunSyntaxAnalysis();
-
-
-
-
         }
 
         private void AntlrParser()
@@ -989,7 +986,8 @@ namespace Compiler_Lab1
 
             var tokens = _analyzer.Scan(code);
 
-            var parser = new CodeParser(tokens);
+            //var parser = new CodeParser(tokens);
+            IParser parser = new StateMachineParser(tokens);
             parser.ParseStart();
 
             dgvResults.Rows.Clear();

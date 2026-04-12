@@ -5,6 +5,7 @@ namespace Compiler_Lab1.Parser
     public interface IParser
     {
         void ParseStart();
+        IReadOnlyList<SyntaxError> Errors { get; }
     }
 
     public class CodeParser : IParser
