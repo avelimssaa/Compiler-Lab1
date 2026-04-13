@@ -1,0 +1,63 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Грамматика G[Z]</title>
+</head>
+<body>
+
+    <h2>Разработанная грамматика</h2>
+
+    <p>Определим грамматику создания цикла for языка Scala G[Z] в нотации Хомского с продукциями P:</p>
+
+    <h3>G[Z]:</h3>
+    <p>G[Z] = {V<sub>T</sub>, V<sub>N</sub>, P, Z}</p>
+
+    <h4>V<sub>T</sub> = {'0'...'9', 'a'...'z', 'A'...'Z', '_', '-', '&lt;', '(', ')', '{', '}', '=', ' '}</h4>
+
+    <h4>V<sub>N</sub> = {</h4>
+    <pre>&lt;START&gt;,
+&lt;LOOP_HEADER&gt;,
+&lt;OPERATOR_OPEN_BRACKET_CYCLE&gt;,
+&lt;ID_CYCLE&gt;,
+&lt;OPERATOR_EXPRESSION&gt;,
+&lt;BEGIN_NUMBER&gt;,
+&lt;OPERATOR_TO&gt;,
+&lt;END_NUMBER&gt;,
+&lt;CODE_BLOCK&gt;,
+&lt;OPERATOR_CLOSE_CURLY_BRACE&gt;,
+&lt;KEYWORD_PRINTLN&gt;,
+&lt;OPERATOR_OPEN_BRACE_PRINTLN&gt;,
+&lt;OPERATOR_CLOSE_BRACE_PRINTLN&gt;,
+&lt;ID_CYCLE_BODY&gt;,
+&lt;END&gt;,
+&lt;start_digit&gt;,
+&lt;digit&gt;,
+&lt;letter&gt;
+}</pre>
+
+    <h4>P = {</h4>
+    <pre>1) &lt;START&gt; -&gt; 'for' &lt;LOOP_HEADER&gt;
+2) &lt;LOOP_HEADER&gt; -&gt; '(' &lt;OPERATOR_OPEN_BRACKET_CYCLE&gt;
+3) &lt;OPERATOR_OPEN_BRACKET_CYCLE&gt; -&gt; letter &lt;ID_CYCLE&gt;
+4) &lt;ID_CYCLE&gt; -&gt; letter &lt;ID_CYCLE&gt; | digit &lt;ID_CYCLE&gt; | '_'&lt;ID_CYCLE&gt; | '&lt;-' &lt;OPERATOR_EXPRESSION&gt;
+5) &lt;OPERATOR_EXPRESSION&gt; -&gt; start_digit &lt;BEGIN_NUMBER&gt;
+6) &lt;BEGIN_NUMBER&gt; -&gt; digit &lt;BEGIN_NUMBER&gt; | 'to' &lt;OPERATOR_TO&gt;
+7) &lt;OPERATOR_TO&gt; -&gt; start_digit &lt;END_NUMBER&gt;
+8) &lt;END_NUMBER&gt; -&gt; digit &lt;END_NUMBER&gt; | ')' &lt;CODE_BLOCK&gt;
+9) &lt;CODE_BLOCK&gt; -&gt; '{' &lt;OPERATOR_OPEN_CURLY_BRACE&gt;
+10) &lt;OPERATOR_OPEN_CURLY_BRACE&gt; -&gt; 'println' &lt;KEYWORD_PRINTLN&gt;
+11) &lt;KEYWORD_PRINTLN&gt; -&gt; '(' &lt;OPERATOR_OPEN_BRACE_PRINTLN&gt;
+12) &lt;OPERATOR_OPEN_BRACE_PRINTLN&gt; -&gt; letter &lt;ID_CYCLE_BODY&gt;
+13) &lt;ID_CYCLE_BODY&gt; -&gt; letter &lt;ID_CYCLE_BODY&gt; | digit &lt;ID_CYCLE_BODY&gt; | '_' &lt;ID_CYCLE_BODY&gt; | ')' &lt;OPERATOR_CLOSE_BRACE_PRINTLN&gt;
+14) &lt;OPERATOR_CLOSE_BRACE_PRINTLN&gt; -&gt; '}' &lt;OPERATOR_SEMICOLON&gt;
+15) &lt;END&gt; -&gt; ';'
+16) &lt;start_digit&gt; -&gt; '1'|'2'|...|'9'
+17) &lt;letter&gt; -&gt; 'a'|'b'|...|'z'|'A'|'B'|...'Z'
+18) &lt;digit&gt; -&gt; '0'|'1'|...|'9'
+}</pre>
+
+    <p>Z = &lt;START&gt;</p>
+
+</body>
+</html>

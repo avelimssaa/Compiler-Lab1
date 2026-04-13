@@ -415,28 +415,8 @@ namespace Compiler_Lab1
 
         private void CallHelp()
         {
-            try
-            {
-                string helpPath = Path.Combine(Application.StartupPath, _localization.Get("UserManual"));
-
-                if (File.Exists(helpPath))
-                {
-                    Process.Start(new ProcessStartInfo
-                    {
-                        FileName = helpPath,
-                        UseShellExecute = true
-                    });
-                }
-                else
-                {
-                    MessageBox.Show(_localization.Get("HelpFileError"));
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"{_localization.Get("HelpOpenError")}: {ex.Message}", "Ошибка",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            IHTMLHelper htmlHelper = new HTMLHelper(_localization);
+            htmlHelper.CallHTML("Help");
         }
 
         private void btnHelp_Click(object sender, EventArgs e)
@@ -1096,7 +1076,7 @@ namespace Compiler_Lab1
         }
 
         private void RegEx()
-        { 
+        {
 
             string selectedRegEx = "Китайские почтовые индексы";
 
@@ -1301,6 +1281,83 @@ namespace Compiler_Lab1
             foreach (var token in tokens.Take(10))
             {
             }
+        }
+
+        private void btnMission_Click(object sender, EventArgs e)
+        {
+            CallMission();
+        }
+
+        private void CallMission()
+        {
+            IHTMLHelper htmlHelper = new HTMLHelper(_localization);
+            htmlHelper.CallHTML("Mission");
+        }
+
+        private void btnGrammar_Click(object sender, EventArgs e)
+        {
+            CallGrammar();
+        }
+
+        private void CallGrammar()
+        {
+            IHTMLHelper htmlHelper = new HTMLHelper(_localization);
+            htmlHelper.CallHTML("Grammar");
+        }
+
+        private void btnGrammarClassification_Click(object sender, EventArgs e)
+        {
+            CallGrammarClassification();
+        }
+
+        private void CallGrammarClassification()
+        {
+            IHTMLHelper htmlHelper = new HTMLHelper(_localization);
+            htmlHelper.CallHTML("GrammarClassification");
+        }
+
+        private void btnMethodOfAnalysis_Click(object sender, EventArgs e)
+        {
+            CallMethodOfAnalysis();
+        }
+
+        private void CallMethodOfAnalysis()
+        {
+            IHTMLHelper htmlHelper = new HTMLHelper(_localization);
+            htmlHelper.CallHTML("MethodOfAnalysis");
+        }
+
+        private void btnTestCase_Click(object sender, EventArgs e)
+        {
+            CallTestCase();
+        }
+
+        private void CallTestCase()
+        {
+            IHTMLHelper htmlHelper = new HTMLHelper(_localization);
+            htmlHelper.CallHTML("TestCase");
+        }
+
+        private void btnListOfLiterature_Click(object sender, EventArgs e)
+        {
+            CallListOfLiterature();
+        }
+
+        private void CallListOfLiterature()
+        {
+            IHTMLHelper htmlHelper = new HTMLHelper(_localization);
+            htmlHelper.CallHTML("ListOfLiterature");
+        }
+
+        private void btnSourceCode_Click(object sender, EventArgs e)
+        {
+            CallSourceCode();
+        }
+
+        private void CallSourceCode()
+        {
+            IHTMLHelper htmlHelper = new HTMLHelper(_localization);
+            htmlHelper.CallHTML("SourceCode");
         }
     }
 }

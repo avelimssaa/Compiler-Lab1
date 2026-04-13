@@ -249,42 +249,49 @@
             btnMission.Name = "btnMission";
             btnMission.Size = new Size(288, 26);
             btnMission.Text = "Постановка задачи";
+            btnMission.Click += btnMission_Click;
             // 
             // btnGrammar
             // 
             btnGrammar.Name = "btnGrammar";
             btnGrammar.Size = new Size(288, 26);
             btnGrammar.Text = "Грамматика";
+            btnGrammar.Click += btnGrammar_Click;
             // 
             // btnGrammarClassification
             // 
             btnGrammarClassification.Name = "btnGrammarClassification";
             btnGrammarClassification.Size = new Size(288, 26);
             btnGrammarClassification.Text = "Классификация грамматики";
+            btnGrammarClassification.Click += btnGrammarClassification_Click;
             // 
             // btnMethodOfAnalysis
             // 
             btnMethodOfAnalysis.Name = "btnMethodOfAnalysis";
             btnMethodOfAnalysis.Size = new Size(288, 26);
             btnMethodOfAnalysis.Text = "Метод анализа";
+            btnMethodOfAnalysis.Click += btnMethodOfAnalysis_Click;
             // 
             // btnTestCase
             // 
             btnTestCase.Name = "btnTestCase";
             btnTestCase.Size = new Size(288, 26);
             btnTestCase.Text = "Тестовый пример";
+            btnTestCase.Click += btnTestCase_Click;
             // 
             // btnListOfLiterature
             // 
             btnListOfLiterature.Name = "btnListOfLiterature";
             btnListOfLiterature.Size = new Size(288, 26);
             btnListOfLiterature.Text = "Список литературы";
+            btnListOfLiterature.Click += btnListOfLiterature_Click;
             // 
             // btnSourceCode
             // 
             btnSourceCode.Name = "btnSourceCode";
             btnSourceCode.Size = new Size(288, 26);
             btnSourceCode.Text = "Исходный код программы";
+            btnSourceCode.Click += btnSourceCode_Click;
             // 
             // btnStart
             // 

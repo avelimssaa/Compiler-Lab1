@@ -1,0 +1,642 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Листинг программы</title>
+</head>
+<body>
+
+    <h3>Класс Analyzer.cs:</h3>
+    <pre>namespace Compiler_Lab1.LexicalAnalyzer
+{
+    public interface IAnalyzer
+    {
+        List&lt;IToken&gt; Scan(string input);
+    }
+
+    internal class Analyzer : IAnalyzer
+    {
+        private string _input;
+        private int _position;
+        private int _line;
+        private int _column;
+
+        private readonly List&lt;IToken&gt; _tokens;
+
+        public Analyzer()
+        {
+            _tokens = new List&lt;IToken&gt;();
+        }
+
+        public List&lt;IToken&gt; Scan(string input)
+        {
+            _input = input;
+            _position = 0;
+            _line = 1;
+            _column = 1;
+            _tokens.Clear();
+
+            while (_position &lt; _input.Length)
+            {
+                char current = _input[_position];
+
+                if (current == ' ')
+                {
+                    AddToken(TokenType.DELIMITER_SPACE, " ", 1);
+                }
+                else if (current == '\n')
+                {
+                    AddToken(TokenType.DELIMITER_NEWLINE, "\n", 1);
+                    _line++;
+                    _column = 1;
+                }
+                else if (current == '\r')
+                {
+                    _position++;
+                }
+                else if (current == '\t')
+                {
+                    AddToken(TokenType.DELIMITER_TABULATION, "\t", 1);
+                }
+                else if (char.IsDigit(current))
+                {
+                    ProcessNumber();
+                }
+                else if (char.IsLetter(current))
+                {
+                    ProcessIdentifierOrKeyword();
+                }
+                else
+                {
+                    ProcessOperatorOrDelimiter();
+                }
+            }
+
+            return _tokens;
+        }
+
+        private void ProcessNumber()
+        {
+            int startPos = _position;
+            int startCol = _column;
+
+            while (_position &lt; _input.Length &amp;&amp;
+                   char.IsDigit(_input[_position]))
+            {
+                _position++;
+                _column++;
+            }
+
+            string number = _input.Substring(startPos, _position - startPos);
+            _tokens.Add(new Token(TokenType.DIGIT, number, _line, startCol, _column - 1, false, ""));
+        }
+
+        private void ProcessIdentifierOrKeyword()
+        {
+            int startPos = _position;
+            int startCol = _column;
+
+            while (_position &lt; _input.Length &amp;&amp;
+                  (char.IsLetterOrDigit(_input[_position]) || _input[_position] == '_'))
+            {
+                _position++;
+                _column++;
+            }
+
+            string lexeme = _input.Substring(startPos, _position - startPos);
+
+            if (lexeme == "for")
+            {
+                if (_position &gt;= _input.Length || !char.IsLetterOrDigit(_input[_position]))
+                {
+                    _tokens.Add(new Token(TokenType.KEYWORD_FOR, lexeme, _line, startCol, _column - 1, false, ""));
+                    return;
+                }
+            }
+
+            if (lexeme == "to")
+            {
+                if (_position &gt;= _input.Length || !char.IsLetterOrDigit(_input[_position]))
+                {
+                    _tokens.Add(new Token(TokenType.KEYWORD_TO, lexeme, _line, startCol, _column - 1, false, ""));
+                    return;
+                }
+            }
+
+            if (lexeme == "println")
+            {
+                _tokens.Add(new Token(TokenType.KEYWORD_PRINTLN, lexeme, _line, startCol, _column - 1, false, ""));
+                return;
+            }
+
+            _tokens.Add(new Token(TokenType.IDENTIFIER, lexeme, _line, startCol, _column - 1, false, ""));
+        }
+
+        private void ProcessOperatorOrDelimiter()
+        {
+            char current = _input[_position];
+
+            switch (current)
+            {
+                case '(':
+                    AddToken(TokenType.DELIMITER_LPAREN, "(", 1);
+                    return;
+
+                case ')':
+                    AddToken(TokenType.DELIMITER_RPAREN, ")", 1);
+                    return;
+
+                case '{':
+                    AddToken(TokenType.DELIMITER_LBRACE, "{", 1);
+                    return;
+
+                case '}':
+                    AddToken(TokenType.DELIMITER_RBRACE, "}", 1);
+                    return;
+
+                case ';':
+                    AddToken(TokenType.DELIMITER_SEMICOLON, ";", 1);
+                    return;
+            }
+
+            if (_position + 1 &lt; _input.Length)
+            {
+                string two = _input.Substring(_position, 2);
+
+                if (two == "&lt;-")
+                {
+                    AddToken(TokenType.OPERATOR_ARROW, two, 2);
+                    return;
+                }
+            }
+
+            AddToken(TokenType.UNKNOWN, current.ToString(), 1, true, $"Недопустимый символ '{current}'");
+        }
+
+        private void AddToken(TokenType type, string lexeme, int length, bool isError = false, string message = "")
+        {
+            _tokens.Add(new Token(type, lexeme, _line, _column, _column + length - 1, isError, message));
+            _position += length;
+            _column += length;
+        }
+    }
+}</pre>
+
+    <h3>Класс Token.cs:</h3>
+    <pre>namespace Compiler_Lab1.LexicalAnalyzer
+{
+    public interface IToken
+    {
+        int GetConditionCode();
+        string GetTokenType();
+        string GetLexeme();
+        string GetLocation();
+        bool IsError();
+        string GetMessageDescription();
+        int GetStartColumn();
+        int GetLine();
+        int GetEndColumn();
+        TokenType GetTokenTypeEnum();
+    }
+    public class Token : IToken
+    {
+        private TokenType _type;
+        private string _lexeme;
+        private int _line;
+        private int _startColumn;
+        private int _endColumn;
+
+        private bool _isError;
+        private string _errorMessage;
+
+        ITokenDescription _description;
+
+        public Token(TokenType type, string lexeme, int line, int startColumn, int endColumn, bool isError, string errorMessage)
+        {
+            _type = type;
+            _lexeme = lexeme;
+            _line = line;
+            _startColumn = startColumn;
+            _endColumn = endColumn;
+            _isError = isError;
+            _errorMessage = errorMessage;
+            _description = new TokenDescription(); 
+        }
+
+        public int GetConditionCode()
+        {
+            return (int)_type;
+        }
+        
+        public string GetTokenType()
+        {
+            return _description.GetTokenDescription(_type);
+        }
+
+        public string GetLexeme()
+        {
+            return _lexeme;
+        }
+
+        public string GetLocation()
+        {
+            return $"строка {_line}, {_startColumn} - {_endColumn}";
+        }
+
+        public bool IsError()
+        {
+            return _isError;
+        }
+
+        public string GetMessageDescription()
+        {
+            return _errorMessage;
+        }
+
+        public int GetStartColumn()
+        {
+            return _startColumn;
+        }
+
+        public int GetLine()
+        {
+            return _line;
+        }
+
+        public int GetEndColumn()
+        {
+            return _endColumn;
+        }
+
+        public TokenType GetTokenTypeEnum()
+        {
+            return _type;
+        }
+    }
+}</pre>
+
+    <h3>Класс TokenDescription.cs:</h3>
+    <pre>namespace Compiler_Lab1.LexicalAnalyzer
+{
+    public enum TokenType
+    {
+        KEYWORD_PRINTLN = 1, 
+        IDENTIFIER = 2,
+        KEYWORD_FOR = 3,
+        KEYWORD_TO = 4,
+
+        DELIMITER_LPAREN = 5,    
+        DELIMITER_RPAREN = 6,    
+
+        DELIMITER_LBRACE = 7,    
+        DELIMITER_RBRACE = 8,    
+
+        DELIMITER_SEMICOLON = 9,
+
+        OPERATOR_ARROW = 10,
+
+        DIGIT = 11,
+
+        DELIMITER_SPACE = 12,     
+        DELIMITER_TABULATION = 13,
+        DELIMITER_NEWLINE = 14,
+
+        UNKNOWN = 99
+    }
+
+    public interface ITokenDescription
+    {
+        string GetTokenDescription(TokenType type);
+    }
+
+    internal class TokenDescription : ITokenDescription
+    {
+        public TokenDescription()
+        {
+
+        }
+
+        public string GetTokenDescription(TokenType type)
+        {
+            switch (type)
+            {
+                case TokenType.DIGIT:
+                    return "целое без знака";
+                case TokenType.IDENTIFIER:
+                    return "идентификатор";
+                case TokenType.KEYWORD_FOR:
+                    return "ключевое слово for";
+                case TokenType.KEYWORD_TO:
+                    return "ключевое слово to";
+                case TokenType.KEYWORD_PRINTLN:
+                    return "ключевое слово println";
+                case TokenType.OPERATOR_ARROW:
+                    return "оператор стрелка";
+                case TokenType.DELIMITER_LPAREN:
+                    return "открывающая круглая скобка";
+                case TokenType.DELIMITER_RPAREN:
+                    return "закрывающая круглая скобка";
+                case TokenType.DELIMITER_LBRACE:
+                    return "открывающая фигурная скобка";
+                case TokenType.DELIMITER_RBRACE:
+                    return "закрывающая фигурная скобка";
+                case TokenType.DELIMITER_SEMICOLON:
+                    return "конец оператора";
+                case TokenType.DELIMITER_SPACE:
+                    return "пробел";
+                case TokenType.DELIMITER_NEWLINE:
+                    return "перевод строки";
+                case TokenType.UNKNOWN:
+                    return "недопустимый символ";
+                default:
+                    return type.ToString();
+            }
+        }
+    }
+}</pre>
+
+    <h3>Класс StateMachineParser.cs:</h3>
+    <pre>using Compiler_Lab1.LexicalAnalyzer;
+
+namespace Compiler_Lab1.Parser
+{
+
+    internal class StateMachineParser : IParser
+    {
+        private readonly List&lt;IToken&gt; _tokens;
+        private int _position, _state;
+
+        private readonly List&lt;SyntaxError&gt; _errors = new();
+        public IReadOnlyList&lt;SyntaxError&gt; Errors =&gt; _errors;
+        private IToken Current =&gt;
+    _position &lt; _tokens.Count ? _tokens[_position] : null;
+
+        public StateMachineParser(List&lt;IToken&gt; tokens)
+        {
+            _tokens = tokens.Where(t =&gt;
+t.GetTokenTypeEnum() != TokenType.DELIMITER_SPACE &amp;&amp;
+t.GetTokenTypeEnum() != TokenType.DELIMITER_TABULATION &amp;&amp;
+t.GetTokenTypeEnum() != TokenType.DELIMITER_NEWLINE)
+.ToList();
+            _position = 0;
+            _state = 0;
+        }
+        private void AddError(string message)
+        {
+            var token = Current ?? _tokens.LastOrDefault();
+
+            var err = new SyntaxError
+            {
+                UnexpectedLexeme = token?.GetLexeme() ?? "EOF",
+                Message = message,
+                Line = token?.GetLine() ?? 0,
+                Column = token?.GetStartColumn() ?? 0
+            };
+
+            _errors.Add(err);
+        }
+
+         private bool TryConsumeToken(TokenType nextToken, string errorMessage)
+        {
+            AddError(errorMessage);
+            while (Current != null)
+            {
+                if (Current.GetTokenTypeEnum() == nextToken)
+                {
+                    _state++;
+                    return true;
+                }
+                _position++;
+            }
+            return false;
+        }
+
+        public void ParseStart()
+        {
+            while (true)
+            { 
+                switch (_state)
+                {
+                    case 0:
+                        if (Current != null &amp;&amp; Current.GetTokenTypeEnum() == TokenType.KEYWORD_FOR)
+                        {
+                            _state++;
+                            _position++;
+                        }
+                        else
+                        {
+                            if (!TryConsumeToken(TokenType.DELIMITER_LPAREN, "Ожидалось ключевое слово 'for'."))
+                                return;
+                        }
+                        break;
+
+                    case 1:
+                        if (Current != null &amp;&amp; Current.GetTokenTypeEnum() == TokenType.DELIMITER_LPAREN)
+                        {
+                            _state++;
+                            _position++;
+                        }
+                        else
+                        {
+                            if (!TryConsumeToken(TokenType.IDENTIFIER, "Ожидалась '('."))
+                                return;
+                        }
+                        break;
+
+                    case 2:
+                        if (Current != null &amp;&amp; Current.GetTokenTypeEnum() == TokenType.IDENTIFIER)
+                        {
+                            _state++; 
+                            _position++;
+                        }
+                        else
+                        {
+                            if (!TryConsumeToken(TokenType.OPERATOR_ARROW, "Ожидался идентификатор."))
+                                return;
+                        }
+                        break;
+
+                    case 3:
+                        if (Current != null &amp;&amp; Current.GetTokenTypeEnum() == TokenType.OPERATOR_ARROW)
+                        {
+                            _state++;
+                            _position++;
+                        }
+                        else
+                        {
+                            if (!TryConsumeToken(TokenType.DIGIT, "Ожидалось '&lt;-'."))
+                                return;
+                        }
+                        break;
+
+                    case 4:
+                        if (Current != null &amp;&amp; Current.GetTokenTypeEnum() == TokenType.DIGIT)
+                        {
+                            _state++;
+                            _position++;
+                        }
+                        else
+                        {
+                            if (!TryConsumeToken(TokenType.KEYWORD_TO, "Ожидалась целое без знака."))
+                                return;
+                        }
+                        break;
+
+                    case 5:
+                        if (Current != null &amp;&amp; Current.GetTokenTypeEnum() == TokenType.KEYWORD_TO)
+                        {
+                            _state++;
+                            _position++;
+                        }
+                        else
+                        {
+                            if (!TryConsumeToken(TokenType.DIGIT, "Ожидалось ключевое слово 'to'"))
+                                return;
+                        }
+                        break;
+
+                    case 6:
+                        if (Current != null &amp;&amp; Current.GetTokenTypeEnum() == TokenType.DIGIT)
+                        {
+                            _state++;
+                            _position++;
+                        }
+                        else
+                        {
+                            if (!TryConsumeToken(TokenType.DELIMITER_RPAREN, "Ожидалось целое без знака."))
+                                return;
+                        }
+                        break;
+
+                    case 7:
+                        if (Current != null &amp;&amp; Current.GetTokenTypeEnum() == TokenType.DELIMITER_RPAREN)
+                        {
+                            _state++;
+                            _position++;
+                        }
+                        else
+                        {
+                            if (!TryConsumeToken(TokenType.DELIMITER_LBRACE, "Ожидалась ')'."))
+                                return;
+                        }
+                        break;
+
+                    case 8:
+                        if (Current != null &amp;&amp; Current.GetTokenTypeEnum() == TokenType.DELIMITER_LBRACE)
+                        {
+                            _state++;
+                            _position++;
+                        }
+                        else
+                        {
+                            if (!TryConsumeToken(TokenType.KEYWORD_PRINTLN, "Ожидалась '{'."))
+                                return;
+                        }
+                        break;
+
+                    case 9:
+                        if (Current != null &amp;&amp; Current.GetTokenTypeEnum() == TokenType.KEYWORD_PRINTLN)
+                        {
+                            _state++;
+                            _position++;
+                        }
+                        else
+                        {
+                            if (!TryConsumeToken(TokenType.DELIMITER_LPAREN, "Ожидался оператор 'println'."))
+                                return;
+                        }
+                        break;
+
+                    case 10:
+                        if (Current != null &amp;&amp; Current.GetTokenTypeEnum() == TokenType.DELIMITER_LPAREN)
+                        {
+                            _state++;
+                            _position++;
+                        }
+                        else
+                        {
+                            if (!TryConsumeToken(TokenType.IDENTIFIER, "Ожидалась '('."))
+                                return;
+                        }
+                        break;
+
+                    case 11:
+                        if (Current != null &amp;&amp; Current.GetTokenTypeEnum() == TokenType.IDENTIFIER)
+                        {
+                            _state++;
+                            _position++;
+                        }
+                        else
+                        {
+                            if (!TryConsumeToken(TokenType.DELIMITER_RPAREN, "Ожидался идентификатор."))
+                                return;
+                        }
+                        break;
+
+                    case 12:
+                        if (Current != null &amp;&amp; Current.GetTokenTypeEnum() == TokenType.DELIMITER_RPAREN)
+                        {
+                            _state++;
+                            _position++;
+                        }
+                        else
+                        {
+                            if (!TryConsumeToken(TokenType.DELIMITER_RBRACE, "Ожидалась ')'."))
+                                return;
+                        }
+                        break;
+
+                    case 13:
+                        if (Current != null &amp;&amp; Current.GetTokenTypeEnum() == TokenType.DELIMITER_RBRACE)
+                        {
+                            _state++;
+                            _position++;
+                        }
+                        else
+                        {
+                            if (!TryConsumeToken(TokenType.DELIMITER_SEMICOLON, "Ожидалась '}'."))
+                                return;
+                        }
+                        break;
+
+                    case 14:
+                        if (Current != null &amp;&amp; Current.GetTokenTypeEnum() == TokenType.DELIMITER_SEMICOLON)
+                        {
+                            _state++;
+                            _position++;
+                        }
+                        else
+                        {
+                            if (!TryConsumeToken(TokenType.DELIMITER_SEMICOLON, "Ожидалась ';'."))
+                                return;
+                        }
+                        break;
+
+                    case 15:
+                        _state = 0;
+                        if (Current == null)
+                            return;
+                        break;
+                }
+            }
+        }
+    }
+}</pre>
+
+    <h3>Класс SyntaxError.cs:</h3>
+    <pre>namespace Compiler_Lab1.Parser
+{
+    public class SyntaxError
+    {
+        public string UnexpectedLexeme { get; set; }
+        public string Message { get; set; }
+        public int Line { get; set; }
+        public int Column { get; set; }
+
+        public string Location =&gt; $"строка {Line}, столбец {Column}";
+    }
+
+}</pre>
+
+</body>
+</html>
