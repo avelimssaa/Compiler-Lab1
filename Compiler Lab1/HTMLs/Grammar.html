@@ -13,7 +13,7 @@
     <h3>G[Z]:</h3>
     <p>G[Z] = {V<sub>T</sub>, V<sub>N</sub>, P, Z}</p>
 
-    <h4>V<sub>T</sub> = {'0'...'9', 'a'...'z', 'A'...'Z', '_', '-', '&lt;', '(', ')', '{', '}', '=', ' '}</h4>
+    <h4>V<sub>T</sub> = {'0'...'9', 'a'...'z', 'A'...'Z', '_', '-', '&lt;', '(', ')', '{', '}', ' '}</h4>
 
     <h4>V<sub>N</sub> = {</h4>
     <pre>&lt;START&gt;,
@@ -50,7 +50,7 @@
 11) &lt;KEYWORD_PRINTLN&gt; -&gt; '(' &lt;OPERATOR_OPEN_BRACE_PRINTLN&gt;
 12) &lt;OPERATOR_OPEN_BRACE_PRINTLN&gt; -&gt; letter &lt;ID_CYCLE_BODY&gt;
 13) &lt;ID_CYCLE_BODY&gt; -&gt; letter &lt;ID_CYCLE_BODY&gt; | digit &lt;ID_CYCLE_BODY&gt; | '_' &lt;ID_CYCLE_BODY&gt; | ')' &lt;OPERATOR_CLOSE_BRACE_PRINTLN&gt;
-14) &lt;OPERATOR_CLOSE_BRACE_PRINTLN&gt; -&gt; '}' &lt;OPERATOR_SEMICOLON&gt;
+14) &lt;OPERATOR_CLOSE_BRACE_PRINTLN&gt; -&gt; '}' &lt;END&gt;
 15) &lt;END&gt; -&gt; ';'
 16) &lt;start_digit&gt; -&gt; '1'|'2'|...|'9'
 17) &lt;letter&gt; -&gt; 'a'|'b'|...|'z'|'A'|'B'|...'Z'
