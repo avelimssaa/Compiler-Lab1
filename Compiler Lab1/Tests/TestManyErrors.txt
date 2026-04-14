@@ -1,0 +1,3 @@
+﻿for i dvdfsv 0 <- 9 {
+    print  ln ( for )
+}

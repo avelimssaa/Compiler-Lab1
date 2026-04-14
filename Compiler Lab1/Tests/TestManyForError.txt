@@ -1,0 +1,16 @@
+﻿for (i <- 0 to 9) {
+    prign(i)
+};
+
+for (i <<<<<- 0 to 9) {
+    println(i)
+};
+
+for (i <--- 0 to 9) {
+    println(i)
+};
+
+
+for (i <- 0 toto 9) {
+    println(i)
+};
