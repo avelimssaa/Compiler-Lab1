@@ -5,10 +5,10 @@ using Compiler_Lab1.LexicalAnalyzer;
 using Compiler_Lab1.Parser;
 using Compiler_Lab1.RegEx;
 using Compiler_Lab1.TextEditor;
+using Compiler_Lab1.FlexBisonParser;
 using FastColoredTextBoxNS;
 using System.Diagnostics;
 using System.Text;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Compiler_Lab1
 {
@@ -1313,7 +1313,7 @@ namespace Compiler_Lab1
                 return;
             }
 
-            var parser = new FlexBisonParser();
+            var parser = new FlexBisonParser.FlexBisonParser();
             var tokens = parser.Scan(code);
 
             if (parser.Errors != null && parser.Errors.Count > 0)
