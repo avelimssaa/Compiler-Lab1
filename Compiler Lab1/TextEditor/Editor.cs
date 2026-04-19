@@ -1059,12 +1059,13 @@ namespace Compiler_Lab1
                 return;
 
             var syntaxError = dgvResults.Rows[e.RowIndex].Tag as SyntaxError;
-            if (syntaxError == null)
-                return;
-
             var semanticError = dgvResults.Rows[e.RowIndex].Tag as SemanticError;
-            if (semanticError == null)
-                return;
+
+            if (syntaxError == null)
+            {
+                if (semanticError == null)
+                    return;
+            }
 
             var textBox = tabControlEditor.SelectedTab.Controls
                 .OfType<FastColoredTextBox>()
