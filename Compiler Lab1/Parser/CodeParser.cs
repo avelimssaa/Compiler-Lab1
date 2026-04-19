@@ -6,11 +6,13 @@ namespace Compiler_Lab1.Parser
     {
         void ParseStart();
         IReadOnlyList<SyntaxError> Errors { get; }
+        List<IToken> Tokens { get; }
     }
 
     public class CodeParser : IParser
     {
         private readonly List<IToken> _tokens;
+        public List<IToken> Tokens { get { return _tokens; } }
         private int _position;
 
         private readonly List<SyntaxError> _errors = new();

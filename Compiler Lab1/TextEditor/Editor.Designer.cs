@@ -99,6 +99,8 @@
             labelFileSize = new ToolStripStatusLabel();
             labelLineCount = new ToolStripStatusLabel();
             ErrorsCount = new ToolStripStatusLabel();
+            tabPageAST = new TabPage();
+            rtbAST = new RichTextBox();
             toolStrip1.SuspendLayout();
             toolStrip2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
@@ -111,6 +113,7 @@
             tabPageRegular.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgvRegular).BeginInit();
             statusStrip1.SuspendLayout();
+            tabPageAST.SuspendLayout();
             SuspendLayout();
             // 
             // toolStrip1
@@ -580,6 +583,7 @@
             // 
             tabControlResults.Controls.Add(tabPageResults);
             tabControlResults.Controls.Add(tabPageRegular);
+            tabControlResults.Controls.Add(tabPageAST);
             tabControlResults.Dock = DockStyle.Fill;
             tabControlResults.Location = new Point(0, 0);
             tabControlResults.Name = "tabControlResults";
@@ -716,6 +720,28 @@
             ErrorsCount.Size = new Size(152, 20);
             ErrorsCount.Text = "Количество ошибок:";
             // 
+            // tabPageAST
+            // 
+            tabPageAST.Controls.Add(rtbAST);
+            tabPageAST.Location = new Point(4, 29);
+            tabPageAST.Name = "tabPageAST";
+            tabPageAST.Padding = new Padding(3);
+            tabPageAST.Size = new Size(774, 210);
+            tabPageAST.TabIndex = 3;
+            tabPageAST.Text = "АСД";
+            tabPageAST.ToolTipText = "АСД";
+            tabPageAST.UseVisualStyleBackColor = true;
+            // 
+            // rtbAST
+            // 
+            rtbAST.Dock = DockStyle.Fill;
+            rtbAST.Location = new Point(3, 3);
+            rtbAST.Name = "rtbAST";
+            rtbAST.ReadOnly = true;
+            rtbAST.Size = new Size(768, 204);
+            rtbAST.TabIndex = 0;
+            rtbAST.Text = "";
+            // 
             // textEditor
             // 
             AllowDrop = true;
@@ -751,6 +777,7 @@
             ((System.ComponentModel.ISupportInitialize)dgvRegular).EndInit();
             statusStrip1.ResumeLayout(false);
             statusStrip1.PerformLayout();
+            tabPageAST.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
         }
@@ -827,5 +854,7 @@
         private DataGridViewTextBoxColumn foundSubString;
         private DataGridViewTextBoxColumn startPosition;
         private DataGridViewTextBoxColumn Length;
+        private TabPage tabPageAST;
+        private RichTextBox rtbAST;
     }
 }

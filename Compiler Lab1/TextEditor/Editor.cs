@@ -1,4 +1,5 @@
 using Antlr4.Runtime;
+using Compiler_Lab1.ASTBuild;
 using Compiler_Lab1.GRAMMAR;
 using Compiler_Lab1.LexicalAnalyzer;
 using Compiler_Lab1.Parser;
@@ -7,6 +8,7 @@ using Compiler_Lab1.TextEditor;
 using FastColoredTextBoxNS;
 using System.Diagnostics;
 using System.Text;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Compiler_Lab1
 {
@@ -189,7 +191,7 @@ namespace Compiler_Lab1
                 openFileDialog.Filter = $"{_localization.Get("TextFiles")} (*.txt)|*.txt";
                 openFileDialog.FilterIndex = 1;
                 openFileDialog.DefaultExt = "txt";
-                openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                openFileDialog.InitialDirectory = Application.StartupPath;
 
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
@@ -954,6 +956,7 @@ namespace Compiler_Lab1
         private void RunSyntaxAnalysis()
         {
             dgvResults.Rows.Clear();
+            rtbAST.Clear();
 
             var textBox = tabControlEditor.SelectedTab.Controls
                 .OfType<FastColoredTextBox>()
@@ -969,6 +972,7 @@ namespace Compiler_Lab1
             //var parser = new CodeParser(tokens);
             IParser parser = new StateMachineParser(tokens);
             parser.ParseStart();
+            tokens = parser.Tokens;
 
             dgvResults.Rows.Clear();
 
@@ -991,9 +995,52 @@ namespace Compiler_Lab1
                     "Синтаксический анализ завершён успешно"
                 );
                 dgvResults.Rows[rowIndex].Tag = null;
+
+                PrintAST(tokens);
             }
 
             ErrorsCount.Text = $"Количество ошибок: {parser.Errors.Count}";
+        }
+
+        private void PrintAST(List<LexicalAnalyzer.IToken> tokens)
+        {
+            rtbAST.Clear();
+            IASTBuilder builder = new ASTBuilder();
+            string AST = builder.FormAST(tokens);
+            rtbAST.Text = AST;
+
+            dgvResults.Rows.Clear();
+
+            foreach (var err in builder.SemanticError)
+            {
+                int rowIndex = dgvResults.Rows.Add(
+                    err.UnexpectedLexeme,
+                    err.Location,
+                    err.Message
+                );
+
+                dgvResults.Rows[rowIndex].Tag = err;
+            }
+
+            if (builder.SemanticError.Count == 0)
+            {
+                int rowIndex = dgvResults.Rows.Add(
+                    "",
+                    "",
+                    "Синтаксический и семантический анализ завершён успешно"
+                );
+                dgvResults.Rows[rowIndex].Tag = null;
+            }
+
+            else
+            {
+                int rowIndex = dgvResults.Rows.Add(
+    "",
+    "",
+    $"Количество ошибок: {builder.SemanticError.Count}"
+);
+                dgvResults.Rows[rowIndex].Tag = null;
+            }
         }
 
         private void btnStart_Click(object sender, EventArgs e)
@@ -1007,11 +1054,16 @@ namespace Compiler_Lab1
         }
         private void dgvResults_CellClick(object sender, DataGridViewCellEventArgs e)
         {
+            int line = 0, column = 0;
             if (e.RowIndex < 0 || e.RowIndex >= dgvResults.Rows.Count)
                 return;
 
-            var error = dgvResults.Rows[e.RowIndex].Tag as SyntaxError;
-            if (error == null)
+            var syntaxError = dgvResults.Rows[e.RowIndex].Tag as SyntaxError;
+            if (syntaxError == null)
+                return;
+
+            var semanticError = dgvResults.Rows[e.RowIndex].Tag as SemanticError;
+            if (semanticError == null)
                 return;
 
             var textBox = tabControlEditor.SelectedTab.Controls
@@ -1021,7 +1073,17 @@ namespace Compiler_Lab1
             if (textBox == null)
                 return;
 
-            SetCursorPosition(textBox, error.Line, error.Column);
+            if (syntaxError != null)
+            {
+                line = syntaxError.Line;
+                column = syntaxError.Column;
+            }
+            else if (semanticError != null)
+            {
+                line = semanticError.Line;
+                column = semanticError.Column;
+            }
+            SetCursorPosition(textBox, line, column);
         }
 
         private void SetCursorPosition(FastColoredTextBox textBox, int line, int column)

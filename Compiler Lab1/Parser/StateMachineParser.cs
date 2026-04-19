@@ -6,6 +6,7 @@ namespace Compiler_Lab1.Parser
     internal class StateMachineParser : IParser
     {
         private readonly List<IToken> _tokens;
+        public List<IToken> Tokens { get { return _tokens; } }
         private int _position, _state;
 
         private readonly List<SyntaxError> _errors = new();
