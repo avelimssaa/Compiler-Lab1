@@ -9,6 +9,7 @@ using Compiler_Lab1.FlexBisonParser;
 using FastColoredTextBoxNS;
 using System.Diagnostics;
 using System.Text;
+using Compiler_Lab1.InternalRepresentation;
 
 namespace Compiler_Lab1
 {
@@ -24,8 +25,6 @@ namespace Compiler_Lab1
 
         private IAnalyzer _analyzer;
 
-        //private List<LexicalAnalyzer.IToken> _currentTokens = new List<LexicalAnalyzer.IToken>();
-
         public textEditor()
         {
             InitializeComponent();
@@ -33,8 +32,6 @@ namespace Compiler_Lab1
             _pagesCount = 0;
             CreateFile();
             _analyzer = new Analyzer();
-
-            //_analyzer = new FlexBisonParser();
         }
 
         private void CreateFile()
@@ -623,6 +620,7 @@ namespace Compiler_Lab1
         {
             tabPageResults.Text = _localization.Get("ResultTab");
         }
+
         private void textEditor_DragEnter(object sender, DragEventArgs e)
         {
             e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop)
@@ -1052,6 +1050,7 @@ namespace Compiler_Lab1
         {
             Compile();
         }
+
         private void dgvResults_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             int line = 0, column = 0;
@@ -1421,6 +1420,41 @@ namespace Compiler_Lab1
         {
             IHTMLHelper htmlHelper = new HTMLHelper(_localization);
             htmlHelper.CallHTML("SourceCode");
+        }
+
+        private void btnPOLIZ_Click(object sender, EventArgs e)
+        {
+            dgvArithLexem.Rows.Clear();
+
+            TabPage currentTab = tabControlEditor.SelectedTab;
+            if (currentTab == null) return;
+
+            FastColoredTextBox textBox = currentTab.Controls.OfType<FastColoredTextBox>().FirstOrDefault();
+            if (textBox == null) return;
+
+            string textToAnalyze = textBox.Text;
+
+            if (string.IsNullOrEmpty(textToAnalyze))
+            {
+                MessageBox.Show("Введена пустая строка.");
+                return;
+            }
+
+            IArithmeticExpressionLexer lexer = new ArithmeticExpressionLexer(textToAnalyze);
+
+            List<IArithToken> tokens = lexer.Tokens;
+
+            foreach (IArithToken token in tokens)
+            {
+                int rowIndex = dgvArithLexem.Rows.Add(
+                    token.Word,
+                    token.Line,
+                    token.Column,
+                    token.Type
+                    );
+
+                dgvArithLexem.Rows[rowIndex].Tag = token;
+            }
         }
     }
 }

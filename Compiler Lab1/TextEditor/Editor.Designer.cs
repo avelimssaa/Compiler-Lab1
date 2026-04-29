@@ -54,6 +54,7 @@
             btnListOfLiterature = new ToolStripMenuItem();
             btnSourceCode = new ToolStripMenuItem();
             btnStart = new ToolStripButton();
+            btnPOLIZ = new ToolStripButton();
             ddbRegEx = new ToolStripDropDownButton();
             ddmStartAnalysis = new ToolStripMenuItem();
             toolStripTextBox1 = new ToolStripTextBox();
@@ -94,13 +95,25 @@
             foundSubString = new DataGridViewTextBoxColumn();
             startPosition = new DataGridViewTextBoxColumn();
             Length = new DataGridViewTextBoxColumn();
+            tabPageAST = new TabPage();
+            rtbAST = new RichTextBox();
+            tabPageTetrads = new TabPage();
+            dgvTetrads = new DataGridView();
+            Operation = new DataGridViewTextBoxColumn();
+            arg1 = new DataGridViewTextBoxColumn();
+            Arg2 = new DataGridViewTextBoxColumn();
+            Result = new DataGridViewTextBoxColumn();
+            tabPageArithLexem = new TabPage();
+            dgvArithLexem = new DataGridView();
             statusStrip1 = new StatusStrip();
             labelLanguage = new ToolStripStatusLabel();
             labelFileSize = new ToolStripStatusLabel();
             labelLineCount = new ToolStripStatusLabel();
             ErrorsCount = new ToolStripStatusLabel();
-            tabPageAST = new TabPage();
-            rtbAST = new RichTextBox();
+            Lexeme = new DataGridViewTextBoxColumn();
+            Line = new DataGridViewTextBoxColumn();
+            Column = new DataGridViewTextBoxColumn();
+            TokenType = new DataGridViewTextBoxColumn();
             toolStrip1.SuspendLayout();
             toolStrip2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
@@ -112,14 +125,18 @@
             ((System.ComponentModel.ISupportInitialize)dgvResults).BeginInit();
             tabPageRegular.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgvRegular).BeginInit();
-            statusStrip1.SuspendLayout();
             tabPageAST.SuspendLayout();
+            tabPageTetrads.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)dgvTetrads).BeginInit();
+            tabPageArithLexem.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)dgvArithLexem).BeginInit();
+            statusStrip1.SuspendLayout();
             SuspendLayout();
             // 
             // toolStrip1
             // 
             toolStrip1.ImageScalingSize = new Size(20, 20);
-            toolStrip1.Items.AddRange(new ToolStripItem[] { ddmFile, ddmEdit, ddmText, btnStart, ddbRegEx, ddmCertificate, viewDropDownBtn });
+            toolStrip1.Items.AddRange(new ToolStripItem[] { ddmFile, ddmEdit, ddmText, btnStart, btnPOLIZ, ddbRegEx, ddmCertificate, viewDropDownBtn });
             toolStrip1.Location = new Point(0, 0);
             toolStrip1.Name = "toolStrip1";
             toolStrip1.Size = new Size(782, 27);
@@ -302,9 +319,19 @@
             btnStart.Image = (Image)resources.GetObject("btnStart.Image");
             btnStart.ImageTransparentColor = Color.Magenta;
             btnStart.Name = "btnStart";
-            btnStart.Size = new Size(102, 24);
-            btnStart.Text = "Компиляция";
+            btnStart.Size = new Size(45, 24);
+            btnStart.Text = "Пуск";
             btnStart.Click += btnStart_Click;
+            // 
+            // btnPOLIZ
+            // 
+            btnPOLIZ.DisplayStyle = ToolStripItemDisplayStyle.Text;
+            btnPOLIZ.Image = (Image)resources.GetObject("btnPOLIZ.Image");
+            btnPOLIZ.ImageTransparentColor = Color.Magenta;
+            btnPOLIZ.Name = "btnPOLIZ";
+            btnPOLIZ.Size = new Size(64, 24);
+            btnPOLIZ.Text = "ПОЛИЗ";
+            btnPOLIZ.Click += btnPOLIZ_Click;
             // 
             // ddbRegEx
             // 
@@ -584,6 +611,8 @@
             tabControlResults.Controls.Add(tabPageResults);
             tabControlResults.Controls.Add(tabPageRegular);
             tabControlResults.Controls.Add(tabPageAST);
+            tabControlResults.Controls.Add(tabPageTetrads);
+            tabControlResults.Controls.Add(tabPageArithLexem);
             tabControlResults.Dock = DockStyle.Fill;
             tabControlResults.Location = new Point(0, 0);
             tabControlResults.Name = "tabControlResults";
@@ -686,6 +715,106 @@
             Length.Name = "Length";
             Length.ReadOnly = true;
             // 
+            // tabPageAST
+            // 
+            tabPageAST.Controls.Add(rtbAST);
+            tabPageAST.Location = new Point(4, 29);
+            tabPageAST.Name = "tabPageAST";
+            tabPageAST.Padding = new Padding(3);
+            tabPageAST.Size = new Size(774, 210);
+            tabPageAST.TabIndex = 3;
+            tabPageAST.Text = "АСД";
+            tabPageAST.ToolTipText = "АСД";
+            tabPageAST.UseVisualStyleBackColor = true;
+            // 
+            // rtbAST
+            // 
+            rtbAST.Dock = DockStyle.Fill;
+            rtbAST.Location = new Point(3, 3);
+            rtbAST.Name = "rtbAST";
+            rtbAST.ReadOnly = true;
+            rtbAST.Size = new Size(768, 204);
+            rtbAST.TabIndex = 0;
+            rtbAST.Text = "";
+            // 
+            // tabPageTetrads
+            // 
+            tabPageTetrads.Controls.Add(dgvTetrads);
+            tabPageTetrads.Location = new Point(4, 29);
+            tabPageTetrads.Name = "tabPageTetrads";
+            tabPageTetrads.Size = new Size(774, 210);
+            tabPageTetrads.TabIndex = 4;
+            tabPageTetrads.Text = "Тетрады";
+            tabPageTetrads.UseVisualStyleBackColor = true;
+            // 
+            // dgvTetrads
+            // 
+            dgvTetrads.AllowUserToAddRows = false;
+            dgvTetrads.AllowUserToDeleteRows = false;
+            dgvTetrads.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dgvTetrads.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvTetrads.Columns.AddRange(new DataGridViewColumn[] { Operation, arg1, Arg2, Result });
+            dgvTetrads.Dock = DockStyle.Fill;
+            dgvTetrads.Location = new Point(0, 0);
+            dgvTetrads.Name = "dgvTetrads";
+            dgvTetrads.ReadOnly = true;
+            dgvTetrads.RowHeadersWidth = 51;
+            dgvTetrads.Size = new Size(774, 210);
+            dgvTetrads.TabIndex = 0;
+            // 
+            // Operation
+            // 
+            Operation.HeaderText = "Операция";
+            Operation.MinimumWidth = 6;
+            Operation.Name = "Operation";
+            Operation.ReadOnly = true;
+            // 
+            // arg1
+            // 
+            arg1.HeaderText = "Аргумент 1";
+            arg1.MinimumWidth = 6;
+            arg1.Name = "arg1";
+            arg1.ReadOnly = true;
+            // 
+            // Arg2
+            // 
+            Arg2.HeaderText = "Аргумент 2";
+            Arg2.MinimumWidth = 6;
+            Arg2.Name = "Arg2";
+            Arg2.ReadOnly = true;
+            // 
+            // Result
+            // 
+            Result.HeaderText = "Результат";
+            Result.MinimumWidth = 6;
+            Result.Name = "Result";
+            Result.ReadOnly = true;
+            // 
+            // tabPageArithLexem
+            // 
+            tabPageArithLexem.Controls.Add(dgvArithLexem);
+            tabPageArithLexem.Location = new Point(4, 29);
+            tabPageArithLexem.Name = "tabPageArithLexem";
+            tabPageArithLexem.Size = new Size(774, 210);
+            tabPageArithLexem.TabIndex = 5;
+            tabPageArithLexem.Text = "Лексемы арифметического выражения";
+            tabPageArithLexem.UseVisualStyleBackColor = true;
+            // 
+            // dgvArithLexem
+            // 
+            dgvArithLexem.AllowUserToAddRows = false;
+            dgvArithLexem.AllowUserToDeleteRows = false;
+            dgvArithLexem.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dgvArithLexem.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvArithLexem.Columns.AddRange(new DataGridViewColumn[] { Lexeme, Line, Column, TokenType });
+            dgvArithLexem.Dock = DockStyle.Fill;
+            dgvArithLexem.Location = new Point(0, 0);
+            dgvArithLexem.Name = "dgvArithLexem";
+            dgvArithLexem.ReadOnly = true;
+            dgvArithLexem.RowHeadersWidth = 51;
+            dgvArithLexem.Size = new Size(774, 210);
+            dgvArithLexem.TabIndex = 0;
+            // 
             // statusStrip1
             // 
             statusStrip1.ImageScalingSize = new Size(20, 20);
@@ -720,27 +849,33 @@
             ErrorsCount.Size = new Size(152, 20);
             ErrorsCount.Text = "Количество ошибок:";
             // 
-            // tabPageAST
+            // Lexeme
             // 
-            tabPageAST.Controls.Add(rtbAST);
-            tabPageAST.Location = new Point(4, 29);
-            tabPageAST.Name = "tabPageAST";
-            tabPageAST.Padding = new Padding(3);
-            tabPageAST.Size = new Size(774, 210);
-            tabPageAST.TabIndex = 3;
-            tabPageAST.Text = "АСД";
-            tabPageAST.ToolTipText = "АСД";
-            tabPageAST.UseVisualStyleBackColor = true;
+            Lexeme.HeaderText = "Токен";
+            Lexeme.MinimumWidth = 6;
+            Lexeme.Name = "Lexeme";
+            Lexeme.ReadOnly = true;
             // 
-            // rtbAST
+            // Line
             // 
-            rtbAST.Dock = DockStyle.Fill;
-            rtbAST.Location = new Point(3, 3);
-            rtbAST.Name = "rtbAST";
-            rtbAST.ReadOnly = true;
-            rtbAST.Size = new Size(768, 204);
-            rtbAST.TabIndex = 0;
-            rtbAST.Text = "";
+            Line.HeaderText = "Строка";
+            Line.MinimumWidth = 6;
+            Line.Name = "Line";
+            Line.ReadOnly = true;
+            // 
+            // Column
+            // 
+            Column.HeaderText = "Столбец";
+            Column.MinimumWidth = 6;
+            Column.Name = "Column";
+            Column.ReadOnly = true;
+            // 
+            // TokenType
+            // 
+            TokenType.HeaderText = "Тип токена";
+            TokenType.MinimumWidth = 6;
+            TokenType.Name = "TokenType";
+            TokenType.ReadOnly = true;
             // 
             // textEditor
             // 
@@ -775,9 +910,13 @@
             ((System.ComponentModel.ISupportInitialize)dgvResults).EndInit();
             tabPageRegular.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)dgvRegular).EndInit();
+            tabPageAST.ResumeLayout(false);
+            tabPageTetrads.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)dgvTetrads).EndInit();
+            tabPageArithLexem.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)dgvArithLexem).EndInit();
             statusStrip1.ResumeLayout(false);
             statusStrip1.PerformLayout();
-            tabPageAST.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
         }
@@ -819,7 +958,6 @@
         private ToolStripMenuItem btnTestCase;
         private ToolStripMenuItem btnListOfLiterature;
         private ToolStripMenuItem btnSourceCode;
-        private ToolStripButton btnStart;
         private ToolStripDropDownButton ddmCertificate;
         private ToolStripMenuItem btnHelp;
         private ToolStripMenuItem btnAbout;
@@ -856,5 +994,19 @@
         private DataGridViewTextBoxColumn Length;
         private TabPage tabPageAST;
         private RichTextBox rtbAST;
+        private ToolStripButton btnStart;
+        private ToolStripButton btnPOLIZ;
+        private TabPage tabPageTetrads;
+        private DataGridView dgvTetrads;
+        private DataGridViewTextBoxColumn Operation;
+        private DataGridViewTextBoxColumn arg1;
+        private DataGridViewTextBoxColumn Arg2;
+        private DataGridViewTextBoxColumn Result;
+        private TabPage tabPageArithLexem;
+        private DataGridView dgvArithLexem;
+        private DataGridViewTextBoxColumn Lexeme;
+        private DataGridViewTextBoxColumn Line;
+        private DataGridViewTextBoxColumn Column;
+        private DataGridViewTextBoxColumn TokenType;
     }
 }

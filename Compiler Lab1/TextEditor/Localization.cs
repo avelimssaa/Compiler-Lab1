@@ -48,7 +48,7 @@
                     ["List of literature"] = "Список литературы",
                     ["Source code"] = "Исходный код программы",
 
-                    ["Start"] = "Компиляция",
+                    ["Start"] = "Пуск",
 
                     ["Certificate"] = "Справка",
                     ["Help"] = "Руководство пользователя",
@@ -115,7 +115,7 @@
                     ["List of literature"] = "List of literature",
                     ["Source code"] = "The source code of the program",
 
-                    ["Start"] = "Compile",
+                    ["Start"] = "Start",
 
                     ["Certificate"] = "Certificate",
                     ["Help"] = "Help",
