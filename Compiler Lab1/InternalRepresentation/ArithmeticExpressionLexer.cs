@@ -81,12 +81,26 @@
                     _line++;
                 }
 
+                else if (current == '(')
+                {
+                    AddToken("(", _line, _column, ArithmeticTokenType.LEFT_BRACE);
+                    _index++;
+                    _column++;
+                }
+
+                else if (current == ')')
+                {
+                    AddToken(")", _line, _column, ArithmeticTokenType.RIGHT_BRACE);
+                    _index++;
+                    _column++;
+                }
+
                 else if (char.IsDigit(current))
                 {
                     ProcessNumber();
                 }
 
-                else if (char.IsLetterOrDigit(current))
+                else if (char.IsLetter(current))
                 {
                     ProcessIdentiier();
                 }
@@ -98,6 +112,8 @@
                     _column++;
                 }
             }
+
+            AddToken("EOF", _line, _column, ArithmeticTokenType.EOF);
         }
 
         private void ProcessNumber()
@@ -109,6 +125,8 @@
             {
                 digit += current;
                 _index++;
+                if (_index == _text.Length)
+                    break;
                 current = _text[_index];
             }
 
@@ -122,6 +140,8 @@
                 {
                     digit += current;
                     _index++;
+                    if (_index == _text.Length)
+                        break;
                     current = _text[_index];
                 }
 
@@ -134,13 +154,14 @@
         private void ProcessIdentiier()
         {
             string identifier = "";
-            char current = _text[_index];
 
-            while (_index < _text.Length && char.IsLetterOrDigit(current))
+            while (_index < _text.Length && char.IsLetterOrDigit(_text[_index]))
             {
+                char current = _text[_index];
                 identifier += current;
                 _index++;
-                current = _text[_index];
+                if (_index == _text.Length)
+                    break;
             }
 
             AddToken(identifier, _line, _column, ArithmeticTokenType.IDENTIFIER);

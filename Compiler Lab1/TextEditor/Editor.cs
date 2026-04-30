@@ -1059,11 +1059,15 @@ namespace Compiler_Lab1
 
             var syntaxError = dgvResults.Rows[e.RowIndex].Tag as SyntaxError;
             var semanticError = dgvResults.Rows[e.RowIndex].Tag as SemanticError;
+            var arithSyntaxError = dgvResults.Rows[e.RowIndex].Tag as IArithSyntax;
 
             if (syntaxError == null)
             {
                 if (semanticError == null)
-                    return;
+                {
+                    if (arithSyntaxError == null)
+                        return;
+                }
             }
 
             var textBox = tabControlEditor.SelectedTab.Controls
@@ -1082,6 +1086,11 @@ namespace Compiler_Lab1
             {
                 line = semanticError.Line;
                 column = semanticError.Column;
+            }
+            else if (arithSyntaxError != null)
+            {
+                line = arithSyntaxError.Line;
+                column = arithSyntaxError.Column;
             }
             SetCursorPosition(textBox, line, column);
         }
@@ -1454,6 +1463,34 @@ namespace Compiler_Lab1
                     );
 
                 dgvArithLexem.Rows[rowIndex].Tag = token;
+            }
+
+            IArithParser parser = new ArithmeticExpressionParser(tokens);
+
+            if (parser.Errors.Count != 0)
+            {
+                dgvResults.Rows.Clear();
+
+                foreach (var error in parser.Errors)
+                {
+                    int rowIndex = dgvResults.Rows.Add(
+                        error.Token,
+                        $"Строка {error.Line}, столбец {error.Column}",
+                        error.Message);
+
+                    dgvResults.Rows[rowIndex].Tag = error;
+                }
+            }
+            else
+            {
+                tokens = parser.Tokens;
+                dgvResults.Rows.Clear();
+
+                int rowIndex = dgvResults.Rows.Add(
+    "",
+    "",
+    "Синтаксический анализ завершён успешно"
+);
             }
         }
     }

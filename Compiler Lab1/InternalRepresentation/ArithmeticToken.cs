@@ -9,9 +9,12 @@
         MULTIPLICATION = 5,
         DIVISION = 6,
         REMAINDER = 7,
-        UNKNOWN = 8,
-        SPACE = 9,
-        NEW_LINE = 10
+        UNKNOWN = 99,
+        SPACE = 8,
+        NEW_LINE = 9,
+        LEFT_BRACE  = 10,
+        RIGHT_BRACE = 11,
+        EOF = 12
     }
     internal interface IArithToken
     {
