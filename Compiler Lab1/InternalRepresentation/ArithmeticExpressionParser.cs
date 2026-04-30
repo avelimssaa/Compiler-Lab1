@@ -47,7 +47,6 @@
 
             else if ((Current.Type != ArithmeticTokenType.EOF) && (Current.Type != ArithmeticTokenType.RIGHT_BRACE))
             {
-                //AddError("Ожидался оператор '+' или '-'");
                 AddError("Ожидался оператор.");
                 if (Current.Type == ArithmeticTokenType.IDENTIFIER || Current.Type == ArithmeticTokenType.NUMBER)
                 {
@@ -103,7 +102,6 @@
             }
             else if (Current.Type != ArithmeticTokenType.EOF && Current.Type != ArithmeticTokenType.SUM && Current.Type != ArithmeticTokenType.DIF && Current.Type != ArithmeticTokenType.RIGHT_BRACE)
             {
-                //AddError("Ожидался оператор '*' или '/' или '%'.");
                 AddError("Ожидался оператор.");
                 if (Current.Type == ArithmeticTokenType.IDENTIFIER || Current.Type == ArithmeticTokenType.NUMBER)
                 {
