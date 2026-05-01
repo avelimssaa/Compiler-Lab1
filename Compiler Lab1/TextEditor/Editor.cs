@@ -1502,6 +1502,13 @@ namespace Compiler_Lab1
                     rtbPOLIZ.Text += token.Word + " ";
                 }
 
+                if (!poliz.HasID)
+                {
+                    IPolizCounter counter = new PolizCounter(tokens);
+
+                    rtbPOLIZ.Text += $"=  {counter.Count().ToString()}";
+                }
+
                 ITetrads tetradsGenerator = new ArithmeticExpressionTetradsGenerator(tokens);
 
                 List<ArithmeticExpressionTetrads> tetrads = tetradsGenerator.Tetrads;

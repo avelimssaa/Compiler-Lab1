@@ -3,6 +3,7 @@
     internal interface IPOLIZ
     {
         List<IArithToken> POLIZ {  get; }
+        bool HasID { get; }
     }
 
     internal class ArithmeticExpressionPOLIZ : IPOLIZ
@@ -13,6 +14,10 @@
         private readonly List<IArithToken> _inputString = [];
 
         private readonly Stack<IArithToken> _opStack = new();
+
+        private bool _hasID = false;
+
+        public bool HasID { get { return _hasID; } }
 
         public ArithmeticExpressionPOLIZ(List<IArithToken> inputString)
         {
@@ -27,6 +32,8 @@
                 if (token.Type == ArithmeticTokenType.IDENTIFIER || token.Type == ArithmeticTokenType.NUMBER)
                 {
                     _poliz.Add(token);
+                    if (!_hasID && token.Type == ArithmeticTokenType.IDENTIFIER)
+                        _hasID = true;
                 }
                 else if (token.Type == ArithmeticTokenType.LEFT_BRACE)
                 {
@@ -62,7 +69,6 @@
             {
                 _poliz.Add(op);
             }
-
         }
 
         private short GetPriority(ArithmeticTokenType type)
