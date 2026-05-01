@@ -1434,6 +1434,9 @@ namespace Compiler_Lab1
         private void btnPOLIZ_Click(object sender, EventArgs e)
         {
             dgvArithLexem.Rows.Clear();
+            dgvTetrads.Rows.Clear();
+            rtbPOLIZ.Text = "";
+            dgvResults.Rows.Clear();
 
             TabPage currentTab = tabControlEditor.SelectedTab;
             if (currentTab == null) return;
@@ -1494,8 +1497,6 @@ namespace Compiler_Lab1
                 IPOLIZ poliz = new ArithmeticExpressionPOLIZ(tokens);
 
                 tokens = poliz.POLIZ;
-
-                rtbPOLIZ.Text = "";
 
                 foreach (IArithToken token in tokens)
                 {

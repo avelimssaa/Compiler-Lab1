@@ -48,7 +48,9 @@
             else if ((Current.Type != ArithmeticTokenType.EOF) && (Current.Type != ArithmeticTokenType.RIGHT_BRACE))
             {
                 AddError("Ожидался оператор.");
-                if (Current.Type == ArithmeticTokenType.IDENTIFIER || Current.Type == ArithmeticTokenType.NUMBER)
+                while (Current.Type != ArithmeticTokenType.EOF && (Current.Type != ArithmeticTokenType.SUM && Current.Type != ArithmeticTokenType.DIF))
+                    _index++;
+                if (Current.Type != ArithmeticTokenType.EOF)
                 {
                     ParseT();
                     ParseA();
@@ -69,7 +71,6 @@
                 _index++;
             }
 
-
             else if (Current.Type != ArithmeticTokenType.EOF && Current.Type == ArithmeticTokenType.LEFT_BRACE)
             {
                 _index++;
@@ -89,6 +90,12 @@
             else
             {
                 AddError("Ожидалось число или идентификатор.");
+                while ((Current.Type != ArithmeticTokenType.EOF) && (Current.Type != ArithmeticTokenType.IDENTIFIER && Current.Type != ArithmeticTokenType.NUMBER))
+                {
+                    _index++;
+                }
+                if (Current.Type != ArithmeticTokenType.EOF)
+                    ParseF();
             }
         }
 
@@ -103,7 +110,9 @@
             else if (Current.Type != ArithmeticTokenType.EOF && Current.Type != ArithmeticTokenType.SUM && Current.Type != ArithmeticTokenType.DIF && Current.Type != ArithmeticTokenType.RIGHT_BRACE)
             {
                 AddError("Ожидался оператор.");
-                if (Current.Type == ArithmeticTokenType.IDENTIFIER || Current.Type == ArithmeticTokenType.NUMBER)
+                while (Current.Type != ArithmeticTokenType.EOF && (Current.Type != ArithmeticTokenType.IDENTIFIER && Current.Type != ArithmeticTokenType.NUMBER))
+                    _index++;
+                if (Current.Type != ArithmeticTokenType.EOF)
                 {
                     ParseF();
                     ParseB();
