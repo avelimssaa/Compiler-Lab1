@@ -1491,6 +1491,16 @@ namespace Compiler_Lab1
     "",
     "Синтаксический анализ завершён успешно"
 );
+                IPOLIZ poliz = new ArithmeticExpressionPOLIZ(tokens);
+
+                tokens = poliz.POLIZ;
+
+                rtbPOLIZ.Text = "";
+
+                foreach (IArithToken token in tokens)
+                {
+                    rtbPOLIZ.Text += token.Word + " ";
+                }
             }
         }
     }

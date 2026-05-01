@@ -105,15 +105,17 @@
             Result = new DataGridViewTextBoxColumn();
             tabPageArithLexem = new TabPage();
             dgvArithLexem = new DataGridView();
+            Lexeme = new DataGridViewTextBoxColumn();
+            Line = new DataGridViewTextBoxColumn();
+            Column = new DataGridViewTextBoxColumn();
+            TokenType = new DataGridViewTextBoxColumn();
             statusStrip1 = new StatusStrip();
             labelLanguage = new ToolStripStatusLabel();
             labelFileSize = new ToolStripStatusLabel();
             labelLineCount = new ToolStripStatusLabel();
             ErrorsCount = new ToolStripStatusLabel();
-            Lexeme = new DataGridViewTextBoxColumn();
-            Line = new DataGridViewTextBoxColumn();
-            Column = new DataGridViewTextBoxColumn();
-            TokenType = new DataGridViewTextBoxColumn();
+            tabPagePOLIZ = new TabPage();
+            rtbPOLIZ = new RichTextBox();
             toolStrip1.SuspendLayout();
             toolStrip2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
@@ -131,6 +133,7 @@
             tabPageArithLexem.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgvArithLexem).BeginInit();
             statusStrip1.SuspendLayout();
+            tabPagePOLIZ.SuspendLayout();
             SuspendLayout();
             // 
             // toolStrip1
@@ -613,6 +616,7 @@
             tabControlResults.Controls.Add(tabPageAST);
             tabControlResults.Controls.Add(tabPageTetrads);
             tabControlResults.Controls.Add(tabPageArithLexem);
+            tabControlResults.Controls.Add(tabPagePOLIZ);
             tabControlResults.Dock = DockStyle.Fill;
             tabControlResults.Location = new Point(0, 0);
             tabControlResults.Name = "tabControlResults";
@@ -815,6 +819,34 @@
             dgvArithLexem.Size = new Size(774, 210);
             dgvArithLexem.TabIndex = 0;
             // 
+            // Lexeme
+            // 
+            Lexeme.HeaderText = "Токен";
+            Lexeme.MinimumWidth = 6;
+            Lexeme.Name = "Lexeme";
+            Lexeme.ReadOnly = true;
+            // 
+            // Line
+            // 
+            Line.HeaderText = "Строка";
+            Line.MinimumWidth = 6;
+            Line.Name = "Line";
+            Line.ReadOnly = true;
+            // 
+            // Column
+            // 
+            Column.HeaderText = "Столбец";
+            Column.MinimumWidth = 6;
+            Column.Name = "Column";
+            Column.ReadOnly = true;
+            // 
+            // TokenType
+            // 
+            TokenType.HeaderText = "Тип токена";
+            TokenType.MinimumWidth = 6;
+            TokenType.Name = "TokenType";
+            TokenType.ReadOnly = true;
+            // 
             // statusStrip1
             // 
             statusStrip1.ImageScalingSize = new Size(20, 20);
@@ -849,33 +881,25 @@
             ErrorsCount.Size = new Size(152, 20);
             ErrorsCount.Text = "Количество ошибок:";
             // 
-            // Lexeme
+            // tabPagePOLIZ
             // 
-            Lexeme.HeaderText = "Токен";
-            Lexeme.MinimumWidth = 6;
-            Lexeme.Name = "Lexeme";
-            Lexeme.ReadOnly = true;
+            tabPagePOLIZ.Controls.Add(rtbPOLIZ);
+            tabPagePOLIZ.Location = new Point(4, 29);
+            tabPagePOLIZ.Name = "tabPagePOLIZ";
+            tabPagePOLIZ.Size = new Size(774, 210);
+            tabPagePOLIZ.TabIndex = 6;
+            tabPagePOLIZ.Text = "ПОЛИЗ";
+            tabPagePOLIZ.UseVisualStyleBackColor = true;
             // 
-            // Line
+            // rtbPOLIZ
             // 
-            Line.HeaderText = "Строка";
-            Line.MinimumWidth = 6;
-            Line.Name = "Line";
-            Line.ReadOnly = true;
-            // 
-            // Column
-            // 
-            Column.HeaderText = "Столбец";
-            Column.MinimumWidth = 6;
-            Column.Name = "Column";
-            Column.ReadOnly = true;
-            // 
-            // TokenType
-            // 
-            TokenType.HeaderText = "Тип токена";
-            TokenType.MinimumWidth = 6;
-            TokenType.Name = "TokenType";
-            TokenType.ReadOnly = true;
+            rtbPOLIZ.Dock = DockStyle.Fill;
+            rtbPOLIZ.Location = new Point(0, 0);
+            rtbPOLIZ.Name = "rtbPOLIZ";
+            rtbPOLIZ.ReadOnly = true;
+            rtbPOLIZ.Size = new Size(774, 210);
+            rtbPOLIZ.TabIndex = 0;
+            rtbPOLIZ.Text = "";
             // 
             // textEditor
             // 
@@ -917,6 +941,7 @@
             ((System.ComponentModel.ISupportInitialize)dgvArithLexem).EndInit();
             statusStrip1.ResumeLayout(false);
             statusStrip1.PerformLayout();
+            tabPagePOLIZ.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
         }
@@ -1008,5 +1033,7 @@
         private DataGridViewTextBoxColumn Line;
         private DataGridViewTextBoxColumn Column;
         private DataGridViewTextBoxColumn TokenType;
+        private TabPage tabPagePOLIZ;
+        private RichTextBox rtbPOLIZ;
     }
 }
