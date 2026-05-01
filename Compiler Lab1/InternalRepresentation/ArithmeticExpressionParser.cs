@@ -14,7 +14,7 @@
 
         public List<IArithSyntax> Errors => _errors;
 
-        private int _index = 0;
+        private int _index = 0, _openBraceCount = 0;
         private IArithToken Current { get
             {
                 if (_index >= _tokens.Count)
@@ -52,7 +52,6 @@
                     _index++;
                 if (Current.Type != ArithmeticTokenType.EOF)
                 {
-                    ParseT();
                     ParseA();
                 }
             }
@@ -74,12 +73,14 @@
             else if (Current.Type != ArithmeticTokenType.EOF && Current.Type == ArithmeticTokenType.LEFT_BRACE)
             {
                 _index++;
+                _openBraceCount++;
 
                 ParseE();
 
                 if (Current.Type != ArithmeticTokenType.EOF && Current.Type == ArithmeticTokenType.RIGHT_BRACE)
                 {
                     _index++;
+                    _openBraceCount--;
                 }
                 else
                 {
@@ -90,7 +91,7 @@
             else
             {
                 AddError("Ожидалось число или идентификатор.");
-                while ((Current.Type != ArithmeticTokenType.EOF) && (Current.Type != ArithmeticTokenType.IDENTIFIER && Current.Type != ArithmeticTokenType.NUMBER))
+                while ((Current.Type != ArithmeticTokenType.EOF) && Current.Type != ArithmeticTokenType.IDENTIFIER && Current.Type != ArithmeticTokenType.NUMBER && Current.Type != ArithmeticTokenType.LEFT_BRACE)
                 {
                     _index++;
                 }
@@ -110,12 +111,26 @@
             else if (Current.Type != ArithmeticTokenType.EOF && Current.Type != ArithmeticTokenType.SUM && Current.Type != ArithmeticTokenType.DIF && Current.Type != ArithmeticTokenType.RIGHT_BRACE)
             {
                 AddError("Ожидался оператор.");
-                while (Current.Type != ArithmeticTokenType.EOF && (Current.Type != ArithmeticTokenType.IDENTIFIER && Current.Type != ArithmeticTokenType.NUMBER))
+                while (Current.Type != ArithmeticTokenType.EOF && Current.Type != ArithmeticTokenType.IDENTIFIER && Current.Type != ArithmeticTokenType.NUMBER && Current.Type != ArithmeticTokenType.LEFT_BRACE)
                     _index++;
                 if (Current.Type != ArithmeticTokenType.EOF)
                 {
                     ParseF();
                     ParseB();
+                }
+            }
+            else if (Current.Type == ArithmeticTokenType.RIGHT_BRACE)
+            {
+                if (_openBraceCount == 0)
+                {
+                    AddError("Ожидался оператор.");
+                    while (Current.Type != ArithmeticTokenType.EOF && Current.Type != ArithmeticTokenType.IDENTIFIER && Current.Type != ArithmeticTokenType.NUMBER && Current.Type != ArithmeticTokenType.LEFT_BRACE)
+                        _index++;
+                    if (Current.Type != ArithmeticTokenType.EOF)
+                    {
+                        ParseF();
+                        ParseB();
+                    }
                 }
             }
         }
