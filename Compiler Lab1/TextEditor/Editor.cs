@@ -1486,7 +1486,7 @@ namespace Compiler_Lab1
                 tokens = parser.Tokens;
                 dgvResults.Rows.Clear();
 
-                int rowIndex = dgvResults.Rows.Add(
+                dgvResults.Rows.Add(
     "",
     "",
     "Синтаксический анализ завершён успешно"
@@ -1500,6 +1500,21 @@ namespace Compiler_Lab1
                 foreach (IArithToken token in tokens)
                 {
                     rtbPOLIZ.Text += token.Word + " ";
+                }
+
+                ITetrads tetradsGenerator = new ArithmeticExpressionTetradsGenerator(tokens);
+
+                List<ArithmeticExpressionTetrads> tetrads = tetradsGenerator.Tetrads;
+
+                dgvTetrads.Rows.Clear();
+                foreach (var tetrad in tetrads)
+                {
+                    int rowIndex = dgvTetrads.Rows.Add(
+                        tetrad.Operation,
+                        tetrad.OperandLeft,
+                        tetrad.OperandRight,
+                        tetrad.Variable
+                        );
                 }
             }
         }

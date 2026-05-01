@@ -109,13 +109,13 @@
             Line = new DataGridViewTextBoxColumn();
             Column = new DataGridViewTextBoxColumn();
             TokenType = new DataGridViewTextBoxColumn();
+            tabPagePOLIZ = new TabPage();
+            rtbPOLIZ = new RichTextBox();
             statusStrip1 = new StatusStrip();
             labelLanguage = new ToolStripStatusLabel();
             labelFileSize = new ToolStripStatusLabel();
             labelLineCount = new ToolStripStatusLabel();
             ErrorsCount = new ToolStripStatusLabel();
-            tabPagePOLIZ = new TabPage();
-            rtbPOLIZ = new RichTextBox();
             toolStrip1.SuspendLayout();
             toolStrip2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
@@ -132,8 +132,8 @@
             ((System.ComponentModel.ISupportInitialize)dgvTetrads).BeginInit();
             tabPageArithLexem.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgvArithLexem).BeginInit();
-            statusStrip1.SuspendLayout();
             tabPagePOLIZ.SuspendLayout();
+            statusStrip1.SuspendLayout();
             SuspendLayout();
             // 
             // toolStrip1
@@ -847,6 +847,26 @@
             TokenType.Name = "TokenType";
             TokenType.ReadOnly = true;
             // 
+            // tabPagePOLIZ
+            // 
+            tabPagePOLIZ.Controls.Add(rtbPOLIZ);
+            tabPagePOLIZ.Location = new Point(4, 29);
+            tabPagePOLIZ.Name = "tabPagePOLIZ";
+            tabPagePOLIZ.Size = new Size(774, 210);
+            tabPagePOLIZ.TabIndex = 6;
+            tabPagePOLIZ.Text = "ПОЛИЗ";
+            tabPagePOLIZ.UseVisualStyleBackColor = true;
+            // 
+            // rtbPOLIZ
+            // 
+            rtbPOLIZ.Dock = DockStyle.Fill;
+            rtbPOLIZ.Location = new Point(0, 0);
+            rtbPOLIZ.Name = "rtbPOLIZ";
+            rtbPOLIZ.ReadOnly = true;
+            rtbPOLIZ.Size = new Size(774, 210);
+            rtbPOLIZ.TabIndex = 0;
+            rtbPOLIZ.Text = "";
+            // 
             // statusStrip1
             // 
             statusStrip1.ImageScalingSize = new Size(20, 20);
@@ -880,26 +900,6 @@
             ErrorsCount.Name = "ErrorsCount";
             ErrorsCount.Size = new Size(152, 20);
             ErrorsCount.Text = "Количество ошибок:";
-            // 
-            // tabPagePOLIZ
-            // 
-            tabPagePOLIZ.Controls.Add(rtbPOLIZ);
-            tabPagePOLIZ.Location = new Point(4, 29);
-            tabPagePOLIZ.Name = "tabPagePOLIZ";
-            tabPagePOLIZ.Size = new Size(774, 210);
-            tabPagePOLIZ.TabIndex = 6;
-            tabPagePOLIZ.Text = "ПОЛИЗ";
-            tabPagePOLIZ.UseVisualStyleBackColor = true;
-            // 
-            // rtbPOLIZ
-            // 
-            rtbPOLIZ.Dock = DockStyle.Fill;
-            rtbPOLIZ.Location = new Point(0, 0);
-            rtbPOLIZ.Name = "rtbPOLIZ";
-            rtbPOLIZ.ReadOnly = true;
-            rtbPOLIZ.Size = new Size(774, 210);
-            rtbPOLIZ.TabIndex = 0;
-            rtbPOLIZ.Text = "";
             // 
             // textEditor
             // 
@@ -939,9 +939,9 @@
             ((System.ComponentModel.ISupportInitialize)dgvTetrads).EndInit();
             tabPageArithLexem.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)dgvArithLexem).EndInit();
+            tabPagePOLIZ.ResumeLayout(false);
             statusStrip1.ResumeLayout(false);
             statusStrip1.PerformLayout();
-            tabPagePOLIZ.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
         }
