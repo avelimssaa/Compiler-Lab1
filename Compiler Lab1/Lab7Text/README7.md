@@ -315,3 +315,77 @@ LLVM IR (например, умножение, сложение)?
 - CFG показывает пути выполнения наглядно.
 
 - Неизменность переменных (SSA).
+
+# Дополнительное задание.
+
+## AST цикла for на языке scala.
+
+![AST цикла for на языке Scala](ASTDrawio.jpg)
+
+## Генерация промежуточного представления (IR) для цикла for на языке Scala.
+
+Обновление информации о доступных пакетах.
+
+![Обновление информации о доступных пакетах](sudo-apt-update.png)
+
+Скачивание пакетов curl и gnupg.
+
+![Скачивание пакетов curl и gnupg](install-curl-gnupg.png)
+
+Устанавливаем цифровой ключ для безопасного скачивания пакетов Scala Build Tools.
+
+![Установка GPG ключа](install-gpg-key.png)
+
+Даем права apt на чтение ключа.
+
+![Даем права apt на чтение ключа](chmod-apt-644.png)
+
+Добавляем официальный репозиторий Scala.
+
+![Репозиторий Scala](add-rep-scala.png)
+
+Снова обновляем информацию о доступных пакетах.
+
+![Повторное обновление информации о доступных пакетах](sudo-apt-update.png)
+
+Устанавливаем Scala Build Tool.
+
+![Усановка sbt](install-sbt.png)
+
+Устанавливаем остальные необходимые пакеты.
+
+![Установка остальных необходимых пакетов](install-dop-packages.png)
+
+Создаем папку проекта на языке Scala.
+
+![Папка проекта Scala](create-scala-folders.png)
+
+Перед первым запуском sbt необходимо настроить файлы конфигурации.
+
+build.sbt
+
+![build.sbt](scala-build-sbt.png)
+
+build.properties
+
+![build.properties](scala-build-properties.png)
+
+plugins.sbt
+
+![plugins.sbt](scala-plugins-sbt.png)
+
+Main.scala
+
+![Main.scala](scala-main.png)
+
+Выполняем сборку sbt.
+
+![Сборка sbt](sbt-cmd.png)
+
+Файлы LLVM IR после выполнения сборки проекта scala.
+
+![LLVM IR файлы](scala-ll-files.png)
+
+Сгенерированный IR -O0 для цикла for на языке scala.
+
+![IR -O0 цикла for на языке scala](scala-O0.png)
