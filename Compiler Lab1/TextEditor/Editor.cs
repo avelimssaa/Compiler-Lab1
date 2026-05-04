@@ -1671,5 +1671,103 @@ namespace Compiler_Lab1
 
             }
         }
+
+        public class IRInstruction
+        {
+            public string Op { get; set; }
+            public string Arg1 { get; set; }
+            public string Arg2 { get; set; }
+            public string Result { get; set; }
+
+            public override string ToString()
+            {
+                switch (Op)
+                {
+                    case ":=": return $"  {Result} := {Arg1}";
+                    case "+": return $"  {Result} := {Arg1} + {Arg2}";
+                    case "<": return $"  {Result} := {Arg1} < {Arg2}";
+                    case "if_false_goto": return $"  if_false {Arg1} goto {Result}";
+                    case "goto": return $"  goto {Result}";
+                    case "print": return $"  print({Arg1})";
+                    case "println": return $"  println({Arg1})";
+                    case "label": return $"{Result}:";
+                    default: return $"  {Op} {Arg1} {Arg2} {Result}";
+                }
+            }
+        }
+
+        private void оптимизацияToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Console.OutputEncoding = Encoding.UTF8;
+
+            var ir = new List<IRInstruction>
+        {
+            new IRInstruction { Op = ":=", Arg1 = "0", Result = "i" },
+            new IRInstruction { Op = "label", Result = "L1" },
+            new IRInstruction { Op = "<", Arg1 = "i", Arg2 = "10", Result = "t1" },
+            new IRInstruction { Op = "if_false_goto", Arg1 = "t1", Result = "L2" },
+            new IRInstruction { Op = "println", Arg1 = "i" },
+            new IRInstruction { Op = "+", Arg1 = "i", Arg2 = "1", Result = "i" },
+            new IRInstruction { Op = "goto", Result = "L1" },
+            new IRInstruction { Op = "label", Result = "L2" },
+        };
+
+            //Console.WriteLine("=== Исходный IR ===");
+            rtbOpt.Text += "=== Исходный IR ===\n";
+            PrintIR(ir);
+
+            var opt1 = Optimization1_DecomposePrintln(ir);
+            //Console.WriteLine("\n=== Оптимизация 1: разложение println ===");
+            rtbOpt.Text += "\n=== Оптимизация 1: разложение println ===\n";
+            //Console.WriteLine("println(i) -> print(i); print('\\n')");
+            rtbOpt.Text += "println(i) -> print(i); print('\\n')\n";
+            PrintIR(opt1);
+
+            var opt2 = Optimization2_ClearInsteadOfAssign0(opt1);
+            //Console.WriteLine("\n=== Оптимизация 2: clear вместо := 0 ===");
+            rtbOpt.Text += "\n=== Оптимизация 2: clear вместо := 0 ===\n";
+            PrintIR(opt2);
+        }
+
+        private void PrintIR(List<IRInstruction> ir)
+        {
+            foreach (var instr in ir)
+                rtbOpt.Text += instr + "\n";
+        }
+
+        private List<IRInstruction> Optimization1_DecomposePrintln(List<IRInstruction> ir)
+        {
+            var result = new List<IRInstruction>();
+            foreach (var instr in ir)
+            {
+                if (instr.Op == "println")
+                {
+                    result.Add(new IRInstruction { Op = "print", Arg1 = instr.Arg1 });
+                    result.Add(new IRInstruction { Op = "print", Arg1 = "'\\n'" });
+                }
+                else
+                {
+                    result.Add(instr);
+                }
+            }
+            return result;
+        }
+
+        static List<IRInstruction> Optimization2_ClearInsteadOfAssign0(List<IRInstruction> ir)
+        {
+            var result = new List<IRInstruction>();
+            foreach (var instr in ir)
+            {
+                if (instr.Op == ":=" && instr.Arg1 == "0")
+                {
+                    result.Add(new IRInstruction { Op = "clear", Result = instr.Result });
+                }
+                else
+                {
+                    result.Add(instr);
+                }
+            }
+            return result;
+        }
     }
 }
