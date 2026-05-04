@@ -1526,5 +1526,150 @@ namespace Compiler_Lab1
                 }
             }
         }
+
+        private void btnConvConst_Click(object sender, EventArgs e)
+        {
+            dgvResults.Rows.Clear();
+            rtbAST.Clear();
+            rtbOpt.Clear();
+
+            var textBox = tabControlEditor.SelectedTab.Controls
+                .OfType<FastColoredTextBox>()
+                .FirstOrDefault();
+
+            if (textBox == null)
+                return;
+
+            string code = textBox.Text;
+
+            var tokens = _analyzer.Scan(code);
+
+            //var parser = new CodeParser(tokens);
+            IParser parser = new StateMachineParser(tokens);
+            parser.ParseStart();
+            tokens = parser.Tokens;
+
+            dgvResults.Rows.Clear();
+
+            foreach (var err in parser.Errors)
+            {
+                int rowIndex = dgvResults.Rows.Add(
+                    err.UnexpectedLexeme,
+                    err.Location,
+                    err.Message
+                );
+
+                dgvResults.Rows[rowIndex].Tag = err;
+            }
+
+            if (parser.Errors.Count == 0)
+            {
+                int rowIndex = dgvResults.Rows.Add(
+                    "",
+                    "",
+                    "Синтаксический анализ завершён успешно"
+                );
+                dgvResults.Rows[rowIndex].Tag = null;
+
+                //PrintAST(tokens);
+
+                bool isSecDigit = false;
+                foreach (var token in tokens)
+                {
+                    if (token.GetTokenTypeEnum() != LexicalAnalyzer.TokenType.KEYWORD_TO && token.GetTokenTypeEnum() != LexicalAnalyzer.TokenType.DIGIT)
+                    {
+                        rtbOpt.Text += token.GetLexeme() + " ";
+                    }
+                    else if (token.GetTokenTypeEnum() == LexicalAnalyzer.TokenType.KEYWORD_TO)
+                    {
+                        rtbOpt.Text += "until ";
+                    }
+                    else if (token.GetTokenTypeEnum() == LexicalAnalyzer.TokenType.DIGIT)
+                    {
+                        if (!isSecDigit)
+                        {
+                            rtbOpt.Text += token.GetLexeme() + " ";
+                            isSecDigit = true;
+                        }
+                        else
+                        {
+                            int i = 0;
+                            int.TryParse(token.GetLexeme(), out i);
+                            i++;
+                            rtbOpt.Text += i.ToString() + " ";
+                        }
+                    }
+                }
+            }
+
+        }
+
+        private void btnOptCicle_Click(object sender, EventArgs e)
+        {
+            dgvResults.Rows.Clear();
+            rtbAST.Clear();
+            rtbOpt.Clear();
+
+            var textBox = tabControlEditor.SelectedTab.Controls
+                .OfType<FastColoredTextBox>()
+                .FirstOrDefault();
+
+            if (textBox == null)
+                return;
+
+            string code = textBox.Text;
+
+            var tokens = _analyzer.Scan(code);
+
+            //var parser = new CodeParser(tokens);
+            IParser parser = new StateMachineParser(tokens);
+            parser.ParseStart();
+            tokens = parser.Tokens;
+
+            dgvResults.Rows.Clear();
+
+            foreach (var err in parser.Errors)
+            {
+                int rowIndex = dgvResults.Rows.Add(
+                    err.UnexpectedLexeme,
+                    err.Location,
+                    err.Message
+                );
+
+                dgvResults.Rows[rowIndex].Tag = err;
+            }
+
+            if (parser.Errors.Count == 0)
+            {
+                int rowIndex = dgvResults.Rows.Add(
+                    "",
+                    "",
+                    "Синтаксический анализ завершён успешно"
+                );
+                dgvResults.Rows[rowIndex].Tag = null;
+
+                for (int j = 0; j < tokens.Count; j++)
+                {
+                    var token = tokens[j];
+
+                    if (token.GetTokenTypeEnum() == LexicalAnalyzer.TokenType.KEYWORD_PRINTLN
+                        && j + 2 < tokens.Count
+                        && tokens[j + 1].GetLexeme() == "("
+                        && tokens[j + 2].GetTokenTypeEnum() == LexicalAnalyzer.TokenType.IDENTIFIER)
+                    {
+                        string identifier = tokens[j + 2].GetLexeme();
+                        rtbOpt.Text += $"print({identifier}); print('\\n'); ";
+                        j += 2;
+                        if (j + 1 < tokens.Count && tokens[j + 1].GetLexeme() == ")")
+                            j++;
+                    }
+                    else
+                    {
+                        rtbOpt.Text += token.GetLexeme() + " ";
+                    }
+                }
+
+            }
+        }
     }
 }

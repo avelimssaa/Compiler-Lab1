@@ -68,6 +68,9 @@
             toolStripSeparator1 = new ToolStripSeparator();
             txtHelpLocal = new ToolStripTextBox();
             cmbLocalization = new ToolStripComboBox();
+            ddmOptimizations = new ToolStripDropDownButton();
+            btnConvConst = new ToolStripMenuItem();
+            btnOptCicle = new ToolStripMenuItem();
             toolStrip2 = new ToolStrip();
             createFileQuick = new ToolStripButton();
             openFileQuick = new ToolStripButton();
@@ -116,6 +119,8 @@
             labelFileSize = new ToolStripStatusLabel();
             labelLineCount = new ToolStripStatusLabel();
             ErrorsCount = new ToolStripStatusLabel();
+            tabPageOptimization = new TabPage();
+            rtbOpt = new RichTextBox();
             toolStrip1.SuspendLayout();
             toolStrip2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
@@ -134,12 +139,13 @@
             ((System.ComponentModel.ISupportInitialize)dgvArithLexem).BeginInit();
             tabPagePOLIZ.SuspendLayout();
             statusStrip1.SuspendLayout();
+            tabPageOptimization.SuspendLayout();
             SuspendLayout();
             // 
             // toolStrip1
             // 
             toolStrip1.ImageScalingSize = new Size(20, 20);
-            toolStrip1.Items.AddRange(new ToolStripItem[] { ddmFile, ddmEdit, ddmText, btnStart, btnPOLIZ, ddbRegEx, ddmCertificate, viewDropDownBtn });
+            toolStrip1.Items.AddRange(new ToolStripItem[] { ddmFile, ddmEdit, ddmText, btnStart, btnPOLIZ, ddbRegEx, ddmCertificate, viewDropDownBtn, ddmOptimizations });
             toolStrip1.Location = new Point(0, 0);
             toolStrip1.Name = "toolStrip1";
             toolStrip1.Size = new Size(782, 27);
@@ -438,6 +444,30 @@
             cmbLocalization.Text = "Локализация";
             cmbLocalization.SelectedIndexChanged += cmbLocalization_SelectedIndexChanged;
             // 
+            // ddmOptimizations
+            // 
+            ddmOptimizations.DisplayStyle = ToolStripItemDisplayStyle.Text;
+            ddmOptimizations.DropDownItems.AddRange(new ToolStripItem[] { btnConvConst, btnOptCicle });
+            ddmOptimizations.Image = (Image)resources.GetObject("ddmOptimizations.Image");
+            ddmOptimizations.ImageTransparentColor = Color.Magenta;
+            ddmOptimizations.Name = "ddmOptimizations";
+            ddmOptimizations.Size = new Size(119, 24);
+            ddmOptimizations.Text = "Оптимизация";
+            // 
+            // btnConvConst
+            // 
+            btnConvConst.Name = "btnConvConst";
+            btnConvConst.Size = new Size(307, 26);
+            btnConvConst.Text = "Свертка констант";
+            btnConvConst.Click += btnConvConst_Click;
+            // 
+            // btnOptCicle
+            // 
+            btnOptCicle.Name = "btnOptCicle";
+            btnOptCicle.Size = new Size(307, 26);
+            btnOptCicle.Text = "Оптимизация заголовка цикла";
+            btnOptCicle.Click += btnOptCicle_Click;
+            // 
             // toolStrip2
             // 
             toolStrip2.ImageScalingSize = new Size(30, 30);
@@ -617,6 +647,7 @@
             tabControlResults.Controls.Add(tabPageTetrads);
             tabControlResults.Controls.Add(tabPageArithLexem);
             tabControlResults.Controls.Add(tabPagePOLIZ);
+            tabControlResults.Controls.Add(tabPageOptimization);
             tabControlResults.Dock = DockStyle.Fill;
             tabControlResults.Location = new Point(0, 0);
             tabControlResults.Name = "tabControlResults";
@@ -901,6 +932,25 @@
             ErrorsCount.Size = new Size(152, 20);
             ErrorsCount.Text = "Количество ошибок:";
             // 
+            // tabPageOptimization
+            // 
+            tabPageOptimization.Controls.Add(rtbOpt);
+            tabPageOptimization.Location = new Point(4, 29);
+            tabPageOptimization.Name = "tabPageOptimization";
+            tabPageOptimization.Size = new Size(774, 210);
+            tabPageOptimization.TabIndex = 7;
+            tabPageOptimization.Text = "Оптимизация";
+            tabPageOptimization.UseVisualStyleBackColor = true;
+            // 
+            // rtbOpt
+            // 
+            rtbOpt.Dock = DockStyle.Fill;
+            rtbOpt.Location = new Point(0, 0);
+            rtbOpt.Name = "rtbOpt";
+            rtbOpt.Size = new Size(774, 210);
+            rtbOpt.TabIndex = 0;
+            rtbOpt.Text = "";
+            // 
             // textEditor
             // 
             AllowDrop = true;
@@ -942,6 +992,7 @@
             tabPagePOLIZ.ResumeLayout(false);
             statusStrip1.ResumeLayout(false);
             statusStrip1.PerformLayout();
+            tabPageOptimization.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
         }
@@ -1035,5 +1086,10 @@
         private DataGridViewTextBoxColumn TokenType;
         private TabPage tabPagePOLIZ;
         private RichTextBox rtbPOLIZ;
+        private ToolStripDropDownButton ddmOptimizations;
+        private ToolStripMenuItem btnConvConst;
+        private ToolStripMenuItem btnOptCicle;
+        private TabPage tabPageOptimization;
+        private RichTextBox rtbOpt;
     }
 }
